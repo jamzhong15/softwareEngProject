@@ -13,9 +13,13 @@ RUN apt-get update \
 COPY src /jsh/src
 COPY pom.xml /jsh/pom.xml
 COPY jsh /jsh/jsh
+RUN chmod u+x /jsh/jsh
 COPY analysis /jsh/analysis
+RUN chmod u+x /jsh/analysis
 COPY test /jsh/test
+RUN chmod u+x /jsh/test
 COPY coverage /jsh/coverage
+RUN chmod u+x /jsh/coverage
 
 RUN cd /jsh && mvn package
 
