@@ -13,6 +13,10 @@ RUN apt-get update \
 COPY src /jsh/src
 COPY pom.xml /jsh/pom.xml
 COPY jsh /jsh/jsh
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+>>>>>>> 957e72ff1d9d8ebebe1bf47385760953b63bdb12
 RUN chmod +x /jsh/jsh
 COPY analysis /jsh/analysis
 RUN chmod +x /jsh/analysis
@@ -20,6 +24,10 @@ COPY test /jsh/test
 RUN chmod +x /jsh/test
 COPY coverage /jsh/coverage
 RUN chmod +x /jsh/coverage
+<<<<<<< HEAD
+=======
+
+>>>>>>> 957e72ff1d9d8ebebe1bf47385760953b63bdb12
 
 RUN cd /jsh && mvn package
 
