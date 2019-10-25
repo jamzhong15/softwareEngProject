@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 public class CmdExtractor
 {
-    String cmdline;
+    public String cmdline;
 
     public CmdExtractor(String cmdline){
         this.cmdline = cmdline;
@@ -14,14 +14,13 @@ public class CmdExtractor
     {
         ArrayList<String> rawCommands = new ArrayList<String>();
 
-    
-
         int closingPairIndex, prevDelimiterIndex = 0, splitIndex = 0;
         
-
-		for (splitIndex = 0; splitIndex < cmdline.length(); splitIndex++) {
+        for (splitIndex = 0; splitIndex < cmdline.length(); splitIndex++) 
+        {
 			char ch = cmdline.charAt(splitIndex);
-			if (ch == ';') {
+            if (ch == ';') 
+            {
                 //extraction of first command, from inputs that uses ; as a delimiter
 				String command = cmdline.substring(prevDelimiterIndex, splitIndex).trim();
 				rawCommands.add(command);
@@ -41,15 +40,15 @@ public class CmdExtractor
 			}
         }
         
-
-
-		if (!cmdline.isEmpty() && prevDelimiterIndex != splitIndex) {
+        if (!cmdline.isEmpty() && prevDelimiterIndex != splitIndex) 
+        {
 			String command = cmdline.substring(prevDelimiterIndex).trim();
-			if (!command.isEmpty()) {
+            if (!command.isEmpty()) 
+            {
 				rawCommands.add(command);
 			}
         }
-        
+
         return rawCommands;
     }
     

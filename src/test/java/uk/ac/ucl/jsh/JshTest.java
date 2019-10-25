@@ -16,9 +16,10 @@ public class JshTest {
         PipedInputStream in = new PipedInputStream();
         PipedOutputStream out;
         out = new PipedOutputStream(in);
-        Jsh.eval("echo foo echo oof", out);
+        Jsh.eval("echo foo", out);
         Scanner scn = new Scanner(in);
         assertEquals(scn.next(),"foo");
+        scn.close();
     }
 
 }
