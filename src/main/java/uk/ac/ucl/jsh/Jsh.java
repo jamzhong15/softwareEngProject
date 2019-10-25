@@ -22,30 +22,14 @@ public class Jsh {
     private static String currentDirectory = System.getProperty("user.dir");
 
     public static void eval(String cmdline, OutputStream output) throws IOException {
+
         OutputStreamWriter writer = new OutputStreamWriter(output);
-        ArrayList<String> rawCommands = new ArrayList<String>();
-		int closingPairIndex, prevDelimiterIndex = 0, splitIndex = 0;
-		for (splitIndex = 0; splitIndex < cmdline.length(); splitIndex++) {
-			char ch = cmdline.charAt(splitIndex);
-			if (ch == ';') {
-				String command = cmdline.substring(prevDelimiterIndex, splitIndex).trim();
-				rawCommands.add(command);
-				prevDelimiterIndex = splitIndex + 1;
-			} else if (ch == '\'' || ch == '\"') {
-				closingPairIndex = cmdline.indexOf(ch, splitIndex + 1);
-				if (closingPairIndex == -1) {
-					continue;
-				} else {
-					splitIndex = closingPairIndex;
-				}
-			}
-		}
-		if (!cmdline.isEmpty() && prevDelimiterIndex != splitIndex) {
-			String command = cmdline.substring(prevDelimiterIndex).trim();
-			if (!command.isEmpty()) {
-				rawCommands.add(command);
-			}
-		}
+
+        // Calls the ComdExtractor to retrive an ArrayList of rawcommands from user input
+        CmdExtractor cmdExtractor = new CmdExtractor(cmdline);
+        ArrayList<String> rawCommands = cmdExtractor.readInput();
+    
+        
         for (String rawCommand : rawCommands) {
             String spaceRegex = "[^\\s\"']+|\"([^\"]*)\"|'([^']*)'";
             ArrayList<String> tokens = new ArrayList<String>();
@@ -70,6 +54,8 @@ public class Jsh {
                     tokens.addAll(globbingResult);
                 }
             }
+            
+            
             String appName = tokens.get(0);
             ArrayList<String> appArgs = new ArrayList<String>(tokens.subList(1, tokens.size()));
             switch (appName) {
@@ -144,6 +130,8 @@ public class Jsh {
                     }
                 }
                 break;
+
+
             case "echo":
                 boolean atLeastOnePrinted = false;
                 for (String arg : appArgs) {
@@ -157,6 +145,9 @@ public class Jsh {
                     writer.flush();
                 }
                 break;
+
+
+
             case "head":
                 if (appArgs.isEmpty()) {
                     throw new RuntimeException("head: missing arguments");
@@ -290,6 +281,7 @@ public class Jsh {
 
     public static void main(String[] args) {
         if (args.length > 0) {
+            // arguements (command,  argument)
             if (args.length != 2) {
                 System.out.println("jsh: wrong number of arguments");
                 return;
@@ -303,18 +295,18 @@ public class Jsh {
                 System.out.println("jsh: " + e.getMessage());
             }
         } else {
-<<<<<<< HEAD
-            System.out.println("Welcome is JSH!");
-=======
+            // program starts inside the while loop
             System.out.println("Welcome to JSH!");
->>>>>>> bafb04a74c1ef60261b916fd25f1383c2b8a17e3
             Scanner input = new Scanner(System.in);
             try {
                 while (true) {
-                    String prompt = currentDirectory + "> ";
+                    String prompt = currentDirectory + ">";
                     System.out.print(prompt);
                     try {
+                        // get user input
                         String cmdline = input.nextLine();
+                        // call the eval function to evaluate user input
+                        //cmdline = input, System.out
                         eval(cmdline, System.out);
                     } catch (Exception e) {
                         System.out.println("jsh: " + e.getMessage());
