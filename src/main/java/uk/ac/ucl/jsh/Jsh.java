@@ -23,29 +23,11 @@ public class Jsh {
 
     public static void eval(String cmdline, OutputStream output) throws IOException {
         OutputStreamWriter writer = new OutputStreamWriter(output);
-        ArrayList<String> rawCommands = new ArrayList<String>();
-		int closingPairIndex, prevDelimiterIndex = 0, splitIndex = 0;
-		for (splitIndex = 0; splitIndex < cmdline.length(); splitIndex++) {
-			char ch = cmdline.charAt(splitIndex);
-			if (ch == ';') {
-				String command = cmdline.substring(prevDelimiterIndex, splitIndex).trim();
-				rawCommands.add(command);
-				prevDelimiterIndex = splitIndex + 1;
-			} else if (ch == '\'' || ch == '\"') {
-				closingPairIndex = cmdline.indexOf(ch, splitIndex + 1);
-				if (closingPairIndex == -1) {
-					continue;
-				} else {
-					splitIndex = closingPairIndex;
-				}
-			}
-		}
-		if (!cmdline.isEmpty() && prevDelimiterIndex != splitIndex) {
-			String command = cmdline.substring(prevDelimiterIndex).trim();
-			if (!command.isEmpty()) {
-				rawCommands.add(command);
-			}
-		}
+
+        CmdExtractor cmdExtratcor = new CmdExtractor(cmdline);
+        ArrayList<String> rawCommands = cmdExtratcor.readInput();
+        ////
+        
         for (String rawCommand : rawCommands) {
             String spaceRegex = "[^\\s\"']+|\"([^\"]*)\"|'([^']*)'";
             ArrayList<String> tokens = new ArrayList<String>();
