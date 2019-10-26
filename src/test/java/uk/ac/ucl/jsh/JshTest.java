@@ -21,5 +21,4 @@ public class JshTest {
         assertEquals(scn.next(),"foo");
         scn.close();
     }
-
 }
