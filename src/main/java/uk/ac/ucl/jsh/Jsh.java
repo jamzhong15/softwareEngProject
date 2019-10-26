@@ -29,11 +29,11 @@ public class Jsh {
         CmdExtractor cmdExtractor = new CmdExtractor(cmdline);
         ArrayList<String> rawCommands = cmdExtractor.readInput();
         // calls the lexer function to separate rawcommands into useful token list, which can then
-        // be mapped to cmd cases
+        // be mapped to cmd Case
         Lexer lexer = new Lexer(rawCommands, currentDirectory);
         ArrayList<String> tokens = lexer.getTokenList();
 
-            
+        
         String appName = tokens.get(0);
         ArrayList<String> appArgs = new ArrayList<String>(tokens.subList(1, tokens.size()));
 
@@ -51,11 +51,13 @@ public class Jsh {
             }
             currentDirectory = dir.getCanonicalPath();
             break;
+
         case "pwd":
             writer.write(currentDirectory);
             writer.write(System.getProperty("line.separator"));
             writer.flush();
             break;
+
         case "ls":
             File currDir;
             if (appArgs.isEmpty()) {
@@ -171,6 +173,8 @@ public class Jsh {
                 throw new RuntimeException("head: " + headArg + " does not exist");
             }
             break;
+
+
         case "tail":
             if (appArgs.isEmpty()) {
                 throw new RuntimeException("tail: missing arguments");

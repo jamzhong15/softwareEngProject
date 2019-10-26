@@ -11,8 +11,8 @@ import java.nio.file.Paths;
 
 public class Lexer
 {
-    public ArrayList<String> rawCommands;
-    public String currentDirectory;
+    ArrayList<String> rawCommands;
+    String currentDirectory;
 
     public Lexer(ArrayList<String> rawCommands, String currentDirectory)
     {
