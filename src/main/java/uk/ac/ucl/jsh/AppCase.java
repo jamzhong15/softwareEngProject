@@ -116,6 +116,23 @@ public class AppCase {
         }
     }
 
+    // case echo function
+    public void echo() throws IOException {
+        OutputStreamWriter writer = new OutputStreamWriter(output);
+
+        boolean atLeastOnePrinted = false;
+            for (String arg : appArgs) {
+                writer.write(arg);
+                writer.write(" ");
+                writer.flush();
+                atLeastOnePrinted = true;
+            }
+            if (atLeastOnePrinted) {
+                writer.write(System.getProperty("line.separator"));
+                writer.flush();
+            }
+    }
+
     public void eval1() throws IOException {
         OutputStreamWriter writer = new OutputStreamWriter(output);
 
@@ -135,19 +152,10 @@ public class AppCase {
         case "cat":
             cat();
             break;
-        // case "echo":
-        //     boolean atLeastOnePrinted = false;
-        //     for (String arg : appArgs) {
-        //         writer.write(arg);
-        //         writer.write(" ");
-        //         writer.flush();
-        //         atLeastOnePrinted = true;
-        //     }
-        //     if (atLeastOnePrinted) {
-        //         writer.write(System.getProperty("line.separator"));
-        //         writer.flush();
-        //     }
-        //     break;
+
+        case "echo":
+            echo();
+            break;
         // case "head":
         //     if (appArgs.isEmpty()) {
         //         throw new RuntimeException("head: missing arguments");
