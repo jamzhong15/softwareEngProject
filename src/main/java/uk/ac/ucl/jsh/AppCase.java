@@ -18,16 +18,19 @@ public class AppCase {
     public String appName;
     public ArrayList<String> appArgs;
     public String currentDirectory;
+    public OutputStream output;
 
-    public AppCase(String appName, ArrayList<String> appArgs, String currentDirectory) {
+
+    public AppCase(String appName, ArrayList<String> appArgs, String currentDirectory, OutputStream output) {
         this.appName = appName;
         this.appArgs = appArgs; 
         this.currentDirectory = currentDirectory;
+        this.output = output;
     }
 
-    public void eval(String appName, ArrayList<String> appArgs, OutputStream output, String currentDirectory) throws IOException {
+    public void eval1() throws IOException {
         OutputStreamWriter writer = new OutputStreamWriter(output);
-        
+
         switch (appName) {
             case "cd":
                 if (appArgs.isEmpty()) {
@@ -41,6 +44,7 @@ public class AppCase {
                     throw new RuntimeException("cd: " + dirString + " is not an existing directory");
                 }
                 currentDirectory = dir.getCanonicalPath();
+                System.out.println(currentDirectory);
                 break;
             case "pwd":
                 writer.write(currentDirectory);
@@ -242,4 +246,4 @@ public class AppCase {
                 throw new RuntimeException(appName + ": unknown application");
             }
         }
-    }
+    } 

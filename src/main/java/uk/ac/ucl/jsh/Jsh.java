@@ -34,8 +34,8 @@ public class Jsh {
         String appName = tokens.get(0);
         ArrayList<String> appArgs = new ArrayList<String>(tokens.subList(1, tokens.size()));
        
-        AppCase appCase = new AppCase(appName, appArgs, currentDirectory);
-        appCase.eval(appName, appArgs, output, currentDirectory);
+        AppCase appCase = new AppCase(appName, appArgs, currentDirectory, output);
+        appCase.eval1();
 
 }
 
