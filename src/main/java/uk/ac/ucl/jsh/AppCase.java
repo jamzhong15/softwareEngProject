@@ -55,6 +55,38 @@ public class AppCase {
         writer.flush();
     }
 
+    // case ls function
+    public void ls() throws IOException {
+        OutputStreamWriter writer = new OutputStreamWriter(output);
+
+        File currDir;
+            if (appArgs.isEmpty()) {
+                currDir = new File(currentDirectory);
+            } else if (appArgs.size() == 1) {
+                currDir = new File(appArgs.get(0));
+            } else {
+                throw new RuntimeException("ls: too many arguments");
+            }
+            try {
+                File[] listOfFiles = currDir.listFiles();
+                boolean atLeastOnePrinted = false;
+                for (File file : listOfFiles) {
+                    if (!file.getName().startsWith(".")) {
+                        writer.write(file.getName());
+                        writer.write("\t");
+                        writer.flush();
+                        atLeastOnePrinted = true;
+                    }
+                }
+                if (atLeastOnePrinted) {
+                    writer.write(System.getProperty("line.separator"));
+                    writer.flush();
+                }
+            } catch (NullPointerException e) {
+                throw new RuntimeException("ls: no such directory");
+            }
+    }
+
     public void eval1() throws IOException {
         switch (appName) {
         case "cd":
@@ -64,34 +96,10 @@ public class AppCase {
         case "pwd":
             pwd();
             break;
-        // case "ls":
-        //     File currDir;
-        //     if (appArgs.isEmpty()) {
-        //         currDir = new File(currentDirectory);
-        //     } else if (appArgs.size() == 1) {
-        //         currDir = new File(appArgs.get(0));
-        //     } else {
-        //         throw new RuntimeException("ls: too many arguments");
-        //     }
-        //     try {
-        //         File[] listOfFiles = currDir.listFiles();
-        //         boolean atLeastOnePrinted = false;
-        //         for (File file : listOfFiles) {
-        //             if (!file.getName().startsWith(".")) {
-        //                 writer.write(file.getName());
-        //                 writer.write("\t");
-        //                 writer.flush();
-        //                 atLeastOnePrinted = true;
-        //             }
-        //         }
-        //         if (atLeastOnePrinted) {
-        //             writer.write(System.getProperty("line.separator"));
-        //             writer.flush();
-        //         }
-        //     } catch (NullPointerException e) {
-        //         throw new RuntimeException("ls: no such directory");
-        //     }
-        //     break;
+
+        case "ls":
+            ls();
+            break;
         // case "cat":
         //     if (appArgs.isEmpty()) {
         //         throw new RuntimeException("cat: missing arguments");
