@@ -233,9 +233,45 @@ public class AppCase {
         }
     }
 
-    public void eval1() throws IOException {
+    // case grep function (idk how to use it!!!!need help)
+    public void grep() {
         OutputStreamWriter writer = new OutputStreamWriter(output);
 
+        if (appArgs.size() < 2) {
+            throw new RuntimeException("grep: wrong number of arguments");
+        }
+        Pattern grepPattern = Pattern.compile(appArgs.get(0));
+        int numOfFiles = appArgs.size() - 1;
+        Path filePath;
+        Path[] filePathArray = new Path[numOfFiles];
+        Path currentDir = Paths.get(currentDirectory);
+        for (int i = 0; i < numOfFiles; i++) {
+            filePath = currentDir.resolve(appArgs.get(i + 1));
+            if (Files.notExists(filePath) || Files.isDirectory(filePath) || 
+                !Files.exists(filePath) || !Files.isReadable(filePath)) {
+                throw new RuntimeException("grep: wrong file argument");
+            }
+            filePathArray[i] = filePath;
+        }
+        for (int j = 0; j < filePathArray.length; j++) {
+            Charset encoding = StandardCharsets.UTF_8;
+            try (BufferedReader reader = Files.newBufferedReader(filePathArray[j], encoding)) {
+                String line = null;
+                while ((line = reader.readLine()) != null) {
+                    Matcher matcher = grepPattern.matcher(line);
+                    if (matcher.find()) {
+                        writer.write(line);
+                        writer.write(System.getProperty("line.separator"));
+                        writer.flush();
+                    }
+                }
+            } catch (IOException e) {
+                throw new RuntimeException("grep: cannot open " + appArgs.get(j + 1));
+            }
+        }
+    }
+
+    public void eval1() throws IOException { // call case function
         switch (appName) {
         case "cd":
             cd();
@@ -264,42 +300,12 @@ public class AppCase {
         case "tail":
             tail();
             break;
-        // case "grep":
-        //     if (appArgs.size() < 2) {
-        //         throw new RuntimeException("grep: wrong number of arguments");
-        //     }
-        //     Pattern grepPattern = Pattern.compile(appArgs.get(0));
-        //     int numOfFiles = appArgs.size() - 1;
-        //     Path filePath;
-        //     Path[] filePathArray = new Path[numOfFiles];
-        //     Path currentDir = Paths.get(currentDirectory);
-        //     for (int i = 0; i < numOfFiles; i++) {
-        //         filePath = currentDir.resolve(appArgs.get(i + 1));
-        //         if (Files.notExists(filePath) || Files.isDirectory(filePath) || 
-        //             !Files.exists(filePath) || !Files.isReadable(filePath)) {
-        //             throw new RuntimeException("grep: wrong file argument");
-        //         }
-        //         filePathArray[i] = filePath;
-        //     }
-        //     for (int j = 0; j < filePathArray.length; j++) {
-        //         Charset encoding = StandardCharsets.UTF_8;
-        //         try (BufferedReader reader = Files.newBufferedReader(filePathArray[j], encoding)) {
-        //             String line = null;
-        //             while ((line = reader.readLine()) != null) {
-        //                 Matcher matcher = grepPattern.matcher(line);
-        //                 if (matcher.find()) {
-        //                     writer.write(line);
-        //                     writer.write(System.getProperty("line.separator"));
-        //                     writer.flush();
-        //                 }
-        //             }
-        //         } catch (IOException e) {
-        //             throw new RuntimeException("grep: cannot open " + appArgs.get(j + 1));
-        //         }
-        //     }
-        //     break;
+
+        case "grep":
+            grep();
+            break;
         default:
             throw new RuntimeException(appName + ": unknown application");
         }
-        }
-    } 
+    }
+} 
