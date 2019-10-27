@@ -21,7 +21,11 @@ public class Jsh {
     //get current directory
     private static String currentDirectory = System.getProperty("user.dir");
 
+    public void setcurrentDirectory(String newDirectory) {
+        currentDirectory = newDirectory;
+    }
     public static void eval(String cmdline, OutputStream output) throws IOException {
+
         // obtain rawCommand from CmdExtractor class
         CmdExtractor cmdExtratcor = new CmdExtractor(cmdline);
         ArrayList<String> rawCommands = cmdExtratcor.readInput();
@@ -36,7 +40,6 @@ public class Jsh {
        
         AppCase appCase = new AppCase(appName, appArgs, currentDirectory, output);
         appCase.eval1();
-
 }
 
 public static void main(String[] args) {
