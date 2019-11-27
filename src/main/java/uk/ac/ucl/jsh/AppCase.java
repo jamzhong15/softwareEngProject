@@ -14,23 +14,13 @@ import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class AppCase {
-    public String appName;
-    public ArrayList<String> appArgs;
-    public String currentDirectory;
-    public OutputStream output;
+interface AppCase {
+    void runCommand(String appName, ArrayList<String> appArgs, String currentDirectory, OutputStream output) throws IOException;
+}
 
-    // OutputStreamWriter writer = new OutputStreamWriter(output);
-
-    public AppCase(String appName, ArrayList<String> appArgs, String currentDirectory, OutputStream output) {
-        this.appName = appName;
-        this.appArgs = appArgs; 
-        this.currentDirectory = currentDirectory;
-        this.output = output;
-    }
-
-    //case cd function
-    public void cd() throws IOException {
+class cd implements AppCase {
+    @Override
+    public void runCommand(String appName, ArrayList<String> appArgs, String currentDirectory, OutputStream output) throws IOException {
         if (appArgs.isEmpty()) {
             throw new RuntimeException("cd: missing argument");
         } else if (appArgs.size() > 1) {
@@ -41,22 +31,32 @@ public class AppCase {
         if (!dir.exists() || !dir.isDirectory()) {
             throw new RuntimeException("cd: " + dirString + " is not an existing directory");
         }
-        currentDirectory = dir.getCanonicalPath();
+        try {
+            currentDirectory = dir.getCanonicalPath();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         Jsh jsh = new Jsh();
         jsh.setcurrentDirectory(currentDirectory);
     }
+}
 
-    //case pwd function (get current directory)
-    public void pwd() throws IOException {
+class pwd implements AppCase {
+
+    @Override
+    public void runCommand(String appName, ArrayList<String> appArgs, String currentDirectory, OutputStream output) throws IOException {
         OutputStreamWriter writer = new OutputStreamWriter(output);
+			writer.write(currentDirectory);
+            writer.write(System.getProperty("line.separator"));
+            writer.flush();
+        } 
+}
 
-        writer.write(currentDirectory);
-        writer.write(System.getProperty("line.separator"));
-        writer.flush();
-    }
+class ls implements AppCase {
 
-    // case ls function
-    public void ls() throws IOException {
+    @Override
+    public void runCommand(String appName, ArrayList<String> appArgs, String currentDirectory, OutputStream output) throws IOException {
+        // TODO Auto-generated method stub
         OutputStreamWriter writer = new OutputStreamWriter(output);
 
         File currDir;
@@ -87,9 +87,14 @@ public class AppCase {
             }
     }
 
-    // case cat function
-    public void cat() {
-        OutputStreamWriter writer = new OutputStreamWriter(output);
+}
+
+class cat implements AppCase {
+
+    @Override
+    public void runCommand(String appName, ArrayList<String> appArgs, String currentDirectory, OutputStream output)
+            throws IOException {
+                OutputStreamWriter writer = new OutputStreamWriter(output);
 
         if (appArgs.isEmpty()) {
             throw new RuntimeException("cat: missing arguments");
@@ -114,11 +119,16 @@ public class AppCase {
                 }
             }
         }
+        
     }
+}
 
-    // case echo function
-    public void echo() throws IOException {
-        OutputStreamWriter writer = new OutputStreamWriter(output);
+class echo implements AppCase {
+
+    @Override
+    public void runCommand(String appName, ArrayList<String> appArgs, String currentDirectory, OutputStream output)
+            throws IOException {
+                OutputStreamWriter writer = new OutputStreamWriter(output);
 
         boolean atLeastOnePrinted = false;
             for (String arg : appArgs) {
@@ -133,55 +143,66 @@ public class AppCase {
             }
     }
 
-    // case head function (print the first x line of a specific file)
-    // head -n x filename.java
-    public void head() {
-        OutputStreamWriter writer = new OutputStreamWriter(output);
+}
 
-        if (appArgs.isEmpty()) {
-            throw new RuntimeException("head: missing arguments");
-        }
-        if (appArgs.size() != 1 && appArgs.size() != 3) {
-            throw new RuntimeException("head: wrong arguments");
-        }
-        if (appArgs.size() == 3 && !appArgs.get(0).equals("-n")) {
-            throw new RuntimeException("head: wrong argument " + appArgs.get(0));
-        }
-        int headLines = 10;
-        String headArg;
-        if (appArgs.size() == 3) {
-            try {
-                headLines = Integer.parseInt(appArgs.get(1));
-            } catch (Exception e) {
-                throw new RuntimeException("head: wrong argument " + appArgs.get(1));
-            }
-            headArg = appArgs.get(2);
-        } else {
-            headArg = appArgs.get(0);
-        }
-        File headFile = new File(currentDirectory + File.separator + headArg);
-        if (headFile.exists()) {
-            Charset encoding = StandardCharsets.UTF_8;
-            Path filePath = Paths.get((String) currentDirectory + File.separator + headArg);
-            try (BufferedReader reader = Files.newBufferedReader(filePath, encoding)) {
-                for (int i = 0; i < headLines; i++) {
-                    String line = null;
-                    if ((line = reader.readLine()) != null) {
-                        writer.write(line);
-                        writer.write(System.getProperty("line.separator"));
-                        writer.flush();
-                    }
+class head implements AppCase {
+
+    @Override
+    public void runCommand(String appName, ArrayList<String> appArgs, String currentDirectory, OutputStream output)
+            throws IOException {
+                OutputStreamWriter writer = new OutputStreamWriter(output);
+
+                if (appArgs.isEmpty()) {
+                    throw new RuntimeException("head: missing arguments");
                 }
-            } catch (IOException e) {
-                throw new RuntimeException("head: cannot open " + headArg);
-            }
-        } else {
-            throw new RuntimeException("head: " + headArg + " does not exist");
-        }
+                if (appArgs.size() != 1 && appArgs.size() != 3) {
+                    throw new RuntimeException("head: wrong arguments");
+                }
+                if (appArgs.size() == 3 && !appArgs.get(0).equals("-n")) {
+                    throw new RuntimeException("head: wrong argument " + appArgs.get(0));
+                }
+                int headLines = 10;
+                String headArg;
+                if (appArgs.size() == 3) {
+                    try {
+                        headLines = Integer.parseInt(appArgs.get(1));
+                    } catch (Exception e) {
+                        throw new RuntimeException("head: wrong argument " + appArgs.get(1));
+                    }
+                    headArg = appArgs.get(2);
+                } else {
+                    headArg = appArgs.get(0);
+                }
+                File headFile = new File(currentDirectory + File.separator + headArg);
+                if (headFile.exists()) {
+                    Charset encoding = StandardCharsets.UTF_8;
+                    Path filePath = Paths.get((String) currentDirectory + File.separator + headArg);
+                    try (BufferedReader reader = Files.newBufferedReader(filePath, encoding)) {
+                        for (int i = 0; i < headLines; i++) {
+                            String line = null;
+                            if ((line = reader.readLine()) != null) {
+                                writer.write(line);
+                                writer.write(System.getProperty("line.separator"));
+                                writer.flush();
+                            }
+                        }
+                    } catch (IOException e) {
+                        throw new RuntimeException("head: cannot open " + headArg);
+                    }
+                } else {
+                    throw new RuntimeException("head: " + headArg + " does not exist");
+                }
+
     }
 
-    // case tail function
-    public void tail() {
+}
+
+class tail implements AppCase {
+
+    @Override
+    public void runCommand(String appName, ArrayList<String> appArgs, String currentDirectory, OutputStream output)
+            throws IOException {
+        // TODO Auto-generated method stub
         OutputStreamWriter writer = new OutputStreamWriter(output);
 
         if (appArgs.isEmpty()) {
@@ -233,8 +254,14 @@ public class AppCase {
         }
     }
 
-    // case grep function (idk how to use it!!!!need help)
-    public void grep() {
+}
+
+class grep implements AppCase {
+
+    @Override
+    public void runCommand(String appName, ArrayList<String> appArgs, String currentDirectory, OutputStream output)
+            throws IOException {
+        // TODO Auto-generated method stub
         OutputStreamWriter writer = new OutputStreamWriter(output);
 
         if (appArgs.size() < 2) {
@@ -271,41 +298,4 @@ public class AppCase {
         }
     }
 
-    public void eval1() throws IOException { // call case function
-        switch (appName) {
-        case "cd":
-            cd();
-            break;
-
-        case "pwd":
-            pwd();
-            break;
-
-        case "ls":
-            ls();
-            break;
-
-        case "cat":
-            cat();
-            break;
-
-        case "echo":
-            echo();
-            break;
-
-        case "head":
-            head();
-            break;
-
-        case "tail":
-            tail();
-            break;
-
-        case "grep":
-            grep();
-            break;
-        default:
-            throw new RuntimeException(appName + ": unknown application");
-        }
-    }
-} 
+}
