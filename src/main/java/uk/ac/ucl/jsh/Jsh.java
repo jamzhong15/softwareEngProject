@@ -38,8 +38,9 @@ public class Jsh {
         String appName = tokens.get(0);
         ArrayList<String> appArgs = new ArrayList<String>(tokens.subList(1, tokens.size()));
        
-        AppCase appCase = new AppCase(appName, appArgs, currentDirectory, output);
-        appCase.eval1();
+        AppCase app = AppFactory.createApp(appName);
+        app.runCommand(appName, appArgs, currentDirectory, output);
+        
 }
 
     public void setDirectory(String newDirectory)
