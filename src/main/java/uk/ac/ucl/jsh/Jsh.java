@@ -1,21 +1,8 @@
 package uk.ac.ucl.jsh;
-
-// import java.io.BufferedReader;
-// import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
-// import java.io.OutputStreamWriter;
-// import java.nio.charset.Charset;
-// import java.nio.charset.StandardCharsets;
-// import java.nio.file.DirectoryStream;
-// import java.nio.file.Files;
-// import java.nio.file.Path;
-// import java.nio.file.Paths;
 import java.util.ArrayList;
-// import java.util.Arrays;
 import java.util.Scanner;
-// import java.util.regex.Matcher;
-// import java.util.regex.Pattern;
 
 public class Jsh {
     //get current directory
@@ -29,7 +16,6 @@ public class Jsh {
         // obtain rawCommand from CmdExtractor class
         CmdExtractor cmdExtratcor = new CmdExtractor(cmdline);
         ArrayList<String> rawCommands = cmdExtratcor.readInput();
-
         //obtain tokens from Lexer class
         Lexer lexer = new Lexer(rawCommands, currentDirectory);
         ArrayList<String> tokens = lexer.getTokenList();
@@ -37,9 +23,18 @@ public class Jsh {
         // get appName and appArgs using tokens
         String appName = tokens.get(0);
         ArrayList<String> appArgs = new ArrayList<String>(tokens.subList(1, tokens.size()));
-       
-        AppCase app = AppFactory.createApp(appName);
-        app.runCommand(appName, appArgs, currentDirectory, output);
+        if (appName.charAt(0) == '_') 
+        {
+            appName = appName.substring(1, appName.length());
+            AppCase app = new UnsafeCommand(AppFactory.createApp(appName));
+            app.runCommand(appName, appArgs, currentDirectory, output);
+        }
+        else 
+        {
+            AppCase app = AppFactory.createApp(appName);
+            app.runCommand(appName, appArgs, currentDirectory, output);
+        }
+        
         
 }
 
