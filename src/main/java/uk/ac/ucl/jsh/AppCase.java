@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-interface AppCase {
+public interface AppCase {
     void runCommand(String appName, ArrayList<String> appArgs, String currentDirectory, OutputStream output) throws IOException;
 }
 

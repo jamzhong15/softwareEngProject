@@ -1,4 +1,5 @@
 package uk.ac.ucl.jsh;
+<<<<<<< HEAD
 
 // import java.io.BufferedReader;
 // import java.io.File;
@@ -16,6 +17,12 @@ import java.util.ArrayList;
 import java.util.Scanner;
 // import java.util.regex.Matcher;
 // import java.util.regex.Pattern;
+=======
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.Scanner;
+>>>>>>> origin
 
 public class Jsh {
     //get current directory
@@ -37,9 +44,18 @@ public class Jsh {
         // get appName and appArgs using tokens
         String appName = tokens.get(0);
         ArrayList<String> appArgs = new ArrayList<String>(tokens.subList(1, tokens.size()));
-       
-        AppCase app = AppFactory.createApp(appName);
-        app.runCommand(appName, appArgs, currentDirectory, output);
+        if (appName.charAt(0) == '_') 
+        {
+            appName = appName.substring(1, appName.length());
+            AppCase app = new UnsafeCommand(AppFactory.createApp(appName));
+            app.runCommand(appName, appArgs, currentDirectory, output);
+        }
+        else 
+        {
+            AppCase app = AppFactory.createApp(appName);
+            app.runCommand(appName, appArgs, currentDirectory, output);
+        }
+        
         
 }
 
