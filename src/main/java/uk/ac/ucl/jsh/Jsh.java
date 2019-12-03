@@ -4,14 +4,18 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-public class Jsh {
+public class Jsh 
+{
     //get current directory
     private static String currentDirectory = System.getProperty("user.dir");
 
-    public void setcurrentDirectory(String newDirectory) {
+    public void setcurrentDirectory(String newDirectory) 
+    {
         currentDirectory = newDirectory;
     }
-    public static void eval(String cmdline, OutputStream output) throws IOException {
+
+    public static void eval(String cmdline, OutputStream output) throws IOException 
+    {
 
         // obtain rawCommand from CmdExtractor class
         CmdExtractor cmdExtratcor = new CmdExtractor(cmdline);
@@ -35,13 +39,15 @@ public class Jsh {
             AppCase app = AppFactory.createApp(appName);
             app.runCommand(appName, appArgs, currentDirectory, output);
         }
-        
-        
-}
+    }
 
-public static void main(String[] args) {
-    if (args.length > 0) {
-        if (args.length != 2) {
+
+public static void main(String[] args) 
+{
+    if (args.length > 0) 
+    {
+        if (args.length != 2) 
+        {
             System.out.println("jsh: wrong number of arguments");
             return;
         }
@@ -53,23 +59,32 @@ public static void main(String[] args) {
         } catch (Exception e) {
             System.out.println("jsh: " + e.getMessage());
         }
-    } else {
+    } 
+    else 
+    {
         System.out.println("Welcome to JSH!");
         Scanner input = new Scanner(System.in);
-        try {
-            while (true) {
+        try 
+        {
+            while (true) 
+            {
                 String prompt = currentDirectory + "> ";
                 System.out.print(prompt);
-                try {
+                try 
+                {
                     String cmdline = input.nextLine();
                     eval(cmdline, System.out);
-                } catch (Exception e) {
+                } 
+                catch (Exception e) 
+                {
                     System.out.println("jsh: " + e.getMessage());
                 }
             }
-        } finally {
+        } 
+        finally 
+        {
             input.close();
         }
-        }
     }
+}
 }
