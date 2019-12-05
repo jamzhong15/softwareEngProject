@@ -56,7 +56,7 @@ class ls implements AppCase {
 
     @Override
     public void runCommand(String appName, ArrayList<String> appArgs, String currentDirectory, OutputStream output) throws IOException {
-        // TODO Auto-generated method stub
+        
         OutputStreamWriter writer = new OutputStreamWriter(output);
 
         File currDir;
@@ -128,9 +128,9 @@ class echo implements AppCase {
     @Override
     public void runCommand(String appName, ArrayList<String> appArgs, String currentDirectory, OutputStream output)
             throws IOException {
-                OutputStreamWriter writer = new OutputStreamWriter(output);
-
-        boolean atLeastOnePrinted = false;
+            OutputStreamWriter writer = new OutputStreamWriter(output);
+            
+            boolean atLeastOnePrinted = false;
             for (String arg : appArgs) {
                 writer.write(arg);
                 writer.write(" ");
@@ -202,7 +202,6 @@ class tail implements AppCase {
     @Override
     public void runCommand(String appName, ArrayList<String> appArgs, String currentDirectory, OutputStream output)
             throws IOException {
-        // TODO Auto-generated method stub
         OutputStreamWriter writer = new OutputStreamWriter(output);
 
         if (appArgs.isEmpty()) {
@@ -261,7 +260,6 @@ class grep implements AppCase {
     @Override
     public void runCommand(String appName, ArrayList<String> appArgs, String currentDirectory, OutputStream output)
             throws IOException {
-        // TODO Auto-generated method stub
         OutputStreamWriter writer = new OutputStreamWriter(output);
 
         if (appArgs.size() < 2) {
