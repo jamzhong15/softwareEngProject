@@ -1,5 +1,5 @@
 // Define a grammar called Hello
-grammar Hello;
+grammar CmdGrammar;
 
 start : command;
 
@@ -28,20 +28,20 @@ redirection : LT argument
 
 argument : (quoted | unquoted)+;
 
-quoted : singlequoted
-       | doublequoted
-       | backquoted
+quoted : SINGLEQUOTE unquoted SINGLEQUOTE
+       | DOUBLEQUOTE unquoted DOUBLEQUOTE
+       | BACKQUOTE unquoted BACKQUOTE
        ;
 
 commandtoken : COMMANDT;
 
 unquoted : UNQUOTED;
 
-singlequoted : SINGLEQUOTED;
+// singlequoted : SINGLEQUOTED;
 
-backquoted :BACKQUOTED;
+// backquoted :BACKQUOTED;
 
-doublequoted: DOUBLEQUOTED;
+// doublequoted: DOUBLEQUOTED;
 
 
 //lexer
@@ -52,6 +52,12 @@ SEMICOL : ';';
 LT : '<';
 
 GT : '>';
+
+SINGLEQUOTE : '\'';
+
+DOUBLEQUOTE : '"';
+
+BACKQUOTE : '`';
 
 COMMANDT : 'echo' 
          | 'ls'
@@ -66,11 +72,11 @@ COMMANDT : 'echo'
          | 'find'
          ;
 
-SINGLEQUOTED : '\'' ~('\n'|'\'')* '\'';
+// SINGLEQUOTED : '\'' ~('\n'|'\'')* '\'';
 
-BACKQUOTED: '`' ~('\n' | '`')* '`';
+// BACKQUOTED: '`' ~('\n' | '`')* '`';
 
-DOUBLEQUOTED : '"' (BACKQUOTED | ~('\n' | '`' | '"'))* '"';
+// DOUBLEQUOTED : '"' (BACKQUOTED | ~('\n' | '`' | '"'))* '"';
 
 UNQUOTED : ~('\t' | '\'' | '"' | '`' | '\n' | ';' | '|' | '<' | '>' | ' ')*;
 
