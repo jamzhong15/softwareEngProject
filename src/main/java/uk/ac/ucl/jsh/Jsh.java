@@ -1,28 +1,8 @@
 package uk.ac.ucl.jsh;
-<<<<<<< HEAD
-
-// import java.io.BufferedReader;
-// import java.io.File;
-import java.io.IOException;
-import java.io.OutputStream;
-// import java.io.OutputStreamWriter;
-// import java.nio.charset.Charset;
-// import java.nio.charset.StandardCharsets;
-// import java.nio.file.DirectoryStream;
-// import java.nio.file.Files;
-// import java.nio.file.Path;
-// import java.nio.file.Paths;
-import java.util.ArrayList;
-// import java.util.Arrays;
-import java.util.Scanner;
-// import java.util.regex.Matcher;
-// import java.util.regex.Pattern;
-=======
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Scanner;
->>>>>>> origin
 
 public class Jsh {
     //get current directory

@@ -1,4 +1,4 @@
-// Generated from Hello.g4 by ANTLR 4.7.1
+// Generated from /Users/jameszhong/Desktop/University/Year2/SoftwareEng/jsh-team-6/lexer/Hello.g4 by ANTLR 4.7.1
 import org.antlr.v4.runtime.atn.*;
 import org.antlr.v4.runtime.dfa.DFA;
 import org.antlr.v4.runtime.*;
@@ -91,14 +91,6 @@ public class HelloParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_start; }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof HelloListener ) ((HelloListener)listener).enterStart(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof HelloListener ) ((HelloListener)listener).exitStart(this);
-		}
 	}
 
 	public final StartContext start() throws RecognitionException {
@@ -141,14 +133,6 @@ public class HelloParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_command; }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof HelloListener ) ((HelloListener)listener).enterCommand(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof HelloListener ) ((HelloListener)listener).exitCommand(this);
-		}
 	}
 
 	public final CommandContext command() throws RecognitionException {
@@ -241,14 +225,6 @@ public class HelloParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_pipe; }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof HelloListener ) ((HelloListener)listener).enterPipe(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof HelloListener ) ((HelloListener)listener).exitPipe(this);
-		}
 	}
 
 	public final PipeContext pipe() throws RecognitionException {
@@ -332,14 +308,6 @@ public class HelloParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_call; }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof HelloListener ) ((HelloListener)listener).enterCall(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof HelloListener ) ((HelloListener)listener).exitCall(this);
-		}
 	}
 
 	public final CallContext call() throws RecognitionException {
@@ -406,14 +374,6 @@ public class HelloParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_atom; }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof HelloListener ) ((HelloListener)listener).enterAtom(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof HelloListener ) ((HelloListener)listener).exitAtom(this);
-		}
 	}
 
 	public final AtomContext atom() throws RecognitionException {
@@ -466,14 +426,6 @@ public class HelloParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_redirection; }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof HelloListener ) ((HelloListener)listener).enterRedirection(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof HelloListener ) ((HelloListener)listener).exitRedirection(this);
-		}
 	}
 
 	public final RedirectionContext redirection() throws RecognitionException {
@@ -533,14 +485,6 @@ public class HelloParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_argument; }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof HelloListener ) ((HelloListener)listener).enterArgument(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof HelloListener ) ((HelloListener)listener).exitArgument(this);
-		}
 	}
 
 	public final ArgumentContext argument() throws RecognitionException {
@@ -613,14 +557,6 @@ public class HelloParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_quoted; }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof HelloListener ) ((HelloListener)listener).enterQuoted(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof HelloListener ) ((HelloListener)listener).exitQuoted(this);
-		}
 	}
 
 	public final QuotedContext quoted() throws RecognitionException {
@@ -672,14 +608,6 @@ public class HelloParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_unquoted; }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof HelloListener ) ((HelloListener)listener).enterUnquoted(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof HelloListener ) ((HelloListener)listener).exitUnquoted(this);
-		}
 	}
 
 	public final UnquotedContext unquoted() throws RecognitionException {
@@ -709,14 +637,6 @@ public class HelloParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_singlequoted; }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof HelloListener ) ((HelloListener)listener).enterSinglequoted(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof HelloListener ) ((HelloListener)listener).exitSinglequoted(this);
-		}
 	}
 
 	public final SinglequotedContext singlequoted() throws RecognitionException {
@@ -746,14 +666,6 @@ public class HelloParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_backquoted; }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof HelloListener ) ((HelloListener)listener).enterBackquoted(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof HelloListener ) ((HelloListener)listener).exitBackquoted(this);
-		}
 	}
 
 	public final BackquotedContext backquoted() throws RecognitionException {
@@ -783,14 +695,6 @@ public class HelloParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_doublequoted; }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof HelloListener ) ((HelloListener)listener).enterDoublequoted(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof HelloListener ) ((HelloListener)listener).exitDoublequoted(this);
-		}
 	}
 
 	public final DoublequotedContext doublequoted() throws RecognitionException {
@@ -820,14 +724,6 @@ public class HelloParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_commandtoken; }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof HelloListener ) ((HelloListener)listener).enterCommandtoken(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof HelloListener ) ((HelloListener)listener).exitCommandtoken(this);
-		}
 	}
 
 	public final CommandtokenContext commandtoken() throws RecognitionException {

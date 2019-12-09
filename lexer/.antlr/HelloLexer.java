@@ -1,4 +1,4 @@
-// Generated from Hello.g4 by ANTLR 4.7.1
+// Generated from /Users/jameszhong/Desktop/University/Year2/SoftwareEng/jsh-team-6/lexer/Hello.g4 by ANTLR 4.7.1
 import org.antlr.v4.runtime.Lexer;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.Token;

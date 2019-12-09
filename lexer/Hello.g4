@@ -1,16 +1,19 @@
 // Define a grammar called Hello
 grammar Hello;
 
+start: command;
+
 command : pipe 
         | command SEMICOL command
         | call
+        | EOF
         ;
 
 pipe : call BAR call
      | pipe BAR call
      ;
 
-call : redirection* commandtoken  atom*
+call : redirection* commandtoken atom*
      ;
 
 atom : redirection
@@ -40,12 +43,6 @@ commandtoken : COMMANDT;
 
 
 
-
-
-
-
-
-
 //lexer
 BAR : '|';
 
@@ -55,17 +52,22 @@ LT : '<';
 
 GT : '>';
 
-COMMANDT : 'echo' 
+COMMANDT : 'grep'
+         | 'cd'
          | 'ls'
+         | 'cat'
+         | 'head'
+         | 'tail'
+         | 'echo'
          ;
 
 SINGLEQUOTED : '\'' ~('\n'|'\'')* '\'';
 
 BACKQUOTED: '`' ~('\n' | '`')* '`';
 
-DOUBLEQUOTED : '"' BACKQUOTED | ~('\n' | '`' | '"')* '"';
+DOUBLEQUOTED : '"' (BACKQUOTED | ~('\n' | '`' | '"'))* '"';
 
-UNQUOTED : ~('\t' | '\'' | '"' | '`' | '\n' | ';' | '|' | '<' | '>')*;
+UNQUOTED : ~('\t' | '\'' | '"' | '`' | '\n' | ';' | '|' | '<' | '>' | ' ')*;
 
 //ID : [a-z]+ ;             // match lower-case identifiers
 WS : [ \t\r\n]+ -> skip ; // skip spaces, tabs, newlines
