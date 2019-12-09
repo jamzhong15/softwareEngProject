@@ -34,7 +34,9 @@ public class Lexer
                 if (regexMatcher.group(1) != null || regexMatcher.group(2) != null) {
                     String quoted = regexMatcher.group(0).trim();
                     tokens.add(quoted.substring(1,quoted.length()-1));
-                } else {
+                } 
+                else 
+                {
                     nonQuote = regexMatcher.group().trim();
                     ArrayList<String> globbingResult = new ArrayList<String>();
                     Path dir = Paths.get(currentDirectory);
