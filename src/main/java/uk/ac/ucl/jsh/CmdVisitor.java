@@ -34,11 +34,11 @@ public class CmdVisitor extends CmdGrammarBaseVisitor<ArrayList<String>>
         }
         if(children == 1)
         {
-            command.addAll(visit(ctx.getChild(0)));
+            visit(ctx.getChild(0));
         }
         else
         {
-            command.addAll(visit(ctx.getChild(0)));
+            visit(ctx.getChild(0));
             visit(ctx.getChild(ctx.getChildCount() -1));
 
         }
