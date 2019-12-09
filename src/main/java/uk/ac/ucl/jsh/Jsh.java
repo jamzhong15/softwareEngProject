@@ -30,27 +30,35 @@ public class Jsh
         CommonTokenStream commonTokenStream = new CommonTokenStream(lexer);
         CmdGrammarParser parser = new CmdGrammarParser(commonTokenStream);
         ParseTree tree = parser.command();
+
+
         CmdVisitor visitor = new CmdVisitor();
 
         ArrayList<String> tokens = visitor.visit(tree);
+
+        for (String token : tokens)
+        {
+            System.out.println("====================");
+            System.out.println("token = "+ token);
+        }
 
         // String applicationName = ctx.getChild(0).getText();//find out how to get COMMNANDT part
         // Command app = AppFactory.createApp(applicationName); //instantiate a call command and then set the arguments to be equal to the tokens here
         // //then you can use call as normal, you implement his existing implementation of call
 
-        // String appName = tokens.get(0);
-        // ArrayList<String> appArgs = new ArrayList<String>(tokens.subList(1, tokens.size()));
-        // if (appName.charAt(0) == '_') 
-        // {
-        //     appName = appName.substring(1, appName.length());
-        //     AppCase app = new UnsafeCommand(AppFactory.createApp(appName));
-        //     app.runCommand(appName, appArgs, currentDirectory, output);
-        // }
-        // else 
-        // {
-        //     AppCase app = AppFactory.createApp(appName);
-        //     app.runCommand(appName, appArgs, currentDirectory, output);
-        // }
+        String appName = tokens.get(0);
+        ArrayList<String> appArgs = new ArrayList<String>(tokens.subList(1, tokens.size()));
+        if (appName.charAt(0) == '_') 
+        {
+            appName = appName.substring(1, appName.length());
+            AppCase app = new UnsafeCommand(AppFactory.createApp(appName));
+            app.runCommand(appName, appArgs, currentDirectory, output);
+        }
+        else 
+        {
+            AppCase app = AppFactory.createApp(appName);
+            app.runCommand(appName, appArgs, currentDirectory, output);
+        }
         
 
         
