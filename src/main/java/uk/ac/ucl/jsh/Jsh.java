@@ -33,14 +33,7 @@ public class Jsh
 
 
         CmdVisitor visitor = new CmdVisitor();
-
-        ArrayList<String> tokens = visitor.visit(tree);
-
-        for (String token : tokens)
-        {
-            System.out.println("====================");
-            System.out.println("token = "+ token);
-        }
+        visitor.visit(tree);
 
         // String applicationName = ctx.getChild(0).getText();//find out how to get COMMNANDT part
         // Command app = AppFactory.createApp(applicationName); //instantiate a call command and then set the arguments to be equal to the tokens here
@@ -61,24 +54,13 @@ public class Jsh
         // }
         
 
-        
-        
-
-
-
-
-        // for (String token : tokens)
-        // {
-        //     System.out.println("token = " + token);
-        // }
+    
         // obtain rawCommand from CmdExtractor class
         // CmdExtractor cmdExtratcor = new CmdExtractor(cmdline);
        // ArrayList<String> rawCommands = cmdExtratcor.readInput();
 
         // //obtain tokens from Lexer class
         // Lexer lexer = new Lexer(rawCommands, currentDirectory);
-
-
         
         // ArrayList<String> tokens = lexer.getToken();
 
