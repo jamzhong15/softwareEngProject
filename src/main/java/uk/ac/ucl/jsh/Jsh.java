@@ -33,14 +33,7 @@ public class Jsh
 
 
         CmdVisitor visitor = new CmdVisitor();
-
-        ArrayList<String> tokens = visitor.visit(tree);
-
-        for (String token : tokens)
-        {
-            System.out.println("====================");
-            System.out.println("token = "+ token);
-        }
+        visitor.visit(tree);
 
        
 
@@ -63,24 +56,13 @@ public class Jsh
         // }
         
 
-        
-        
-
-
-
-
-        // for (String token : tokens)
-        // {
-        //     System.out.println("token = " + token);
-        // }
+    
         // obtain rawCommand from CmdExtractor class
         // CmdExtractor cmdExtratcor = new CmdExtractor(cmdline);
        // ArrayList<String> rawCommands = cmdExtratcor.readInput();
 
         // //obtain tokens from Lexer class
         // Lexer lexer = new Lexer(rawCommands, currentDirectory);
-
-
         
         // ArrayList<String> tokens = lexer.getToken();
 
