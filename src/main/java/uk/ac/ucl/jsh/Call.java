@@ -6,17 +6,12 @@ import java.util.ArrayList;
 
 public class Call implements Command {
 
-    private static String currentDirectory = System.getProperty("user.dir");
-
     @Override
     public void eval(ArrayList<String> input, OutputStream output) throws IOException 
-    {
-        for(String in : input)
-        {
-            System.out.println(in);
-        }
+    {        
+        Jsh jsh = new Jsh();
+        String currentDirectory = jsh.getcurrentDirectory();
 
-        
         String appName = input.get(0);
         ArrayList<String> appArgs = new ArrayList<String>(input.subList(1, input.size()));
         if (appName.charAt(0) == '_') 
