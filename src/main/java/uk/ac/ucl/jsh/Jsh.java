@@ -37,7 +37,7 @@ public class Jsh
 
        
 
-        String applicationName = ctx.getChild(0).getText();//find out how to get COMMNANDT part
+        //String applicationName = ctx.getChild(0).getText();//find out how to get COMMNANDT part
         // Command app = AppFactory.createApp(applicationName); //instantiate a call command and then set the arguments to be equal to the tokens here
         // //then you can use call as normal, you implement his existing implementation of call
 

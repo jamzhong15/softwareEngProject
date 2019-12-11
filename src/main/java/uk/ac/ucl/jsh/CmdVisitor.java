@@ -9,11 +9,20 @@ public class CmdVisitor extends CmdGrammarBaseVisitor<ArrayList<String>>
     {
         ArrayList<String> tokens = new ArrayList<>();
         int i;
-        for (i = 0; i<ctx.getChildCount(); i++ )
+        // for (i = 0; i<ctx.getChildCount(); i++ )
+        // {
+        //     String token = ctx.getChild(i).getText();
+        //     System.out.println(token);
+        //     tokens.add(token);
+        // }
+        tokens.add(ctx.getChild(0).getText());
+        for (i = 0; i<ctx.getChild(1).getChild(0).getChildCount(); i++ )
         {
-            String token = ctx.getChild(i).getText();
+            String token = ctx.getChild(1).getChild(0).getChild(i).getText();
+            System.out.println(token);
             tokens.add(token);
         }
+        
 
         Call call = new Call();
         try {
