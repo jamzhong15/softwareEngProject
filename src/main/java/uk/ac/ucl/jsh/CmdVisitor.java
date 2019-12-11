@@ -8,15 +8,22 @@ public class CmdVisitor extends CmdGrammarBaseVisitor<ArrayList<String>>
     public ArrayList<String> visitCall(final CmdGrammarParser.CallContext ctx)
     {
         ArrayList<String> tokens = new ArrayList<>();
+        int i;
+        // for (i = 0; i<ctx.getChildCount(); i++ )
+        // {
+        //     String token = ctx.getChild(i).getText();
+        //     System.out.println(token);
+        //     tokens.add(token);
+        // }
         tokens.add(ctx.getChild(0).getText());
-
-        ArrayList<String> args = visit(ctx.getChild(1));
-        tokens.addAll(args);
-
-        for (String arg : args)
+        for (i = 0; i<ctx.getChild(1).getChild(0).getChildCount(); i++ )
         {
-            System.out.println("arg = "+ arg);
+            String token = ctx.getChild(1).getChild(0).getChild(i).getText();
+            System.out.println(token);
+            tokens.add(token);
         }
+        
+
         Call call = new Call();
         try {
             call.eval(tokens, System.out);
