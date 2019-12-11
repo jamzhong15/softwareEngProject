@@ -21,6 +21,11 @@ public class Jsh
         currentDirectory = newDirectory;
     }
 
+    public String getcurrentDirectory()
+    {
+        return currentDirectory;
+    }
+
     public static void eval(String cmdline, OutputStream output) throws IOException 
     {
         BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(output));

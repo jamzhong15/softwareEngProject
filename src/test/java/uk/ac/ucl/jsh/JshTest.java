@@ -18,8 +18,8 @@ public class JshTest {
     //     out = new PipedOutputStream(in);
     //     Jsh.eval("echo foo", out);
     //     Scanner scn = new Scanner(in);
-    //     //System.out.println(scn.next());
-    //     assertEquals(scn,"foo");
-    //     scn.close();
+    //     assertEquals(scn.nextLine(),"foo");
     // }
+
+    
 }

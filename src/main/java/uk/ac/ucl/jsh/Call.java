@@ -6,12 +6,16 @@ import java.util.ArrayList;
 
 public class Call implements Command {
 
-    private static String currentDirectory = System.getProperty("user.dir");
-
     @Override
     public void eval(ArrayList<String> input, OutputStream output) throws IOException 
+<<<<<<< HEAD
     {
         System.out.println(currentDirectory);
+=======
+    {        
+        Jsh jsh = new Jsh();
+        String currentDirectory = jsh.getcurrentDirectory();
+>>>>>>> yingming
 
         String appName = input.get(0);
         ArrayList<String> appArgs = new ArrayList<String>(input.subList(1, input.size()));
