@@ -21,6 +21,11 @@ public class Jsh
         currentDirectory = newDirectory;
     }
 
+    public String getcurrentDirectory()
+    {
+        return currentDirectory;
+    }
+
     public static void eval(String cmdline, OutputStream output) throws IOException 
     {
         BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(output));
@@ -37,7 +42,11 @@ public class Jsh
 
        
 
+<<<<<<< HEAD
         // String applicationName = ctx.getChild(0).getText();//find out how to get COMMNANDT part
+=======
+        //String applicationName = ctx.getChild(0).getText();//find out how to get COMMNANDT part
+>>>>>>> yingming
         // Command app = AppFactory.createApp(applicationName); //instantiate a call command and then set the arguments to be equal to the tokens here
         // //then you can use call as normal, you implement his existing implementation of call
 

@@ -28,20 +28,14 @@ redirection : LT argument
 
 argument : (quoted | unquoted)+;
 
-quoted : SINGLEQUOTE unquoted SINGLEQUOTE
-       | DOUBLEQUOTE unquoted DOUBLEQUOTE
-       | BACKQUOTE unquoted BACKQUOTE
+quoted : SINGLEQUOTED
+       | DOUBLEQUOTED
+       | BACKQUOTED
        ;
 
 commandtoken : COMMANDT;
 
 unquoted : UNQUOTED;
-
-// singlequoted : SINGLEQUOTED;
-
-// backquoted :BACKQUOTED;
-
-// doublequoted: DOUBLEQUOTED;
 
 
 //lexer
@@ -52,12 +46,6 @@ SEMICOL : ';';
 LT : '<';
 
 GT : '>';
-
-SINGLEQUOTE : '\'';
-
-DOUBLEQUOTE : '"';
-
-BACKQUOTE : '`';
 
 COMMANDT : 'echo' 
          | 'ls'
@@ -72,11 +60,11 @@ COMMANDT : 'echo'
          | 'find'
          ;
 
-// SINGLEQUOTED : '\'' ~('\n'|'\'')* '\'';
+SINGLEQUOTED : '\'' ~('\n'|'\'')* '\'';
 
-// BACKQUOTED: '`' ~('\n' | '`')* '`';
+BACKQUOTED: '`' ~('\n' | '`')* '`';
 
-// DOUBLEQUOTED : '"' (BACKQUOTED | ~('\n' | '`' | '"'))* '"';
+DOUBLEQUOTED : '"' (BACKQUOTED | ~('\n' | '`' | '"'))* '"';
 
 UNQUOTED : ~('\t' | '\'' | '"' | '`' | '\n' | ';' | '|' | '<' | '>' | ' ')*;
 
