@@ -11,7 +11,12 @@ public class Call implements Command {
     @Override
     public void eval(ArrayList<String> input, OutputStream output) throws IOException 
     {
+        for(String in : input)
+        {
+            System.out.println(in);
+        }
 
+        
         String appName = input.get(0);
         ArrayList<String> appArgs = new ArrayList<String>(input.subList(1, input.size()));
         if (appName.charAt(0) == '_') 

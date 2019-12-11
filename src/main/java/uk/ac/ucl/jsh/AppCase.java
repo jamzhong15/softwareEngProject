@@ -152,6 +152,7 @@ class head implements AppCase {
     public void runCommand(String appName, ArrayList<String> appArgs, String currentDirectory, OutputStream output)
             throws IOException {
                 OutputStreamWriter writer = new OutputStreamWriter(output);
+                System.out.println(appArgs.size());
 
                 if (appArgs.isEmpty()) {
                     throw new RuntimeException("head: missing arguments");
@@ -167,6 +168,7 @@ class head implements AppCase {
                 if (appArgs.size() == 3) {
                     try {
                         headLines = Integer.parseInt(appArgs.get(1));
+                        //System.out.println(headLines);
                     } catch (Exception e) {
                         throw new RuntimeException("head: wrong argument " + appArgs.get(1));
                     }
