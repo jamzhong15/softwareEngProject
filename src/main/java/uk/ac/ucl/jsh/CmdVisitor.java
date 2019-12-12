@@ -12,7 +12,6 @@ public class CmdVisitor extends CmdGrammarBaseVisitor<ArrayList<String>>
     {
         ArrayList<String> tokens = new ArrayList<>();
         tokens.add(ctx.getChild(0).getText());
-<<<<<<< HEAD
         if(ctx.getChildCount() == 2)
         {
             ParseTree arguments = ctx.getChild(1).getChild(0);
@@ -25,19 +24,6 @@ public class CmdVisitor extends CmdGrammarBaseVisitor<ArrayList<String>>
         }
         
         
-=======
-
-        if (ctx.getChildCount() >1)
-        {
-            int i;
-            for (i = 0; i<ctx.getChild(1).getChild(0).getChildCount(); i++ )
-            {
-                String token = ctx.getChild(1).getChild(0).getChild(i).getText();
-                tokens.add(token);
-            }
-        }
-        
->>>>>>> yingming
         Call call = new Call();
         try {
             call.eval(tokens, System.out);
