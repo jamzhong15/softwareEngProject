@@ -5,7 +5,7 @@
             "name": "Echo test",
             "request": "launch",
             "mainClass": "uk.ac.ucl.jsh.Jsh",
-            "args": ["-c","echo foo"]
+            "args": ["-c","cd src"]
         },
         {
             "type": "java",

@@ -10,7 +10,7 @@ public class CmdVisitor extends CmdGrammarBaseVisitor<ArrayList<String>>
         ArrayList<String> tokens = new ArrayList<>();
         tokens.add(ctx.getChild(0).getText());
 
-        if (ctx.getChildCount() >1)
+        if (ctx.getChildCount() == 2)
         {
             int i;
             for (i = 0; i<ctx.getChild(1).getChild(0).getChildCount(); i++ )

@@ -42,13 +42,7 @@ public class Jsh
 
        
 
-<<<<<<< HEAD
-        // String applicationName = ctx.getChild(0).getText();//find out how to get COMMNANDT part
-=======
-        //String applicationName = ctx.getChild(0).getText();//find out how to get COMMNANDT part
->>>>>>> yingming
-        // Command app = AppFactory.createApp(applicationName); //instantiate a call command and then set the arguments to be equal to the tokens here
-        // //then you can use call as normal, you implement his existing implementation of call
+        
 
         // String appName = tokens.get(0);
         // ArrayList<String> appArgs = new ArrayList<String>(tokens.subList(1, tokens.size()));
