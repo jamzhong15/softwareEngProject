@@ -1,11 +1,12 @@
 package uk.ac.ucl.jsh;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class CmdVisitor extends CmdGrammarBaseVisitor<ArrayList<String>>
 {
     @Override
-    public ArrayList<String> visitCall(final CmdGrammarParser.CallContext ctx)
+    public ArrayList<String> visitCall(final CmdGrammarParser.CallContext ctx) throws IOException
     {
         ArrayList<String> tokens = new ArrayList<>();
         tokens.add(ctx.getChild(0).getText());
@@ -21,12 +22,8 @@ public class CmdVisitor extends CmdGrammarBaseVisitor<ArrayList<String>>
         }
         
         Call call = new Call();
-        try {
-            call.eval(tokens, System.out);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
 
+        call.eval(tokens, System.out);
         return tokens;
     }
 
