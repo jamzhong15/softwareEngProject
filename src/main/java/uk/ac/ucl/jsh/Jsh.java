@@ -26,7 +26,7 @@ public class Jsh
         return currentDirectory;
     }
 
-    public static void eval(String cmdline, OutputStream output) throws IOException 
+    public static void start(String cmdline, OutputStream output) throws IOException 
     {
         BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(output));
 
@@ -36,45 +36,9 @@ public class Jsh
         CmdGrammarParser parser = new CmdGrammarParser(commonTokenStream);
         ParseTree tree = parser.command();
 
-
         CmdVisitor visitor = new CmdVisitor();
-        visitor.visit(tree);
-
-       
-
-        //String applicationName = ctx.getChild(0).getText();//find out how to get COMMNANDT part
-        // Command app = AppFactory.createApp(applicationName); //instantiate a call command and then set the arguments to be equal to the tokens here
-        // //then you can use call as normal, you implement his existing implementation of call
-
-        //String appName = tokens.get(0);
-        // ArrayList<String> appArgs = new ArrayList<String>(tokens.subList(1, tokens.size()));
-        // if (appName.charAt(0) == '_') 
-        // {
-        //     appName = appName.substring(1, appName.length());
-        //     AppCase app = new UnsafeCommand(AppFactory.createApp(appName));
-        //     app.runCommand(appName, appArgs, currentDirectory, output);
-        // }
-        // else 
-        // {
-        //     AppCase app = AppFactory.createApp(appName);
-        //     app.runCommand(appName, appArgs, currentDirectory, output);
-        // }
-        
-
-    
-        // obtain rawCommand from CmdExtractor class
-        // CmdExtractor cmdExtratcor = new CmdExtractor(cmdline);
-       // ArrayList<String> rawCommands = cmdExtratcor.readInput();
-
-        // //obtain tokens from Lexer class
-        // Lexer lexer = new Lexer(rawCommands, currentDirectory);
-        
-        // ArrayList<String> tokens = lexer.getToken();
-
-        // get appName and appArgs using tokens
-
-
-
+        Command c = visitor.visit(tree);
+        c.eval(output);
     }
 
 
@@ -91,7 +55,7 @@ public class Jsh
                 System.out.println("jsh: " + args[0] + ": unexpected argument");
             }
             try {
-                eval(args[1], System.out);
+                start(args[1], System.out);
             } catch (Exception e) {
                 System.out.println("jsh: " + e.getMessage());
             }
@@ -109,7 +73,7 @@ public class Jsh
                     try 
                     {
                         String cmdline = input.nextLine();
-                        eval(cmdline, System.out);
+                        start(cmdline, System.out);
                     } 
                     catch (Exception e) 
                     {

@@ -3,6 +3,8 @@ package uk.ac.ucl.jsh;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.nio.charset.Charset;
@@ -16,12 +18,12 @@ import java.util.regex.Pattern;
 
 public interface AppCase 
 {
-    void runCommand(String appName, ArrayList<String> appArgs, String currentDirectory, OutputStream output) throws IOException;
+    void runCommand(ArrayList<String> appArgs, String currentDirectory, InputStream stdin, OutputStream output) throws IOException;
 }
 
 class cd implements AppCase {
     @Override
-    public void runCommand(String appName, ArrayList<String> appArgs, String currentDirectory, OutputStream output) throws IOException {
+    public void runCommand(ArrayList<String> appArgs, String currentDirectory, InputStream stdin, OutputStream output) throws IOException {
         if (appArgs.isEmpty()) {
             throw new RuntimeException("cd: missing argument");
         } else if (appArgs.size() > 1) {
@@ -45,7 +47,7 @@ class cd implements AppCase {
 class pwd implements AppCase {
 
     @Override
-    public void runCommand(String appName, ArrayList<String> appArgs, String currentDirectory, OutputStream output) throws IOException {
+    public void runCommand(ArrayList<String> appArgs, String currentDirectory, InputStream stdin, OutputStream output) throws IOException {
         OutputStreamWriter writer = new OutputStreamWriter(output);
 			writer.write(currentDirectory);
             writer.write(System.getProperty("line.separator"));
@@ -56,7 +58,7 @@ class pwd implements AppCase {
 class ls implements AppCase {
 
     @Override
-    public void runCommand(String appName, ArrayList<String> appArgs, String currentDirectory, OutputStream output) throws IOException {
+    public void runCommand(ArrayList<String> appArgs, String currentDirectory, InputStream stdin, OutputStream output) throws IOException {
         
         OutputStreamWriter writer = new OutputStreamWriter(output);
 
@@ -93,7 +95,7 @@ class ls implements AppCase {
 class cat implements AppCase {
 
     @Override
-    public void runCommand(String appName, ArrayList<String> appArgs, String currentDirectory, OutputStream output)
+    public void runCommand(ArrayList<String> appArgs, String currentDirectory, InputStream stdin, OutputStream output)
             throws IOException {
                 OutputStreamWriter writer = new OutputStreamWriter(output);
 
@@ -124,10 +126,40 @@ class cat implements AppCase {
     }
 }
 
+class echo2 implements AppCase {
+
+    @Override
+    public void runCommand(ArrayList<String> appArgs, String currentDirectory, InputStream stdin, OutputStream output)
+            throws IOException {
+            OutputStreamWriter writer = new OutputStreamWriter(output);
+            
+            boolean atLeastOnePrinted = false;
+            for (String arg : appArgs) {
+                writer.write(arg);
+                writer.write(" ");
+                writer.flush();
+                atLeastOnePrinted = true;
+            }
+            BufferedReader br = new BufferedReader(new InputStreamReader(stdin));
+            String line;
+            while((line = br.readLine()) != null) {
+                writer.write(line);
+                writer.write(" ");
+                writer.flush();
+                atLeastOnePrinted = true;
+            }
+            if (atLeastOnePrinted) {
+                writer.write(System.getProperty("line.separator"));
+                writer.flush();
+            }
+    }
+
+}
+
 class echo implements AppCase {
 
     @Override
-    public void runCommand(String appName, ArrayList<String> appArgs, String currentDirectory, OutputStream output)
+    public void runCommand(ArrayList<String> appArgs, String currentDirectory, InputStream stdin, OutputStream output)
             throws IOException {
             OutputStreamWriter writer = new OutputStreamWriter(output);
             
@@ -149,7 +181,7 @@ class echo implements AppCase {
 class head implements AppCase {
 
     @Override
-    public void runCommand(String appName, ArrayList<String> appArgs, String currentDirectory, OutputStream output)
+    public void runCommand(ArrayList<String> appArgs, String currentDirectory, InputStream stdin, OutputStream output)
             throws IOException {
                 OutputStreamWriter writer = new OutputStreamWriter(output);
 
@@ -202,7 +234,7 @@ class head implements AppCase {
 class tail implements AppCase {
 
     @Override
-    public void runCommand(String appName, ArrayList<String> appArgs, String currentDirectory, OutputStream output)
+    public void runCommand(ArrayList<String> appArgs, String currentDirectory, InputStream stdin, OutputStream output)
             throws IOException {
         OutputStreamWriter writer = new OutputStreamWriter(output);
 
@@ -260,7 +292,7 @@ class tail implements AppCase {
 class grep implements AppCase {
 
     @Override
-    public void runCommand(String appName, ArrayList<String> appArgs, String currentDirectory, OutputStream output)
+    public void runCommand(ArrayList<String> appArgs, String currentDirectory, InputStream stdin, OutputStream output)
             throws IOException {
         OutputStreamWriter writer = new OutputStreamWriter(output);
 
