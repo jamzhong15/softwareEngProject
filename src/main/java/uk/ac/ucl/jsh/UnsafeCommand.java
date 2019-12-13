@@ -11,18 +11,15 @@ class UnsafeCommand extends UnsafeDecorator {
         super(appCase);
     }
 
-    public void runCommand(String appName, ArrayList<String> appArgs, String currentDirectory, OutputStream output) {
-        try {
+    @Override
+    public void runCommand(ArrayList<String> appArgs, String currentDirectory, InputStream stdin, OutputStream output) throws IOException 
+    {
+        try 
+        {
             super.runCommand(appName, appArgs, currentDirectory, output);
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
-    }
-
-    @Override
-    public void runCommand(ArrayList<String> appArgs, String currentDirectory, InputStream stdin, OutputStream output)
-            throws IOException {
-        // TODO Auto-generated method stub
 
     }
 
