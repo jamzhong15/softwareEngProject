@@ -13,7 +13,7 @@ class UnsafeCommand extends UnsafeDecorator {
 
     public void runCommand(String appName, ArrayList<String> appArgs, String currentDirectory, OutputStream output) {
         try {
-            super.runCommand(appName, appArgs, currentDirectory, output);
+            super.runCommand(appArgs, currentDirectory, output);
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }

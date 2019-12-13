@@ -1,6 +1,7 @@
 package uk.ac.ucl.jsh;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 
@@ -13,8 +14,8 @@ public abstract class UnsafeDecorator implements AppCase {
     }
 
     @Override
-    public void runCommand(String appName, ArrayList<String> appArgs, String currentDirectory, OutputStream output)
+    public void runCommand(ArrayList<String> appArgs, String currentDirectory, InputStream stdin, OutputStream output)
             throws IOException {
-        appCase.runCommand(appName, appArgs, currentDirectory, output);
+        appCase.runCommand(appArgs, currentDirectory, output);
     }
 }
