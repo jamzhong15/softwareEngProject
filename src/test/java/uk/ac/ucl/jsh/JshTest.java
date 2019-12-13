@@ -1,25 +1,14 @@
 package uk.ac.ucl.jsh;
 
-import org.junit.Test;
-import static org.junit.Assert.*;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
+import org.junit.runners.Suite.SuiteClasses;
 
-import java.io.PipedInputStream;
-import java.io.PipedOutputStream;
-import java.util.Scanner;
-
+@RunWith(Suite.class)
+@SuiteClasses({
+    EchoCmdTest.class
+})
 public class JshTest {
-    public JshTest() {
-    }
-
-    // @Test
-    // public void testJsh() throws Exception {
-    //     PipedInputStream in = new PipedInputStream();
-    //     PipedOutputStream out;
-    //     out = new PipedOutputStream(in);
-    //     Jsh.eval("echo foo", out);
-    //     Scanner scn = new Scanner(in);
-    //     assertEquals(scn.nextLine(),"foo");
-    // }
-
     
 }
+

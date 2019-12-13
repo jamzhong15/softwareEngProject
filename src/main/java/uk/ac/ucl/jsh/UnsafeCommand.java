@@ -11,12 +11,9 @@ class UnsafeCommand extends UnsafeDecorator {
         super(appCase);
     }
 
-    @Override
-    public void runCommand(ArrayList<String> appArgs, String currentDirectory, InputStream stdin, OutputStream output) throws IOException 
-    {
-        try 
-        {
-            super.runCommand(appName, appArgs, currentDirectory, output);
+    public void runCommand(String appName, ArrayList<String> appArgs, String currentDirectory, OutputStream output) {
+        try {
+            super.runCommand(appArgs, currentDirectory, output);
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }

@@ -3,23 +3,32 @@ package uk.ac.ucl.jsh;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import org.antlr.v4.runtime.tree.ParseTree;
+
 public class CmdVisitor extends CmdGrammarBaseVisitor<Command> 
 {
     @Override
     public Command visitCall(final CmdGrammarParser.CallContext ctx)
     {
         ArrayList<String> tokens = new ArrayList<>();
-        tokens.add(ctx.getChild(0).getText());
+        ParseTree argumentTree = ctx.getChild(0);
 
-        if (ctx.getChildCount() == 2)
-        {
-            int i;
-            for (i = 0; i<ctx.getChild(1).getChild(0).getChildCount(); i++ )
-            {
-                String token = ctx.getChild(1).getChild(0).getChild(i).getText();
-                tokens.add(token);
-            }
+        for (int i = 0; i < argumentTree.getChildCount(); i++) {
+            tokens.add(argumentTree.getChild(i).getText());
         }
+        // tokens.add(ctx.getChild(0).getText());
+
+        // if (ctx.getChildCount() == 2)
+        // {
+        //     int i;
+        //     for (i = 0; i<ctx.getChild(1).getChild(0).getChildCount(); i++ )
+        //     {
+        //         String token = ctx.getChild(1).getChild(0).getChild(i).getText();
+        //         tokens.add(token);
+        //     }
+        // }
+
+        
         
         Call call = new Call(tokens);
 
