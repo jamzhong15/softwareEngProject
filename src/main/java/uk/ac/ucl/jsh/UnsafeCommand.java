@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.Stack;
 
 class UnsafeCommand extends UnsafeDecorator {
 
@@ -11,13 +12,11 @@ class UnsafeCommand extends UnsafeDecorator {
         super(appCase);
     }
 
-    public void runCommand(String appName, ArrayList<String> appArgs, String currentDirectory, OutputStream output) {
+    public void runCommand(ArrayList<String> appArgs, String currentDirectory, Stack<InputStream> stdin, OutputStream output) {
         try {
-            super.runCommand(appArgs, currentDirectory, output);
+            super.runCommand(appArgs, currentDirectory, stdin, output);
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
-
     }
-
 }

@@ -18,7 +18,7 @@ public class Pipe implements Command
     }
 
     @Override
-    public void eval(OutputStream output) throws IOException 
+    public void eval() throws IOException 
     {
         Jsh jsh = new Jsh();
         String currentDirectory = jsh.getcurrentDirectory();
@@ -31,14 +31,14 @@ public class Pipe implements Command
         // argsLeft.add(inputs.get(1));
 
         // Call left = new Call(argsLeft);
-        l.eval(piped_output);
+        l.eval();
 
         // ArrayList<String> argsRight = new ArrayList<>();
         // argsRight.add(inputs.get(2));
         // argsRight.add(inputs.get(3));
         // argsRight.add(inputs.get(1));
         // Call right = new Call(argsRight);
-        r.eval(output);
+        r.eval();
 
     }
 

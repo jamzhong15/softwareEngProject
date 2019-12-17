@@ -13,8 +13,8 @@ public class Seq implements Command {
     }
 
     @Override
-    public void eval(OutputStream output) throws IOException {
-       l.eval(output);
-       r.eval(output);
+    public void eval() throws IOException {
+       l.eval();
+       r.eval();
     }
 }

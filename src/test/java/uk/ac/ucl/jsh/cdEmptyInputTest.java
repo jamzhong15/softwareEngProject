@@ -14,11 +14,11 @@ import java.io.PrintStream;
 
 public class cdEmptyInputTest {
 
-    @Test (expected = RuntimeException.class)
-    public void cdEmptyInputThrowsException() throws IOException {
-        Jsh.eval("cd", System.out);
-        // throw new RuntimeException();
-    }
+    // @Test (expected = RuntimeException.class)
+    // public void cdEmptyInputThrowsException() throws IOException {
+    //     Jsh.eval("cd", System.out);
+    //     // throw new RuntimeException();
+    // }
 
     // @Rule
     // public ExpectedException thrown = ExpectedException.none();

@@ -2,10 +2,12 @@ package uk.ac.ucl.jsh;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.Scanner;
+import java.util.Stack;
 
 import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.tree.ParseTree;
@@ -16,6 +18,9 @@ public class Jsh
     //get current directory
     private static String currentDirectory = System.getProperty("user.dir");
 
+    private static Stack<InputStream> stdin = new Stack<>();
+    private static Stack<OutputStream> stdout = new Stack<>();
+    
     public void setcurrentDirectory(String newDirectory) 
     {
         currentDirectory = newDirectory;
@@ -26,9 +31,19 @@ public class Jsh
         return currentDirectory;
     }
 
+    public Stack<InputStream> getStackInputStream()
+    {
+        return stdin;
+    }
+
+    public Stack<OutputStream> getStackOutputStream()
+    {
+        return stdout;
+    }
+
     public static void start(String cmdline, OutputStream output) throws IOException 
     {
-        BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(output));
+        // BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(output));
 
         CharStream charstream = CharStreams.fromString(cmdline);
         CmdGrammarLexer lexer = new CmdGrammarLexer(charstream);
@@ -36,9 +51,12 @@ public class Jsh
         CmdGrammarParser parser = new CmdGrammarParser(commonTokenStream);
         ParseTree tree = parser.command();
 
+        stdin.push(null);
+        stdout.push(output);
+
         CmdVisitor visitor = new CmdVisitor();
         Command c = visitor.visit(tree);
-        c.eval(output);
+        c.eval();
     }
 
 
