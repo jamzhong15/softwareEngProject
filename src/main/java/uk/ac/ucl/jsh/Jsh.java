@@ -4,6 +4,7 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -87,4 +88,7 @@ public class Jsh
             }
         }
     }
+
+	public static void eval(String string, PrintStream out) {
+	}
 }
