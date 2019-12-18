@@ -33,7 +33,7 @@ public class LsTest {
         }
         String listString = String.join("\t", listFiles);
         if (atLeastOnePrinted) {
-            listFiles.add("\r\n");
+            listString.concat("\r\n");
         }
         Jsh.start("ls", System.out);
         assertEquals("analysis        test    lexer   Dockerfile      target  pom.xml jsh     README.md       p.txt   coverage        src", listString);
