@@ -20,7 +20,6 @@ public class Call implements Command {
     {        
         Jsh jsh = new Jsh();
         String currentDirectory = jsh.getcurrentDirectory();
-
         Stack <InputStream> stdin = jsh.getStackInputStream();
         Stack <OutputStream> stdout = jsh.getStackOutputStream();
 
@@ -31,12 +30,12 @@ public class Call implements Command {
         {
             appName = appName.substring(1, appName.length());
             AppCase app = new UnsafeCommand(AppFactory.createApp(appName));
-            app.runCommand(appArgs, currentDirectory, stdin, stdout.pop());
+            app.runCommand(appArgs, currentDirectory, stdin.pop(), stdout.pop());
         }
         else 
         {
             AppCase app = AppFactory.createApp(appName);
-            app.runCommand(appArgs, currentDirectory, stdin, stdout.pop());
+            app.runCommand(appArgs, currentDirectory, stdin.pop(), stdout.pop());
         }
     }
 }

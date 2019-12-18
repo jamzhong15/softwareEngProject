@@ -1,8 +1,6 @@
 package uk.ac.ucl.jsh;
 
-import java.io.IOException;
 import java.util.ArrayList;
-
 import org.antlr.v4.runtime.tree.ParseTree;
 
 public class CmdVisitor extends CmdGrammarBaseVisitor<Command> 
@@ -12,26 +10,12 @@ public class CmdVisitor extends CmdGrammarBaseVisitor<Command>
     {
         ArrayList<String> tokens = new ArrayList<>();
         ParseTree argumentTree = ctx.getChild(0);
-
+        System.out.println("children = " + argumentTree.getChildCount());
+        
         for (int i = 0; i < argumentTree.getChildCount(); i++) {
             tokens.add(argumentTree.getChild(i).getText());
         }
-        // tokens.add(ctx.getChild(0).getText());
-
-        // if (ctx.getChildCount() == 2)
-        // {
-        //     int i;
-        //     for (i = 0; i<ctx.getChild(1).getChild(0).getChildCount(); i++ )
-        //     {
-        //         String token = ctx.getChild(1).getChild(0).getChild(i).getText();
-        //         tokens.add(token);
-        //     }
-        // }
-
-        
-        
         Call call = new Call(tokens);
-
         return call;
     }
 
@@ -45,8 +29,8 @@ public class CmdVisitor extends CmdGrammarBaseVisitor<Command>
         }
         else
         {
-            Command left = visit(ctx.command(0)),
-                    right = visit(ctx.command(1));
+            Command left = visit(ctx.command(0));
+            Command right = visit(ctx.command(1));
             Seq s = new Seq(left, right);
             return s;
 
@@ -56,8 +40,6 @@ public class CmdVisitor extends CmdGrammarBaseVisitor<Command>
     @Override
     public Command visitPipe(final CmdGrammarParser.PipeContext ctx)
     {
-        ArrayList<String> tokens = new ArrayList<>();
-
         Command l = visit(ctx.getChild(0));
         Command r = visit(ctx.getChild(2));
 
