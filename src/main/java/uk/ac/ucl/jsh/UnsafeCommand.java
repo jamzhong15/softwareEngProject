@@ -12,9 +12,9 @@ class UnsafeCommand extends UnsafeDecorator {
         super(appCase);
     }
 
-    public void runCommand(ArrayList<String> appArgs, String currentDirectory, Stack<InputStream> stdin, OutputStream output) {
+    public void runCommand(ArrayList<String> appArgs, String currentDirectory, InputStream input, OutputStream output) {
         try {
-            super.runCommand(appArgs, currentDirectory, stdin, output);
+            super.runCommand(appArgs, currentDirectory, input, output);
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }

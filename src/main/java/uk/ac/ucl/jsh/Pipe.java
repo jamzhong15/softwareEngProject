@@ -1,11 +1,11 @@
 package uk.ac.ucl.jsh;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Stack;
 
 
 public class Pipe implements Command 
@@ -21,25 +21,21 @@ public class Pipe implements Command
     public void eval() throws IOException 
     {
         Jsh jsh = new Jsh();
-        String currentDirectory = jsh.getcurrentDirectory();
-        PipedInputStream piped_input = new PipedInputStream();
-        PipedOutputStream piped_output = new PipedOutputStream();
-        piped_input.connect(piped_output);
+        
+        PipedInputStream piped_input = new PipedInputStream(100000);
+        PipedOutputStream piped_output = new PipedOutputStream((PipedInputStream) piped_input);
+        Stack <InputStream> stdin = jsh.getStackInputStream();
+        Stack <OutputStream> stdout = jsh.getStackOutputStream();
 
-        // ArrayList<String> argsLeft = new ArrayList<>();
-        // argsLeft.add(inputs.get(0));
-        // argsLeft.add(inputs.get(1));
-
-        // Call left = new Call(argsLeft);
+        stdin.push(piped_input);
+        stdout.push(piped_output);
+        jsh.setisPipedBool(true);
         l.eval();
+        piped_output.close();
 
-        // ArrayList<String> argsRight = new ArrayList<>();
-        // argsRight.add(inputs.get(2));
-        // argsRight.add(inputs.get(3));
-        // argsRight.add(inputs.get(1));
-        // Call right = new Call(argsRight);
+        stdin.push(piped_input);
         r.eval();
-
+        jsh.setisPipedBool(false);
     }
 
 }

@@ -15,8 +15,8 @@ public abstract class UnsafeDecorator implements AppCase {
     }
 
     @Override
-    public void runCommand(ArrayList<String> appArgs, String currentDirectory, Stack<InputStream> stdin, OutputStream output)
+    public void runCommand(ArrayList<String> appArgs, String currentDirectory, InputStream input, OutputStream output)
             throws IOException {
-        appCase.runCommand(appArgs, currentDirectory, stdin, output);
+        appCase.runCommand(appArgs, currentDirectory, input, output);
     }
 }
