@@ -10,7 +10,6 @@ public class CmdVisitor extends CmdGrammarBaseVisitor<Command>
     {
         ArrayList<String> tokens = new ArrayList<>();
         ParseTree argumentTree = ctx.getChild(0);
-        System.out.println("children = " + argumentTree.getChildCount());
         
         for (int i = 0; i < argumentTree.getChildCount(); i++) {
             tokens.add(argumentTree.getChild(i).getText());

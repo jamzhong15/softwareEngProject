@@ -113,7 +113,6 @@ class cat implements AppCase {
         } 
         else 
         {
-
             for (String arg : appArgs) 
             {
                 Charset encoding = StandardCharsets.UTF_8;
@@ -333,7 +332,6 @@ class grep implements AppCase {
             int numOfFiles = appArgs.size() - 1;
             Path filePath;
             Path[] filePathArray = new Path[numOfFiles];
-            System.out.println("numOfFiles = "+ numOfFiles);
             Path currentDir = Paths.get(currentDirectory);
             for (int i = 0; i < numOfFiles; i++) {
                 filePath = currentDir.resolve(appArgs.get(i + 1));
