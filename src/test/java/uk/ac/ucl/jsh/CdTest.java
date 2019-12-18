@@ -13,13 +13,6 @@ import java.io.IOException;
 import java.io.PrintStream;
 
 public class CdTest {
-//     @Test (expected = RuntimeException.class)
-//     public void cdEmptyInputThrowsException() throws IOException {
-//         Jsh.eval("cd", System.out);
-//         // throw new RuntimeException();
-//     }
-
-    // cd no argument test
     @Rule
     public ExpectedException thrown = ExpectedException.none();
 
@@ -30,8 +23,7 @@ public class CdTest {
     console = System.out;
     thrown.expect(RuntimeException.class);
     thrown.expectMessage("cd: missing argument");
-    Jsh.eval("cd", console);
-    // throw new RuntimeException("cd: missing argument");
+    Jsh.start("cd", console);
     }
 
     // cd too many arguments test 
@@ -42,7 +34,7 @@ public class CdTest {
     console = System.out; 
     thrown.expect(RuntimeException.class);
     thrown.expectMessage("cd: too many arguments");
-    Jsh.eval("cd arg1 arg2", console);
+    Jsh.start("cd arg1 arg2", console);
     }
 
     // cd cannot find directory
@@ -54,6 +46,6 @@ public class CdTest {
     thrown.expect(RuntimeException.class);
     thrown.expectMessage("cd: xxx is not an existing directory");
 
-    Jsh.eval("cd xxx", console);
+    Jsh.start("cd xxx", console);
     }
 }
