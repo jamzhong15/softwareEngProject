@@ -21,7 +21,7 @@ public class CatTest {
         out = new PipedOutputStream(in);        
         Jsh.start("cat test", out);
         Scanner scn = new Scanner(in);
-        assertEquals(scn.next(), "#!/bin/bash");
+        assertEquals("#!/bin/bash", scn.next());
         scn.close();
     }
 

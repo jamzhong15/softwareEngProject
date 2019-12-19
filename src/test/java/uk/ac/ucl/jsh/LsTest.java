@@ -36,7 +36,7 @@ public class LsTest {
             listString.concat("\r\n");
         }
         Jsh.start("ls", System.out);
-        assertEquals("analysis        test    lexer   Dockerfile      target  pom.xml jsh     README.md       p.txt   coverage        src", listString);
+        assertEquals("analysis	test	Dockerfile	target	pom.xml	jsh	README.md	p.txt	coverage	src", listString);
     }
 
     // ls one argument test
@@ -47,7 +47,7 @@ public class LsTest {
         out = new PipedOutputStream(in);        
         Jsh.start("ls src", out);
         Scanner scn = new Scanner(in);
-        assertEquals(scn.next(), "test");
+        assertEquals("test", scn.next());
         scn.close();
     }
 

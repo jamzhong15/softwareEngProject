@@ -23,16 +23,16 @@ import org.junit.rules.ExpectedException;
 
 public class HeadTest {
     // head 1 filename argument test  (something wrong here)
-    // @Test
-    // public void HeadOneFileNameArgumentTest() throws Exception {
-    //     PipedInputStream in = new PipedInputStream();
-    //     PipedOutputStream out;
-    //     out = new PipedOutputStream(in);
-    //     Jsh.start("head p.txt", out);
-    //     Scanner scn = new Scanner(in);
-    //     assertEquals("hello there", scn);
-    //     scn.close();
-    // }
+    @Test
+    public void HeadOneFileNameArgumentTest() throws Exception {
+        PipedInputStream in = new PipedInputStream();
+        PipedOutputStream out;
+        out = new PipedOutputStream(in);
+        Jsh.start("head p.txt", out);
+        Scanner scn = new Scanner(in);
+        assertEquals("hello there", scn.nextLine());
+        scn.close();
+    }
 
     @Rule
     public ExpectedException thrown = ExpectedException.none();
