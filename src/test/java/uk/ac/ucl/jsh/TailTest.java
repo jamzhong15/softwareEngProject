@@ -2,38 +2,28 @@ package uk.ac.ucl.jsh;
 
 import static org.junit.Assert.assertEquals;
 
-import java.io.BufferedReader;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.IOException;
 import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
 import java.io.PrintStream;
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.Scanner;
-
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
 
 public class TailTest {
-    //tail 1 filename argument test  (something wrong here)
-    // @Test
-    // public void TailOneFileNameArgumentTest() throws Exception {
-    //     PipedInputStream in = new PipedInputStream();
-    //     PipedOutputStream out;
-    //     out = new PipedOutputStream(in);
-    //     Jsh.start("tail p.txt", out);
-    //     Scanner scn = new Scanner(in);
-    //     assertEquals("hello there", scn);
-    //     scn.close();
-    // }
+    // tail 1 filename argument test  (something wrong here)
+    @Test
+    public void TailOneFileNameArgumentTest() throws Exception {
+        PipedInputStream in = new PipedInputStream();
+        PipedOutputStream out;
+        out = new PipedOutputStream(in);
+        Jsh.start("tail p.txt", out);
+        Scanner scn = new Scanner(in);
+        assertEquals("hello there", scn.nextLine());
+        scn.close();
+    }
 
     @Rule
     public ExpectedException thrown = ExpectedException.none();
