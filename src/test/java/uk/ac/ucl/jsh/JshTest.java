@@ -1,15 +1,10 @@
 package uk.ac.ucl.jsh;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
+import org.junit.runner.JUnitCore;
+import org.junit.runner.Result;
+import org.junit.runner.notification.Failure;
 
-@RunWith(Suite.class)
-@SuiteClasses({
-    EchoCmdTest.class,
-    CdTest.class,
-    PwdTest.class
-})
+
 public class JshTest {
     
 }
