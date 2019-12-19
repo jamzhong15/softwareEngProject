@@ -5,6 +5,7 @@ import static org.junit.Assert.assertEquals;
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
@@ -23,17 +24,30 @@ import org.junit.rules.ExpectedException;
 
 
 public class TailTest {
-    //tail 1 filename argument test  (something wrong here)
-    // @Test
-    // public void TailOneFileNameArgumentTest() throws Exception {
-    //     PipedInputStream in = new PipedInputStream();
-    //     PipedOutputStream out;
-    //     out = new PipedOutputStream(in);
-    //     Jsh.start("tail p.txt", out);
-    //     Scanner scn = new Scanner(in);
-    //     assertEquals("hello there", scn);
-    //     scn.close();
-    // }
+    // tail 1 filename argument test something wrong here
+    @Test
+    public void TailOneFileNameArgumentTest() throws Exception {
+        PipedInputStream in = new PipedInputStream();
+        PipedOutputStream out;
+        out = new PipedOutputStream(in);
+        Jsh.start("tail p.txt", out);
+        Scanner scn = new Scanner(in);
+        assertEquals(scn.nextLine(), "hello there");
+        scn.close();
+    }
+
+    // tail with 3 arguments test something wrong also
+    @Test
+    public void TailThreeArgumentsTest() throws Exception {
+        PipedInputStream in = new PipedInputStream();
+        PipedOutputStream out;
+        out = new PipedOutputStream(in);
+        Jsh.start("tail -n 1 p.txt", out);
+        Scanner scn = new Scanner(in);
+        assertEquals(scn.nextLine(), "Hi there");
+        scn.close();
+    }
+
 
     @Rule
     public ExpectedException thrown = ExpectedException.none();

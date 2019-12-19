@@ -308,8 +308,11 @@ class grep implements AppCase {
     public void runCommand(ArrayList<String> appArgs, String currentDirectory, InputStream input, OutputStream output)
             throws IOException {
         OutputStreamWriter writer = new OutputStreamWriter(output);
+        if (appArgs.size() == 0) {
+            throw new RuntimeException("grep: wrong number of argument");
+        }
 
-        if (appArgs.size() < 2) {
+        if (appArgs.size()  == 1) { 
             // throw new RuntimeException("grep: wrong number of arguments");
             Pattern grepPattern = Pattern.compile(appArgs.get(0));
             try (BufferedReader reader = new BufferedReader(new InputStreamReader(input))) {
@@ -322,9 +325,7 @@ class grep implements AppCase {
                         writer.flush();
                     }
                 }
-            } catch (IOException e) {
-                throw new RuntimeException("grep: cannot read from stdInput");
-            }
+            } 
         }
         else
         {
