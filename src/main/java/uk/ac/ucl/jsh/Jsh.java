@@ -1,11 +1,11 @@
 package uk.ac.ucl.jsh;
 
-import java.io.BufferedWriter;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.util.ArrayList;
+import java.io.PrintStream;
 import java.util.Scanner;
+import java.util.Stack;
 
 import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.tree.ParseTree;
@@ -15,7 +15,10 @@ public class Jsh
 {
     //get current directory
     private static String currentDirectory = System.getProperty("user.dir");
-
+    private static Boolean isPiped = false;
+    private static Stack<InputStream> stdin = new Stack<>();
+    private static Stack<OutputStream> stdout = new Stack<>();
+    
     public void setcurrentDirectory(String newDirectory) 
     {
         currentDirectory = newDirectory;
@@ -26,9 +29,29 @@ public class Jsh
         return currentDirectory;
     }
 
-    public static void eval(String cmdline, OutputStream output) throws IOException 
+    public Stack<InputStream> getStackInputStream()
     {
-        BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(output));
+        return stdin;
+    }
+
+    public Stack<OutputStream> getStackOutputStream()
+    {
+        return stdout;
+    }
+
+    public void setisPipedBool(Boolean bool)
+    {
+        isPiped = bool;
+    }
+
+    public Boolean getisPipedBool()
+    {
+        return isPiped;
+    }
+
+    public static void start(String cmdline, OutputStream output) throws IOException 
+    {
+        // BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(output));
 
         CharStream charstream = CharStreams.fromString(cmdline);
         CmdGrammarLexer lexer = new CmdGrammarLexer(charstream);
@@ -36,9 +59,16 @@ public class Jsh
         CmdGrammarParser parser = new CmdGrammarParser(commonTokenStream);
         ParseTree tree = parser.command();
 
+        stdin.push(null);
+        stdout.push(output);
 
         CmdVisitor visitor = new CmdVisitor();
+<<<<<<< HEAD
         visitor.visit(tree);
+=======
+        Command c = visitor.visit(tree);
+        c.eval();
+>>>>>>> master
     }
 
 
@@ -55,7 +85,7 @@ public class Jsh
                 System.out.println("jsh: " + args[0] + ": unexpected argument");
             }
             try {
-                eval(args[1], System.out);
+                start(args[1], System.out);
             } catch (Exception e) {
                 System.out.println("jsh: " + e.getMessage());
             }
@@ -73,7 +103,7 @@ public class Jsh
                     try 
                     {
                         String cmdline = input.nextLine();
-                        eval(cmdline, System.out);
+                        start(cmdline, System.out);
                     } 
                     catch (Exception e) 
                     {
@@ -87,4 +117,7 @@ public class Jsh
             }
         }
     }
+
+	public static void eval(String string, PrintStream out) {
+	}
 }

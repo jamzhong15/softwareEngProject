@@ -3,6 +3,8 @@ package uk.ac.ucl.jsh;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.nio.charset.Charset;
@@ -16,12 +18,13 @@ import java.util.regex.Pattern;
 
 public interface AppCase 
 {
-    void runCommand(String appName, ArrayList<String> appArgs, String currentDirectory, OutputStream output) throws IOException;
+    void runCommand(ArrayList<String> appArgs, String currentDirectory, InputStream input, OutputStream output) throws IOException;
 }
 
 class cd implements AppCase {
+
     @Override
-    public void runCommand(String appName, ArrayList<String> appArgs, String currentDirectory, OutputStream output) throws IOException {
+    public void runCommand(ArrayList<String> appArgs, String currentDirectory, InputStream input, OutputStream output) throws IOException {
         if (appArgs.isEmpty()) {
             throw new RuntimeException("cd: missing argument");
         } else if (appArgs.size() > 1) {
@@ -45,7 +48,7 @@ class cd implements AppCase {
 class pwd implements AppCase {
 
     @Override
-    public void runCommand(String appName, ArrayList<String> appArgs, String currentDirectory, OutputStream output) throws IOException {
+    public void runCommand(ArrayList<String> appArgs, String currentDirectory, InputStream input, OutputStream output) throws IOException {
         OutputStreamWriter writer = new OutputStreamWriter(output);
 			writer.write(currentDirectory);
             writer.write(System.getProperty("line.separator"));
@@ -56,7 +59,7 @@ class pwd implements AppCase {
 class ls implements AppCase {
 
     @Override
-    public void runCommand(String appName, ArrayList<String> appArgs, String currentDirectory, OutputStream output) throws IOException {
+    public void runCommand(ArrayList<String> appArgs, String currentDirectory, InputStream input, OutputStream output) throws IOException {
         
         OutputStreamWriter writer = new OutputStreamWriter(output);
 
@@ -93,18 +96,27 @@ class ls implements AppCase {
 class cat implements AppCase {
 
     @Override
-    public void runCommand(String appName, ArrayList<String> appArgs, String currentDirectory, OutputStream output)
+    public void runCommand(ArrayList<String> appArgs, String currentDirectory, InputStream input, OutputStream output)
             throws IOException {
                 OutputStreamWriter writer = new OutputStreamWriter(output);
 
-        if (appArgs.isEmpty()) {
+        /* if appArgs is empty (meaning no files are specified in the argument), check if stack inputstream is null. 
+                                if stack inputstream is not null, pop from stack and read this inputstream as input.
+                                if stack inputstream is null, then throw exception.
+        */
+        if (appArgs.isEmpty())  
+        {
             throw new RuntimeException("cat: missing arguments");
-        } else {
-            for (String arg : appArgs) {
+        } 
+        else 
+        {
+            for (String arg : appArgs) 
+            {
                 Charset encoding = StandardCharsets.UTF_8;
                 File currFile = new File(currentDirectory + File.separator + arg);
                 if (currFile.exists()) {
                     Path filePath = Paths.get(currentDirectory + File.separator + arg);
+
                     try (BufferedReader reader = Files.newBufferedReader(filePath, encoding)) {
                         String line = null;
                         while ((line = reader.readLine()) != null) {
@@ -119,15 +131,46 @@ class cat implements AppCase {
                     throw new RuntimeException("cat: file does not exist");
                 }
             }
+
         }
         
     }
 }
 
+// class echo2 implements AppCase {
+
+//     @Override
+//     public void runCommand(ArrayList<String> appArgs, String currentDirectory, InputStream input, OutputStream output)
+//             throws IOException {
+//             OutputStreamWriter writer = new OutputStreamWriter(output);
+            
+//             boolean atLeastOnePrinted = false;
+//             for (String arg : appArgs) {
+//                 writer.write(arg);
+//                 writer.write(" ");
+//                 writer.flush();
+//                 atLeastOnePrinted = true;
+//             }
+//             BufferedReader br = new BufferedReader(new InputStreamReader(stdin));
+//             String line;
+//             while((line = br.readLine()) != null) {
+//                 writer.write(line);
+//                 writer.write(" ");
+//                 writer.flush();
+//                 atLeastOnePrinted = true;
+//             }
+//             if (atLeastOnePrinted) {
+//                 writer.write(System.getProperty("line.separator"));
+//                 writer.flush();
+//             }
+//     }
+
+// }
+
 class echo implements AppCase {
 
     @Override
-    public void runCommand(String appName, ArrayList<String> appArgs, String currentDirectory, OutputStream output)
+    public void runCommand(ArrayList<String> appArgs, String currentDirectory, InputStream input, OutputStream output)
             throws IOException {
             OutputStreamWriter writer = new OutputStreamWriter(output);
             
@@ -149,7 +192,7 @@ class echo implements AppCase {
 class head implements AppCase {
 
     @Override
-    public void runCommand(String appName, ArrayList<String> appArgs, String currentDirectory, OutputStream output)
+    public void runCommand(ArrayList<String> appArgs, String currentDirectory, InputStream input, OutputStream output)
             throws IOException {
                 OutputStreamWriter writer = new OutputStreamWriter(output);
 
@@ -167,7 +210,6 @@ class head implements AppCase {
                 if (appArgs.size() == 3) {
                     try {
                         headLines = Integer.parseInt(appArgs.get(1));
-                        //System.out.println(headLines);
                     } catch (Exception e) {
                         throw new RuntimeException("head: wrong argument " + appArgs.get(1));
                     }
@@ -202,7 +244,7 @@ class head implements AppCase {
 class tail implements AppCase {
 
     @Override
-    public void runCommand(String appName, ArrayList<String> appArgs, String currentDirectory, OutputStream output)
+    public void runCommand(ArrayList<String> appArgs, String currentDirectory, InputStream input, OutputStream output)
             throws IOException {
         OutputStreamWriter writer = new OutputStreamWriter(output);
 
@@ -260,30 +302,14 @@ class tail implements AppCase {
 class grep implements AppCase {
 
     @Override
-    public void runCommand(String appName, ArrayList<String> appArgs, String currentDirectory, OutputStream output)
+    public void runCommand(ArrayList<String> appArgs, String currentDirectory, InputStream input, OutputStream output)
             throws IOException {
         OutputStreamWriter writer = new OutputStreamWriter(output);
 
         if (appArgs.size() < 2) {
-            throw new RuntimeException("grep: wrong number of arguments");
-        }
-        Pattern grepPattern = Pattern.compile(appArgs.get(0));
-        int numOfFiles = appArgs.size() - 1;
-        Path filePath;
-        Path[] filePathArray = new Path[numOfFiles];
-        System.out.println("numOfFiles = "+ numOfFiles);
-        Path currentDir = Paths.get(currentDirectory);
-        for (int i = 0; i < numOfFiles; i++) {
-            filePath = currentDir.resolve(appArgs.get(i + 1));
-            if (Files.notExists(filePath) || Files.isDirectory(filePath) || 
-                !Files.exists(filePath) || !Files.isReadable(filePath)) {
-                throw new RuntimeException("grep: wrong file argument");
-            }
-            filePathArray[i] = filePath;
-        }
-        for (int j = 0; j < filePathArray.length; j++) {
-            Charset encoding = StandardCharsets.UTF_8;
-            try (BufferedReader reader = Files.newBufferedReader(filePathArray[j], encoding)) {
+            // throw new RuntimeException("grep: wrong number of arguments");
+            Pattern grepPattern = Pattern.compile(appArgs.get(0));
+            try (BufferedReader reader = new BufferedReader(new InputStreamReader(input))) {
                 String line = null;
                 while ((line = reader.readLine()) != null) {
                     Matcher matcher = grepPattern.matcher(line);
@@ -294,7 +320,39 @@ class grep implements AppCase {
                     }
                 }
             } catch (IOException e) {
-                throw new RuntimeException("grep: cannot open " + appArgs.get(j + 1));
+                throw new RuntimeException("grep: cannot read from stdInput");
+            }
+        }
+        else
+        {
+            Pattern grepPattern = Pattern.compile(appArgs.get(0));
+            int numOfFiles = appArgs.size() - 1;
+            Path filePath;
+            Path[] filePathArray = new Path[numOfFiles];
+            Path currentDir = Paths.get(currentDirectory);
+            for (int i = 0; i < numOfFiles; i++) {
+                filePath = currentDir.resolve(appArgs.get(i + 1));
+                if (Files.notExists(filePath) || Files.isDirectory(filePath) || 
+                    !Files.exists(filePath) || !Files.isReadable(filePath)) {
+                    throw new RuntimeException("grep: wrong file argument");
+                }
+                filePathArray[i] = filePath;
+            }
+            for (int j = 0; j < filePathArray.length; j++) {
+                Charset encoding = StandardCharsets.UTF_8;
+                try (BufferedReader reader = Files.newBufferedReader(filePathArray[j], encoding)) {
+                    String line = null;
+                    while ((line = reader.readLine()) != null) {
+                        Matcher matcher = grepPattern.matcher(line);
+                        if (matcher.find()) {
+                            writer.write(line);
+                            writer.write(System.getProperty("line.separator"));
+                            writer.flush();
+                        }
+                    }
+                } catch (IOException e) {
+                    throw new RuntimeException("grep: cannot open " + appArgs.get(j + 1));
+                }
             }
         }
     }
