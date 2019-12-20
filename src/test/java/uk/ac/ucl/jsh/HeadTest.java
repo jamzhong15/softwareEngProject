@@ -6,6 +6,7 @@ import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
@@ -20,32 +21,45 @@ public class HeadTest {
     // head 1 filename argument test  (something wrong here)
     @Test
     public void HeadOneFileNameArgumentTest() throws Exception {
-        // File file = new File("p.txt");
-        // FileInputStream fis = new FileInputStream(file);
-        // byte[] data = new byte[(int) file.length()];
-        // fis.read(data);
-        // fis.close();
+        String data1 = "first line\n";
+        String data2 = "second line";
+        FileOutputStream file_writer = new FileOutputStream("head_test.txt");
+        file_writer.write(data1.getBytes());
+        file_writer.write(data2.getBytes());
+        file_writer.close();
 
-        // String str = new String(data, "UTF-8");
         PipedInputStream in = new PipedInputStream();
         PipedOutputStream out;
         out = new PipedOutputStream(in);
-        Jsh.start("head p.txt", out);
+        Jsh.start("head head_test.txt", out);
         Scanner scn = new Scanner(in);
-        assertEquals(scn.nextLine(), "hello there");
+        assertEquals("first line", scn.nextLine());
         scn.close();
+
+        File file = new File("head_test.txt");
+        file.delete();
     }
 
     // head 3 arguments test sth wrong here also
     @Test
     public void HeadThreeArgumentsTest() throws Exception {
+        String data1 = "first line\n";
+        String data2 = "second line";
+        FileOutputStream file_writer = new FileOutputStream("head_test.txt");
+        file_writer.write(data1.getBytes());
+        file_writer.write(data2.getBytes());
+        file_writer.close();
+
         PipedInputStream in = new PipedInputStream();
         PipedOutputStream out;
         out = new PipedOutputStream(in);
-        Jsh.start("head -n 1 p.txt", out);
+        Jsh.start("head -n 1 head_test.txt", out);
         Scanner scn = new Scanner(in);
-        assertEquals(scn.nextLine(), "hello there");
+        assertEquals("first line", scn.nextLine());
         scn.close();
+
+        File file = new File("head_test.txt");
+        file.delete();
     }
 
     @Rule
