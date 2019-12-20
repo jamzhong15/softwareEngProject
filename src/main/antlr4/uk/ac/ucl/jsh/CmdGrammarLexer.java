@@ -1,4 +1,4 @@
-// Generated from /workspaces/jsh-team-6/src/main/antlr4/uk/ac/ucl/jsh/CmdGrammar.g4 by ANTLR 4.7.1
+// Generated from CmdGrammar.g4 by ANTLR 4.7.1
 import org.antlr.v4.runtime.Lexer;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.Token;

@@ -23,7 +23,7 @@ public class Pipe implements Command
         Jsh jsh = new Jsh();
         
         PipedInputStream piped_input = new PipedInputStream(100000);
-        PipedOutputStream piped_output = new PipedOutputStream((PipedInputStream) piped_input);
+        PipedOutputStream piped_output = new PipedOutputStream(piped_input);
         Stack <InputStream> stdin = jsh.getStackInputStream();
         Stack <OutputStream> stdout = jsh.getStackOutputStream();
 

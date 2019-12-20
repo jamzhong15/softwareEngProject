@@ -4,31 +4,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import org.antlr.v4.runtime.tree.ParseTree;
 
-<<<<<<< HEAD
-import org.antlr.v4.runtime.ParserRuleContext;
-import org.antlr.v4.runtime.tree.ParseTree;
-
-public class CmdVisitor extends CmdGrammarBaseVisitor<ArrayList<String>> {
-    @Override
-    public ArrayList<String> visitCall(final CmdGrammarParser.CallContext ctx) {
-        ArrayList<String> tokens = new ArrayList<>();
-        tokens.add(ctx.getChild(0).getText());
-        if (ctx.getChildCount() == 2) {
-            ParseTree arguments = ctx.getChild(1).getChild(0);
-            for (int i = 0; i < arguments.getChildCount(); i++) {
-                String token = arguments.getChild(i).getText(); // Add all the arguments
-                tokens.add(token);
-            }
-
-        }
-
-        Call call = new Call();
-        try {
-            call.eval(tokens, System.out);
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            throw new RuntimeException(e);
-=======
 public class CmdVisitor extends CmdGrammarBaseVisitor<Command> 
 {
     @Override
@@ -39,7 +14,6 @@ public class CmdVisitor extends CmdGrammarBaseVisitor<Command>
         
         for (int i = 0; i < argumentTree.getChildCount(); i++) {
             tokens.add(argumentTree.getChild(i).getText());
->>>>>>> master
         }
         Call call = new Call(tokens);
         return call;

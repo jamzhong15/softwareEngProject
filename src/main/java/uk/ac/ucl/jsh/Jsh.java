@@ -63,12 +63,8 @@ public class Jsh
         stdout.push(output);
 
         CmdVisitor visitor = new CmdVisitor();
-<<<<<<< HEAD
-        visitor.visit(tree);
-=======
         Command c = visitor.visit(tree);
         c.eval();
->>>>>>> master
     }
 
 

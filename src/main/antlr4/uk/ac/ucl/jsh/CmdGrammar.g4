@@ -49,57 +49,6 @@ LT : '<';
 
 GT : '>';
 
-<<<<<<< HEAD
-COMMANDT : 'echo' 
-         | 'ls'
-         | 'grep'
-         | 'cd'
-         | 'pwd'
-         | 'cat'
-         | 'head'
-         | 'tail'
-         | 'wc'
-         | 'sed'
-         | 'find'
-         | '_echo' 
-         | '_ls'
-         | '_grep'
-         | '_cd'
-         | '_pwd'
-         | '_cat'
-         | '_head'
-         | '_tail'
-         | '_wc'
-         | '_sed'
-         | '_find'
-         
-         ;
-=======
-// COMMANDT : 'echo'
-//          | 'ls'
-//          | 'grep'
-//          | 'cd'
-//          | 'pwd'
-//          | 'cat'
-//          | 'head'
-//          | 'tail'
-//          | 'wc'
-//          | 'sed'
-//          | 'find'
-//          | '_echo'
-//          | '_ls'
-//          | '_grep'
-//          | '_cd'
-//          | '_pwd'
-//          | '_cat'
-//          | '_head'
-//          | '_tail'
-//          | '_wc'
-//          | '_sed'
-//          | '_find'
-//          ;
->>>>>>> master
-
 SINGLEQUOTED : '\'' ~('\n'|'\'')* '\'';
 
 BACKQUOTED: '`' ~('\n' | '`')* '`';

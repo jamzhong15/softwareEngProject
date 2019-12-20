@@ -1,4 +1,4 @@
-// Generated from /workspaces/jsh-team-6/src/main/antlr4/uk/ac/ucl/jsh/CmdGrammar.g4 by ANTLR 4.7.1
+// Generated from CmdGrammar.g4 by ANTLR 4.7.1
 import org.antlr.v4.runtime.atn.*;
 import org.antlr.v4.runtime.dfa.DFA;
 import org.antlr.v4.runtime.*;
@@ -90,6 +90,14 @@ public class CmdGrammarParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_start; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof CmdGrammarListener ) ((CmdGrammarListener)listener).enterStart(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof CmdGrammarListener ) ((CmdGrammarListener)listener).exitStart(this);
+		}
 	}
 
 	public final StartContext start() throws RecognitionException {
@@ -132,6 +140,14 @@ public class CmdGrammarParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_command; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof CmdGrammarListener ) ((CmdGrammarListener)listener).enterCommand(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof CmdGrammarListener ) ((CmdGrammarListener)listener).exitCommand(this);
+		}
 	}
 
 	public final CommandContext command() throws RecognitionException {
@@ -224,6 +240,14 @@ public class CmdGrammarParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_pipe; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof CmdGrammarListener ) ((CmdGrammarListener)listener).enterPipe(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof CmdGrammarListener ) ((CmdGrammarListener)listener).exitPipe(this);
+		}
 	}
 
 	public final PipeContext pipe() throws RecognitionException {
@@ -307,6 +331,14 @@ public class CmdGrammarParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_call; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof CmdGrammarListener ) ((CmdGrammarListener)listener).enterCall(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof CmdGrammarListener ) ((CmdGrammarListener)listener).exitCall(this);
+		}
 	}
 
 	public final CallContext call() throws RecognitionException {
@@ -373,6 +405,14 @@ public class CmdGrammarParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_atom; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof CmdGrammarListener ) ((CmdGrammarListener)listener).enterAtom(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof CmdGrammarListener ) ((CmdGrammarListener)listener).exitAtom(this);
+		}
 	}
 
 	public final AtomContext atom() throws RecognitionException {
@@ -425,6 +465,14 @@ public class CmdGrammarParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_redirection; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof CmdGrammarListener ) ((CmdGrammarListener)listener).enterRedirection(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof CmdGrammarListener ) ((CmdGrammarListener)listener).exitRedirection(this);
+		}
 	}
 
 	public final RedirectionContext redirection() throws RecognitionException {
@@ -484,6 +532,14 @@ public class CmdGrammarParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_argument; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof CmdGrammarListener ) ((CmdGrammarListener)listener).enterArgument(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof CmdGrammarListener ) ((CmdGrammarListener)listener).exitArgument(this);
+		}
 	}
 
 	public final ArgumentContext argument() throws RecognitionException {
@@ -550,6 +606,14 @@ public class CmdGrammarParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_quoted; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof CmdGrammarListener ) ((CmdGrammarListener)listener).enterQuoted(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof CmdGrammarListener ) ((CmdGrammarListener)listener).exitQuoted(this);
+		}
 	}
 
 	public final QuotedContext quoted() throws RecognitionException {
@@ -588,6 +652,14 @@ public class CmdGrammarParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_unquoted; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof CmdGrammarListener ) ((CmdGrammarListener)listener).enterUnquoted(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof CmdGrammarListener ) ((CmdGrammarListener)listener).exitUnquoted(this);
+		}
 	}
 
 	public final UnquotedContext unquoted() throws RecognitionException {

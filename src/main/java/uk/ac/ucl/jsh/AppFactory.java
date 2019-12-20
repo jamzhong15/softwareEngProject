@@ -26,6 +26,9 @@ class AppFactory {
         else if (appName.equals("grep")) {
             return new grep();
         }
+        else if (appName.equals("find")) {
+            return new find();
+        }
         else {
             throw new RuntimeException(appName + ": unknown application");
         }
