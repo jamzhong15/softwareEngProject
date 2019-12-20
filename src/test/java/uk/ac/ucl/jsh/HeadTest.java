@@ -2,20 +2,10 @@ package uk.ac.ucl.jsh;
 
 import static org.junit.Assert.assertEquals;
 
-import java.io.BufferedReader;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
 import java.io.PrintStream;
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.Scanner;
 
 import org.junit.Rule;
@@ -26,19 +16,12 @@ public class HeadTest {
     // head 1 filename argument test  (something wrong here)
     @Test
     public void HeadOneFileNameArgumentTest() throws Exception {
-        // File file = new File("p.txt");
-        // FileInputStream fis = new FileInputStream(file);
-        // byte[] data = new byte[(int) file.length()];
-        // fis.read(data);
-        // fis.close();
-
-        // String str = new String(data, "UTF-8");
         PipedInputStream in = new PipedInputStream();
         PipedOutputStream out;
         out = new PipedOutputStream(in);
         Jsh.start("head p.txt", out);
         Scanner scn = new Scanner(in);
-        assertEquals(scn.nextLine(), "hello there");
+        assertEquals("hello there", scn.nextLine());
         scn.close();
     }
 
