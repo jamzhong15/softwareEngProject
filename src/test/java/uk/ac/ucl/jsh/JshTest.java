@@ -9,18 +9,18 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 
-@RunWith(Suite.class)
-@SuiteClasses({
-    EchoCmdTest.class,
-    CdTest.class,
-    PwdTest.class,
-    CatTest.class,
-    HeadTest.class,
-    LsTest.class,
-    TailTest.class,
-    WrongApplicationTest.class,
-    GrepTest.class
-})
+// @RunWith(Suite.class)
+// @SuiteClasses({
+//     EchoCmdTest.class,
+//     CdTest.class,
+//     PwdTest.class,
+//     CatTest.class,
+//     HeadTest.class,
+//     LsTest.class,
+//     TailTest.class,
+//     WrongApplicationTest.class,
+//     GrepTest.class
+// })
 public class JshTest {
 
     // @Test

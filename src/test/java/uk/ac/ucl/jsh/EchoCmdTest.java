@@ -10,10 +10,11 @@ import java.util.Scanner;
 public class EchoCmdTest {
     @Test
     public void echoCmdTest() throws Exception {
+        Jsh jsh = new Jsh();
         PipedInputStream in = new PipedInputStream();
         PipedOutputStream out;
         out = new PipedOutputStream(in);
-        Jsh.start("echo foo", out);
+        jsh.start("echo foo", out);
         Scanner scn = new Scanner(in);
         assertEquals(scn.next(), "foo");
         scn.close();

@@ -49,7 +49,7 @@ public class Jsh
         return isPiped;
     }
 
-    public static void start(String cmdline, OutputStream output) throws IOException 
+    public void start(String cmdline, OutputStream output) throws IOException 
     {
         // BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(output));
 
@@ -81,7 +81,8 @@ public class Jsh
                 System.out.println("jsh: " + args[0] + ": unexpected argument");
             }
             try {
-                start(args[1], System.out);
+                Jsh jsh = new Jsh();
+                jsh.start(args[1], System.out);
             } catch (Exception e) {
                 System.out.println("jsh: " + e.getMessage());
             }
@@ -98,8 +99,9 @@ public class Jsh
                     System.out.print(prompt);
                     try 
                     {
+                        Jsh jsh = new Jsh();
                         String cmdline = input.nextLine();
-                        start(cmdline, System.out);
+                        jsh.start(cmdline, System.out);
                     } 
                     catch (Exception e) 
                     {
@@ -114,6 +116,4 @@ public class Jsh
         }
     }
 
-	public static void eval(String string, PrintStream out) {
-	}
 }

@@ -35,17 +35,18 @@ public class LsTest {
         if (atLeastOnePrinted) {
             listString.concat("\r\n");
         }
-        Jsh.start("ls", System.out);
-        assertEquals("analysis	test	Dockerfile	target	pom.xml	jsh	README.md	p.txt	coverage	src", listString);
+        jsh.start("ls", System.out);
+        assertEquals("analysis	test	Dockerfile	target	pom.xml	jsh	README.md	coverage	src", listString);
     }
 
     // ls one argument test
     @Test
     public void lsWithOneArgument() throws Exception {
+        Jsh jsh = new Jsh();
         PipedInputStream in = new PipedInputStream();
         PipedOutputStream out;
         out = new PipedOutputStream(in);        
-        Jsh.start("ls src", out);
+        jsh.start("ls src", out);
         Scanner scn = new Scanner(in);
         assertEquals("test", scn.next());
         scn.close();
@@ -57,21 +58,23 @@ public class LsTest {
 
     @Test
     public void lsTooManyArgumentsThrowsException() throws RuntimeException, IOException {
-    PrintStream console = null;
-    console = System.out;
-    thrown.expect(RuntimeException.class);
-    thrown.expectMessage("ls: too many arguments");
-    Jsh.start("ls arg1 arg2", console);
+        Jsh jsh = new Jsh();
+        PrintStream console = null;
+        console = System.out;
+        thrown.expect(RuntimeException.class);
+        thrown.expectMessage("ls: too many arguments");
+        jsh.start("ls arg1 arg2", console);
     }
 
     // no such directory test
     @Test
     public void lsNoSuchDirectoryThrowsException() throws RuntimeException, IOException {
-    PrintStream console = null;
+        Jsh jsh = new Jsh();
+        PrintStream console = null;
 
-    console = System.out;
-    thrown.expect(RuntimeException.class);
-    thrown.expectMessage("ls: no such directory");
-    Jsh.start("ls xxx", console);
+        console = System.out;
+        thrown.expect(RuntimeException.class);
+        thrown.expectMessage("ls: no such directory");
+        jsh.start("ls xxx", console);
     }
 }
