@@ -306,8 +306,11 @@ class grep implements AppCase {
     public void runCommand(ArrayList<String> appArgs, String currentDirectory, InputStream input, OutputStream output)
             throws IOException {
         OutputStreamWriter writer = new OutputStreamWriter(output);
+        if (appArgs.size() == 0) {
+            throw new RuntimeException("grep: wrong number of argument");
+        }
 
-        if (appArgs.size() < 2) {
+        if (appArgs.size()  == 1) { 
             // throw new RuntimeException("grep: wrong number of arguments");
             Pattern grepPattern = Pattern.compile(appArgs.get(0));
             try (BufferedReader reader = new BufferedReader(new InputStreamReader(input))) {
@@ -359,6 +362,68 @@ class grep implements AppCase {
     }
 
 }
+
+class find implements AppCase
+{
+
+    @Override
+    public void runCommand(ArrayList<String> appArgs, String currentDirectory, InputStream input, OutputStream output)
+            throws IOException {
+
+                if (appArgs.size() < 2)  
+                {
+                    throw new RuntimeException("find: missing arguments");
+                }
+                else if (appArgs.size() == 2)  
+                {
+                    if(!appArgs.get(0).equals("-name"))
+                    {
+                        throw new RuntimeException("find: invalid arguments"); 
+                    }
+                    File currDir = new File(currentDirectory);
+                    String pattern = appArgs.get(1);
+                    printFiles(currDir, currDir, pattern, output);
+                }  
+
+
+    }
+
+    public void printFiles(File baseDirectory, File directory, String pattern, OutputStream output)
+    {
+        OutputStreamWriter writer = new OutputStreamWriter(output);
+        if(directory.isDirectory())
+        {
+            File[] subDir = directory.listFiles();
+
+            for(File file: subDir)
+            {
+                printFiles(baseDirectory, file,  pattern, output);
+            }
+        }
+        else
+        {
+            if(directory.getName().contains(pattern))
+            {
+                String base = baseDirectory.getPath();
+                String curr = directory.getPath();
+                String relative = "." + curr.substring(base.length());
+
+                try {
+                writer.write(relative + "\n");
+                writer.flush();
+                } catch (IOException e) {
+                e.printStackTrace();
+                }
+            }
+
+        }
+
+    }
+
+}
+
+
+
 
 
     
