@@ -305,6 +305,9 @@ class grep implements AppCase {
     public void runCommand(ArrayList<String> appArgs, String currentDirectory, InputStream input, OutputStream output)
             throws IOException {
         OutputStreamWriter writer = new OutputStreamWriter(output);
+        if (appArgs.size() == 0) {
+            throw new RuntimeException("grep: wrong number of argument");
+        }
 
         if (appArgs.size() == 0)
         {
@@ -322,9 +325,7 @@ class grep implements AppCase {
                         writer.flush();
                     }
                 }
-            } catch (IOException e) {
-                throw new RuntimeException("grep: cannot read from stdInput");
-            }
+            } 
         }
         else
         {
