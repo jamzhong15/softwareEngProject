@@ -14,34 +14,36 @@ public class CdTest {
 
     @Test
     public void cdMissingArgumentThrowsException() throws RuntimeException, IOException {
-    PrintStream console = null;
-
-    console = System.out;
-    thrown.expect(RuntimeException.class);
-    thrown.expectMessage("cd: missing argument");
-    Jsh.start("cd", console);
+        Jsh jsh = new Jsh();
+        PrintStream console = null;
+        console = System.out;
+        thrown.expect(RuntimeException.class);
+        thrown.expectMessage("cd: missing argument");
+        jsh.start("cd", console);
     }
 
     // cd too many arguments test 
     @Test
     public void cdTooManyArgumentsThrowsException() throws RuntimeException, IOException {
-    PrintStream console = null;
+        PrintStream console = null;
+        Jsh jsh = new Jsh();
 
-    console = System.out; 
-    thrown.expect(RuntimeException.class);
-    thrown.expectMessage("cd: too many arguments");
-    Jsh.start("cd arg1 arg2", console);
+        console = System.out; 
+        thrown.expect(RuntimeException.class);
+        thrown.expectMessage("cd: too many arguments");
+        jsh.start("cd arg1 arg2", console);
     }
 
     // cd cannot find directory
     @Test
     public void cdNoExistingDirectoryThrowsException() throws RuntimeException, IOException {
-    PrintStream console = null;
+        Jsh jsh = new Jsh();
+        PrintStream console = null;
 
-    console = System.out;
-    thrown.expect(RuntimeException.class);
-    thrown.expectMessage("cd: xxx is not an existing directory");
+        console = System.out;
+        thrown.expect(RuntimeException.class);
+        thrown.expectMessage("cd: xxx is not an existing directory");
 
-    Jsh.start("cd xxx", console);
+        jsh.start("cd xxx", console);
     }
 }

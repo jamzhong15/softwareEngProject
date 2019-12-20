@@ -14,11 +14,12 @@ public class WrongApplicationTest {
 
     @Test
     public void WrongAppName() throws RuntimeException, IOException {
+        Jsh jsh = new Jsh();
         PrintStream console = null;
     
         console = System.out;
         thrown.expect(RuntimeException.class);
         thrown.expectMessage("xx: unknown application");
-        Jsh.start("xx", console);
+        jsh.start("xx", console);
     }
 }

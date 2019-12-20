@@ -7,15 +7,12 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
-import java.io.PipedInputStream;
-import java.io.PipedOutputStream;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Stack;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -312,8 +309,11 @@ class grep implements AppCase {
             throw new RuntimeException("grep: wrong number of argument");
         }
 
-        if (appArgs.size()  == 1) { 
-            // throw new RuntimeException("grep: wrong number of arguments");
+        if (appArgs.size() == 0)
+        {
+            throw new RuntimeException("grep: wrong number of arguments");
+        }
+        if (appArgs.size() == 1) {
             Pattern grepPattern = Pattern.compile(appArgs.get(0));
             try (BufferedReader reader = new BufferedReader(new InputStreamReader(input))) {
                 String line = null;
@@ -360,5 +360,38 @@ class grep implements AppCase {
             }
         }
     }
+}
 
+class sed implements AppCase {
+
+    @Override
+    public void runCommand(ArrayList<String> appArgs, String currentDirectory, InputStream input, OutputStream output)
+            throws IOException {
+        // sed REPLACEMENT [FILE]
+        // REPLACEMENT :: s/regexp/replacement/
+        //                s/regexp/replacement/g
+
+        if (appArgs.size() == 0)
+        {
+            throw new RuntimeException("sed: wrong number of arguments");
+        }
+
+        if (appArgs.size() == 1) // read FILE from standard input
+        {
+
+        }
+        else
+        {
+            String replacement = appArgs.get(0);
+            String delimiter = "\\|'\\|'";
+            String[] replacementArgs = replacement.split(delimiter);
+            // prints the count of tokens
+            System.out.println("Count of tokens = " + replacementArgs.length);
+            
+            for(String token : replacementArgs) {
+                System.out.print(token);
+            } 
+        }
+
+    }
 }

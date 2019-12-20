@@ -9,15 +9,17 @@ import java.util.Scanner;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
+import org.junit.After;
 
 public class GrepTest {
     // grep with 2 arguments
     @Test
     public void GrepWIthTwoArgumentsTest() throws Exception {
+        Jsh jsh = new Jsh();
         PipedInputStream in = new PipedInputStream();
         PipedOutputStream out;
         out = new PipedOutputStream(in);
-        Jsh.start("grep pwd test", out);
+        jsh.start("grep pwd test", out);
         Scanner scn = new Scanner(in);
         assertEquals("JSH_ROOT=\"$( cd \"$( dirname \"${BASH_SOURCE[0]}\" )\" >/dev/null 2>&1 && pwd )\"", scn.nextLine());
         scn.close();
@@ -26,10 +28,11 @@ public class GrepTest {
     // grep with 1 argument (match argument with standin)
     @Test
     public void GrepWithOneArgumentTest() throws Exception {
+        Jsh jsh = new Jsh();
         PipedInputStream in = new PipedInputStream();
         PipedOutputStream out;
         out = new PipedOutputStream(in);
-        Jsh.start("cat test | grep JSH_ROOT", out);
+        jsh.start("cat test | grep JSH_ROOT", out);
         Scanner scn = new Scanner(in);
         assertEquals("JSH_ROOT=\"$( cd \"$( dirname \"${BASH_SOURCE[0]}\" )\" >/dev/null 2>&1 && pwd )\"", scn.nextLine());
         scn.close();
@@ -41,29 +44,37 @@ public class GrepTest {
     // wrong file argument
     @Test
     public void GrepWrongFileArgumentTest() throws Exception {
+        Jsh jsh = new Jsh();
         thrown.expect(RuntimeException.class);
         thrown.expectMessage("grep: wrong file argument");
-        Jsh.start("grep xx xx", System.out);
+        jsh.start("grep xx xx", System.out);
     }
 
    // wrong number of argument
     @Test
     public void GrepWrongNoOfArgumentTest() throws Exception {
+        Jsh jsh = new Jsh();
         thrown.expect(RuntimeException.class);
         thrown.expectMessage("grep: wrong number of argument");
-        Jsh.start("grep", System.out);
+        jsh.start("grep", System.out);
     }
 
-    // // cannot open file 
-    // @Test
-    // public void GrepCannotOpenFileTest() throws Exception {
-    //     thrown.expect(RuntimeException.class);
-    //     thrown.expectMessage("grep: cannot open jsh-1.0-SNAPSHOT-jar-with-dependencies.jar");
-    //     Jsh.start("cd target", System.out);
-    //     Jsh.start("grep x jsh-1.0-SNAPSHOT-jar-with-dependencies.jar", System.out);
-    // }
+    // cannot open file 
+    @Test
+    public void GrepCannotOpenFileTest() throws Exception {
+        Jsh jsh = new Jsh();
+        thrown.expect(RuntimeException.class);
+        thrown.expectMessage("grep: cannot open jsh-1.0-SNAPSHOT-jar-with-dependencies.jar");
+        jsh.start("cd target", System.out);
+        jsh.start("grep x jsh-1.0-SNAPSHOT-jar-with-dependencies.jar", System.out);
+    }
 
-
+    @After
+    public void resetDirectory()
+    {
+        Jsh jsh = new Jsh();
+        jsh.setcurrentDirectory(System.getProperty("user.dir"));
+    }
 }
 
 

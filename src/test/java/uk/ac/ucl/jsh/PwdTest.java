@@ -11,14 +11,14 @@ import java.util.Scanner;
 public class PwdTest {
     @Test
     public void pwdTest() throws IOException {
+        Jsh jsh = new Jsh();
         PipedInputStream in = new PipedInputStream();
         PipedOutputStream out;
         out = new PipedOutputStream(in);
-        Jsh.start("pwd", out);
+        jsh.start("pwd", out);
         Scanner scn = new Scanner(in);
-        Jsh jsh = new Jsh();
         String currentDirectory = jsh.getcurrentDirectory();
-        assertEquals(scn.next() , currentDirectory);
+        assertEquals(currentDirectory, scn.next());
         scn.close();
     }
 
