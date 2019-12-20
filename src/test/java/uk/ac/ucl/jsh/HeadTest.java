@@ -19,38 +19,26 @@ import org.junit.rules.ExpectedException;
 
 public class HeadTest {
 
-    // @Before
-    // public void buildTestFile() throws IOException
-    // {
-    //     String absoluteFilePath = System.getProperty("user.dir") + File.separator + "head_test.txt";
-    //     File testFile = new File(absoluteFilePath);
-    //     ArrayList<String> testedStrings = new ArrayList<>();
-    //     testedStrings.add("first line\n");
-    //     testedStrings.add("second line");
-    //     FileOutputStream file_writer = new FileOutputStream(testFile);
-    //     for (String string : testedStrings)
-    //     {
-    //         file_writer.write(string.getBytes());
-    //     }
-    //     file_writer.close();
-    // }
-
-    // head 1 filename argument test  (something wrong here)
-    @Test
-    public void HeadOneFileNameArgumentTest() throws Exception {
-        Jsh jsh = new Jsh();
-
-        // String absoluteFilePath = System.getProperty("user.dir") + File.separator + "head_test.txt";
-        // File testFile = new File(absoluteFilePath);
+    @Before
+    public void buildTestFile() throws IOException
+    {
+        String absoluteFilePath = System.getProperty("user.dir") + File.separator + "head_test.txt";
+        File testFile = new File(absoluteFilePath);
         ArrayList<String> testedStrings = new ArrayList<>();
         testedStrings.add("first line\n");
         testedStrings.add("second line");
-        FileOutputStream file_writer = new FileOutputStream("head_test.txt");
+        FileOutputStream file_writer = new FileOutputStream(testFile);
         for (String string : testedStrings)
         {
             file_writer.write(string.getBytes());
         }
         file_writer.close();
+    }
+
+    // head 1 filename argument test  (something wrong here)
+    @Test
+    public void HeadOneFileNameArgumentTest() throws Exception {
+        Jsh jsh = new Jsh();
 
         PipedInputStream in = new PipedInputStream();
         PipedOutputStream out;
@@ -59,12 +47,6 @@ public class HeadTest {
         Scanner scn = new Scanner(in);
         assertEquals("first line", scn.nextLine());
         scn.close();
-
-        File file = new File("head_test.txt");
-        file.delete();
-
-
-
     }
 
     // head 3 arguments test sth wrong here also
@@ -156,10 +138,10 @@ public class HeadTest {
         jsh.start("head target", console);
     }
 
-    // @After
-    // public void deleteTestFile()
-    // {
-    //     File file = new File("head_test.txt");
-    //     file.delete();
-    // }
+    @After
+    public void deleteTestFile()
+    {
+        File file = new File("head_test.txt");
+        file.delete();
+    }
 }
