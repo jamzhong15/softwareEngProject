@@ -53,6 +53,17 @@ public class GrepTest {
         thrown.expectMessage("grep: wrong number of argument");
         Jsh.start("grep", System.out);
     }
+
+    // cannot open file 
+    @Test
+    public void GrepCannotOpenFileTest() throws Exception {
+        thrown.expect(RuntimeException.class);
+        thrown.expectMessage("grep: cannot open jsh-1.0-SNAPSHOT-jar-with-dependencies.jar");
+        Jsh.start("cd target", System.out);
+        Jsh.start("grep x jsh-1.0-SNAPSHOT-jar-with-dependencies.jar", System.out);
+    }
+
+
 }
 
 
