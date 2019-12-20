@@ -9,6 +9,7 @@ import java.util.Scanner;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
+import org.junit.After;
 
 public class GrepTest {
     // grep with 2 arguments
@@ -59,16 +60,21 @@ public class GrepTest {
     }
 
     // cannot open file 
-    // @Test
-    // public void GrepCannotOpenFileTest() throws Exception {
-    //     Jsh jsh = new Jsh();
-    //     thrown.expect(RuntimeException.class);
-    //     thrown.expectMessage("grep: cannot open jsh-1.0-SNAPSHOT-jar-with-dependencies.jar");
-    //     jsh.start("cd target", System.out);
-    //     jsh.start("grep x jsh-1.0-SNAPSHOT-jar-with-dependencies.jar", System.out);
-    // }
+    @Test
+    public void GrepCannotOpenFileTest() throws Exception {
+        Jsh jsh = new Jsh();
+        thrown.expect(RuntimeException.class);
+        thrown.expectMessage("grep: cannot open jsh-1.0-SNAPSHOT-jar-with-dependencies.jar");
+        jsh.start("cd target", System.out);
+        jsh.start("grep x jsh-1.0-SNAPSHOT-jar-with-dependencies.jar", System.out);
+    }
 
-
+    @After
+    public void resetDirectory()
+    {
+        Jsh jsh = new Jsh();
+        jsh.setcurrentDirectory(System.getProperty("user.dir"));
+    }
 }
 
 
