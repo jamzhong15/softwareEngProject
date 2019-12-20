@@ -18,7 +18,7 @@ public class PwdTest {
         jsh.start("pwd", out);
         Scanner scn = new Scanner(in);
         String currentDirectory = jsh.getcurrentDirectory();
-        assertEquals(scn.next() , currentDirectory);
+        assertEquals(currentDirectory, scn.next());
         scn.close();
     }
 

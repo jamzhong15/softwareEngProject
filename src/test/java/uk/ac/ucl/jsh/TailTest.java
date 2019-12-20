@@ -23,14 +23,26 @@ import org.junit.rules.ExpectedException;
 
 public class TailTest {
 
+    @Before
+    public void buildTestFile() throws IOException
+    {
+        String absoluteFilePath = System.getProperty("user.dir") + File.separator + "tail_test.txt";
+        File testFile = new File(absoluteFilePath);
+        ArrayList<String> testedStrings = new ArrayList<>();
+        testedStrings.add("first line\n");
+        testedStrings.add("second line");
+        FileOutputStream file_writer = new FileOutputStream(testFile);
+        for (String string : testedStrings)
+        {
+            file_writer.write(string.getBytes());
+        }
+        file_writer.close();
+    }
+
     // tail 1 filename argument test something wrong here
     @Test
     public void TailOneFileNameArgumentTest() throws Exception {
         Jsh jsh = new Jsh();
-        ArrayList<String> testedStrings = new ArrayList<>();
-        testedStrings.add("first line\n");
-        testedStrings.add("second line");
-        buildTestFile(testedStrings);
         
         PipedInputStream in = new PipedInputStream();
         PipedOutputStream out;
@@ -39,19 +51,12 @@ public class TailTest {
         Scanner scn = new Scanner(in);
         assertEquals("first line", scn.nextLine());
         scn.close();
-
-        File file = new File("tail_test.txt");
-        file.delete();
     }
 
     // tail with 3 arguments test something wrong also
     @Test
     public void TailThreeArgumentsTest() throws Exception {
         Jsh jsh = new Jsh();
-        ArrayList<String> testedStrings = new ArrayList<>();
-        testedStrings.add("first line\n");
-        testedStrings.add("second line");
-        buildTestFile(testedStrings);
 
         PipedInputStream in = new PipedInputStream();
         PipedOutputStream out;
@@ -130,18 +135,6 @@ public class TailTest {
         thrown.expect(RuntimeException.class);
         thrown.expectMessage("tail: cannot open target");
         jsh.start("tail target", console);
-    }
-
-    private void buildTestFile(ArrayList<String> testedStrings) throws IOException
-    {
-        String absoluteFilePath = System.getProperty("user.dir") + File.separator + "tail_test.txt";
-        File testFile = new File(absoluteFilePath);
-        FileOutputStream file_writer = new FileOutputStream(testFile);
-        for (String string : testedStrings)
-        {
-            file_writer.write(string.getBytes());
-        }
-        file_writer.close();
     }
 
     @After

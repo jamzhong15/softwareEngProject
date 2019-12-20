@@ -2,10 +2,7 @@ package uk.ac.ucl.jsh;
 
 import static org.junit.Assert.assertEquals;
 
-import java.io.BufferedReader;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PipedInputStream;
@@ -15,19 +12,45 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 import org.junit.After;
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
 public class HeadTest {
+
+    // @Before
+    // public void buildTestFile() throws IOException
+    // {
+    //     String absoluteFilePath = System.getProperty("user.dir") + File.separator + "head_test.txt";
+    //     File testFile = new File(absoluteFilePath);
+    //     ArrayList<String> testedStrings = new ArrayList<>();
+    //     testedStrings.add("first line\n");
+    //     testedStrings.add("second line");
+    //     FileOutputStream file_writer = new FileOutputStream(testFile);
+    //     for (String string : testedStrings)
+    //     {
+    //         file_writer.write(string.getBytes());
+    //     }
+    //     file_writer.close();
+    // }
+
     // head 1 filename argument test  (something wrong here)
     @Test
     public void HeadOneFileNameArgumentTest() throws Exception {
-        ArrayList<String> testedStrings = new ArrayList<>();
         Jsh jsh = new Jsh();
+
+        // String absoluteFilePath = System.getProperty("user.dir") + File.separator + "head_test.txt";
+        // File testFile = new File(absoluteFilePath);
+        ArrayList<String> testedStrings = new ArrayList<>();
         testedStrings.add("first line\n");
         testedStrings.add("second line");
-        buildTestFile(testedStrings);
+        FileOutputStream file_writer = new FileOutputStream("head_test.txt");
+        for (String string : testedStrings)
+        {
+            file_writer.write(string.getBytes());
+        }
+        file_writer.close();
 
         PipedInputStream in = new PipedInputStream();
         PipedOutputStream out;
@@ -36,16 +59,18 @@ public class HeadTest {
         Scanner scn = new Scanner(in);
         assertEquals("first line", scn.nextLine());
         scn.close();
+
+        File file = new File("head_test.txt");
+        file.delete();
+
+
+
     }
 
     // head 3 arguments test sth wrong here also
     @Test
     public void HeadThreeArgumentsTest() throws Exception {
         Jsh jsh = new Jsh();
-        ArrayList<String> testedStrings = new ArrayList<>();
-        testedStrings.add("first line\n");
-        testedStrings.add("second line");
-        buildTestFile(testedStrings);
 
         PipedInputStream in = new PipedInputStream();
         PipedOutputStream out;
@@ -131,21 +156,10 @@ public class HeadTest {
         jsh.start("head target", console);
     }
 
-    private void buildTestFile(ArrayList<String> testedStrings) throws IOException
-    {
-        FileOutputStream file_writer = new FileOutputStream("head_test.txt");
-
-        for (String string : testedStrings)
-        {
-            file_writer.write(string.getBytes());
-        }
-        file_writer.close();
-    }
-
-    @After
-    public void deleteTestFile()
-    {
-        File file = new File("head_test.txt");
-        file.delete();
-    }
+    // @After
+    // public void deleteTestFile()
+    // {
+    //     File file = new File("head_test.txt");
+    //     file.delete();
+    // }
 }
