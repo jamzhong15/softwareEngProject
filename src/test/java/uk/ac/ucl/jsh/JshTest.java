@@ -8,7 +8,13 @@ import org.junit.runners.Suite.SuiteClasses;
 @SuiteClasses({
     EchoCmdTest.class,
     CdTest.class,
-    PwdTest.class
+    PwdTest.class,
+    CatTest.class,
+    HeadTest.class,
+    LsTest.class,
+    TailTest.class,
+    WrongApplicationTest.class,
+    GrepTest.class
 })
 public class JshTest {
     
