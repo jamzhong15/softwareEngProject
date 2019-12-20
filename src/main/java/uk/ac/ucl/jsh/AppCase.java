@@ -305,9 +305,15 @@ class grep implements AppCase {
     public void runCommand(ArrayList<String> appArgs, String currentDirectory, InputStream input, OutputStream output)
             throws IOException {
         OutputStreamWriter writer = new OutputStreamWriter(output);
+        if (appArgs.size() == 0) {
+            throw new RuntimeException("grep: wrong number of argument");
+        }
 
-        if (appArgs.size() < 2) {
-            // throw new RuntimeException("grep: wrong number of arguments");
+        if (appArgs.size() == 0)
+        {
+            throw new RuntimeException("grep: wrong number of arguments");
+        }
+        if (appArgs.size() == 1) {
             Pattern grepPattern = Pattern.compile(appArgs.get(0));
             try (BufferedReader reader = new BufferedReader(new InputStreamReader(input))) {
                 String line = null;
@@ -319,9 +325,7 @@ class grep implements AppCase {
                         writer.flush();
                     }
                 }
-            } catch (IOException e) {
-                throw new RuntimeException("grep: cannot read from stdInput");
-            }
+            } 
         }
         else
         {
@@ -356,5 +360,38 @@ class grep implements AppCase {
             }
         }
     }
+}
 
+class sed implements AppCase {
+
+    @Override
+    public void runCommand(ArrayList<String> appArgs, String currentDirectory, InputStream input, OutputStream output)
+            throws IOException {
+        // sed REPLACEMENT [FILE]
+        // REPLACEMENT :: s/regexp/replacement/
+        //                s/regexp/replacement/g
+
+        if (appArgs.size() == 0)
+        {
+            throw new RuntimeException("sed: wrong number of arguments");
+        }
+
+        if (appArgs.size() == 1) // read FILE from standard input
+        {
+
+        }
+        else
+        {
+            String replacement = appArgs.get(0);
+            String delimiter = "\\|'\\|'";
+            String[] replacementArgs = replacement.split(delimiter);
+            // prints the count of tokens
+            System.out.println("Count of tokens = " + replacementArgs.length);
+            
+            for(String token : replacementArgs) {
+                System.out.print(token);
+            } 
+        }
+
+    }
 }
