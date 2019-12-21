@@ -24,14 +24,6 @@ public class LsTest {
         File currDir = new File(currentDirectory);
         ArrayList<String> listFiles = new ArrayList<>();
         File[] listOfFiles = currDir.listFiles();
-        // boolean atLeastOnePrinted = false;
-        
-
-
-        // String listString = String.join("\t", listFiles);
-        // if (atLeastOnePrinted) {
-        //     listString.concat("\r\n");
-        // }
 
         PipedInputStream in = new PipedInputStream();
         PipedOutputStream out = new PipedOutputStream(in);
@@ -40,14 +32,13 @@ public class LsTest {
         String contentString = scn.nextLine();
         String[] files = contentString.split("\t");
         
+        // obtaining expected files names
         for (File file : listOfFiles) {
             if (!file.getName().startsWith(".")) 
             {
                 listFiles.add(file.getName().toString());
-                // atLeastOnePrinted = true;
             }
         }
-
         for (String fileName : files)
         {
             assertTrue(fileName, listFiles.contains(fileName));
