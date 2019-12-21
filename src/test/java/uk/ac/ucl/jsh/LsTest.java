@@ -5,6 +5,7 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
@@ -20,23 +21,38 @@ public class LsTest {
     public void lsWithoutArgument() throws Exception {
         Jsh jsh = new Jsh();
         String currentDirectory = jsh.getcurrentDirectory();
-        File currDir;
-        currDir = new File(currentDirectory);
+        File currDir = new File(currentDirectory);
         ArrayList<String> listFiles = new ArrayList<>();
         File[] listOfFiles = currDir.listFiles();
-        boolean atLeastOnePrinted = false;
+        // boolean atLeastOnePrinted = false;
+        
+
+
+        // String listString = String.join("\t", listFiles);
+        // if (atLeastOnePrinted) {
+        //     listString.concat("\r\n");
+        // }
+
+        PipedInputStream in = new PipedInputStream();
+        PipedOutputStream out = new PipedOutputStream(in);
+        jsh.start("ls", out);
+        Scanner scn = new Scanner(in);
+        String contentString = scn.nextLine();
+        String[] files = contentString.split("\t");
+        
         for (File file : listOfFiles) {
-            if (!file.getName().startsWith(".")) {
+            if (!file.getName().startsWith(".")) 
+            {
                 listFiles.add(file.getName().toString());
-                atLeastOnePrinted = true;
+                // atLeastOnePrinted = true;
             }
         }
-        String listString = String.join("\t", listFiles);
-        if (atLeastOnePrinted) {
-            listString.concat("\r\n");
+
+        for (String fileName : files)
+        {
+            assertTrue(fileName, listFiles.contains(fileName));
         }
-        jsh.start("ls", System.out);
-        assertEquals("analysis	test	Dockerfile	target	pom.xml	jsh	README.md	coverage	src", listString);
+        
     }
 
     // ls one argument test
