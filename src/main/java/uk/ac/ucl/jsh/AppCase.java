@@ -139,37 +139,6 @@ class cat implements AppCase {
     }
 }
 
-class echo2 implements AppCase {
-
-@Override
-public void runCommand(ArrayList<String> appArgs, String currentDirectory,
-                                InputStream input, OutputStream output)
-                                                throws IOException {
-OutputStreamWriter writer = new OutputStreamWriter(output);
-
-boolean atLeastOnePrinted = false;
-for (String arg : appArgs) {
-writer.write(arg);
-writer.write(" ");
-writer.flush();
-atLeastOnePrinted = true;
-}
-BufferedReader br = new BufferedReader(new InputStreamReader(input));
-String line;
-while((line = br.readLine()) != null) {
-writer.write(line);
-writer.write(" ");
-writer.flush();
-atLeastOnePrinted = true;
-}
-if (atLeastOnePrinted) {
-writer.write(System.getProperty("line.separator"));
-writer.flush();
-}
-}
-
-}
-
 class echo implements AppCase {
 
     @Override
@@ -359,13 +328,15 @@ class grep implements AppCase {
 }
 
 class sed implements AppCase {
+    
+    // sed REPLACEMENT [FILE]
+    // REPLACEMENT :: s/regexp/replacementString/
+    //                s/regexp/replacementString/g
 
     @Override
     public void runCommand(ArrayList<String> appArgs, String currentDirectory, InputStream input, OutputStream output)
             throws IOException {
-        // sed REPLACEMENT [FILE]
-        // REPLACEMENT :: s/regexp/replacementString/
-        //                s/regexp/replacementString/g
+        OutputStreamWriter writer = new OutputStreamWriter(output);
 
         if (appArgs.size() == 0){throw new RuntimeException("sed: wrong number of arguments");}
         
@@ -385,16 +356,36 @@ class sed implements AppCase {
             else {throw new RuntimeException("sed: wrong global spedifier, replace "+delimiter+replacementArgs[4]+ " with "+delimiter+"g");}
         }
         
-        if (appArgs.size() == 1) // read FILE from standard input
+        if (appArgs.size() == 1) // read strings from standard input, and print to stdard output
         {
             try (BufferedReader stdinReader = new BufferedReader(new InputStreamReader(input)))
             {
-                String fileNameInStdin = null;
-                while ((fileNameInStdin = stdinReader.readLine()) != null) 
+                StringBuffer replacedString = new StringBuffer();
+                String stringInStdin = null;
+                while ((stringInStdin = stdinReader.readLine()) != null) 
                 {
-                    String arg = fileNameInStdin;
-                    editFile(currentDirectory, arg, replacement, regexPattern, regexp, replacementString, global);
+                    Matcher matcher = regexPattern.matcher(stringInStdin);
+                    if (matcher.find())
+                    {
+                        String newLine;
+                        if (global == true){newLine = stringInStdin.replaceAll(regexp, replacementString);}
+                        else {newLine = stringInStdin.replaceFirst(regexp, replacementString);}
+                        replacedString.append(newLine);
+                        replacedString.append('\n');
+                    }
+                    else
+                    {
+                        replacedString.append(stringInStdin);
+                        replacedString.append('\n');
+                    }
                 }
+                String inputStr = replacedString.toString();
+                writer.write(inputStr);
+                writer.flush();
+            }
+            catch (NullPointerException e)
+            {
+                throw new RuntimeException("sed: cannot read from stdin, please provide filename");
             }
         }
         else // read from files
