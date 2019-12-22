@@ -277,8 +277,8 @@ class grep implements AppCase {
             throws IOException {
         OutputStreamWriter writer = new OutputStreamWriter(output);
 
-        if (appArgs.size() == 0) {
-            throw new RuntimeException("grep: wrong number of arguments");
+        if (appArgs.isEmpty()) {
+            throw new RuntimeException("grep: missing arguments");
         }
         if (appArgs.size() == 1) {
             Pattern grepPattern = Pattern.compile(appArgs.get(0));
@@ -338,7 +338,7 @@ class sed implements AppCase {
             throws IOException {
         OutputStreamWriter writer = new OutputStreamWriter(output);
 
-        if (appArgs.size() == 0){throw new RuntimeException("sed: wrong number of arguments");}
+        if (appArgs.isEmpty()){throw new RuntimeException("sed: missing arguments");}
         
         // first SYMBOL after s is used as delimiter for extracting regexp and replacement
         String replacement = appArgs.get(0);
@@ -388,7 +388,7 @@ class sed implements AppCase {
                 throw new RuntimeException("sed: cannot read from stdin, please provide filename");
             }
         }
-        else // read from files
+        else // read from files, and operate on file contents
         {
             int i;
             for (i = 1; i<appArgs.size() ;i++)

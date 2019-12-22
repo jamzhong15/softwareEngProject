@@ -11,6 +11,7 @@ import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Scanner;
 
+import org.hamcrest.CoreMatchers;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
@@ -75,7 +76,7 @@ public class TailTest {
         PrintStream console = null;
         console = System.out;
         thrown.expect(RuntimeException.class);
-        thrown.expectMessage("tail: missing arguments");
+        thrown.expectMessage(CoreMatchers.equalTo("tail: missing arguments"));
         jsh.start("tail", console);
     }
 
@@ -86,7 +87,7 @@ public class TailTest {
         PrintStream console = null;
         console = System.out;
         thrown.expect(RuntimeException.class);
-        thrown.expectMessage("tail: wrong arguments");
+        thrown.expectMessage(CoreMatchers.equalTo("tail: wrong arguments"));
         jsh.start("tail -n Dockerfile", console);
     }
     
@@ -97,7 +98,7 @@ public class TailTest {
         PrintStream console = null;
         console = System.out;
         thrown.expect(RuntimeException.class);
-        thrown.expectMessage("tail: wrong argument -s");
+        thrown.expectMessage(CoreMatchers.equalTo("tail: wrong argument -s"));
         jsh.start("tail -s 3 Dockerfile", console);
     }
 
@@ -108,7 +109,7 @@ public class TailTest {
         PrintStream console = null;
         console = System.out;
         thrown.expect(RuntimeException.class);
-        thrown.expectMessage("tail: wrong argument s");
+        thrown.expectMessage(CoreMatchers.equalTo("tail: wrong argument s"));
         jsh.start("tail -n s Dockerfile", console);
     }
 
@@ -119,7 +120,7 @@ public class TailTest {
         PrintStream console = null;
         console = System.out;
         thrown.expect(RuntimeException.class);
-        thrown.expectMessage("tail: xxx does not exist");
+        thrown.expectMessage(CoreMatchers.equalTo("tail: xxx does not exist"));
         jsh.start("tail -n 3 xxx", console);
     }
     
@@ -130,7 +131,7 @@ public class TailTest {
         PrintStream console = null;
         console = System.out;
         thrown.expect(RuntimeException.class);
-        thrown.expectMessage("tail: cannot open target");
+        thrown.expectMessage(CoreMatchers.equalTo("tail: cannot open target"));
         jsh.start("tail target", console);
     }
 

@@ -1,5 +1,6 @@
 package uk.ac.ucl.jsh;
 
+import org.hamcrest.CoreMatchers;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -69,7 +70,7 @@ public class LsTest {
         PrintStream console = null;
         console = System.out;
         thrown.expect(RuntimeException.class);
-        thrown.expectMessage("ls: too many arguments");
+        thrown.expectMessage(CoreMatchers.equalTo("ls: too many arguments"));
         jsh.start("ls arg1 arg2", console);
     }
 
@@ -81,7 +82,7 @@ public class LsTest {
 
         console = System.out;
         thrown.expect(RuntimeException.class);
-        thrown.expectMessage("ls: no such directory");
+        thrown.expectMessage(CoreMatchers.equalTo("ls: no such directory"));
         jsh.start("ls xxx", console);
     }
 }

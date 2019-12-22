@@ -1,5 +1,6 @@
 package uk.ac.ucl.jsh;
 
+import org.hamcrest.CoreMatchers;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -18,7 +19,7 @@ public class CdTest {
         PrintStream console = null;
         console = System.out;
         thrown.expect(RuntimeException.class);
-        thrown.expectMessage("cd: missing argument");
+        thrown.expectMessage(CoreMatchers.equalTo("cd: missing argument"));
         jsh.start("cd", console);
     }
 
@@ -30,7 +31,7 @@ public class CdTest {
 
         console = System.out; 
         thrown.expect(RuntimeException.class);
-        thrown.expectMessage("cd: too many arguments");
+        thrown.expectMessage(CoreMatchers.equalTo("cd: too many arguments"));
         jsh.start("cd arg1 arg2", console);
     }
 
@@ -42,7 +43,7 @@ public class CdTest {
 
         console = System.out;
         thrown.expect(RuntimeException.class);
-        thrown.expectMessage("cd: xxx is not an existing directory");
+        thrown.expectMessage(CoreMatchers.equalTo("cd: xxx is not an existing directory"));
 
         jsh.start("cd xxx", console);
     }

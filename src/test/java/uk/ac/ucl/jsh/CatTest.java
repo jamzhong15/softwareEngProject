@@ -8,6 +8,7 @@ import java.io.PipedOutputStream;
 import java.io.PrintStream;
 import java.util.Scanner;
 
+import org.hamcrest.CoreMatchers;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -36,7 +37,7 @@ public class CatTest {
         PrintStream console = null;
         console = System.out;
         thrown.expect(RuntimeException.class);
-        thrown.expectMessage("cat: cannot open src");
+        thrown.expectMessage(CoreMatchers.equalTo("cat: cannot open src"));
         jsh.start("cat src", console);
     }
 
@@ -47,7 +48,7 @@ public class CatTest {
         PrintStream console = null;
         console = System.out;
         thrown.expect(RuntimeException.class);
-        thrown.expectMessage("cat: missing arguments");
+        thrown.expectMessage(CoreMatchers.equalTo("cat: missing arguments"));
         jsh.start("cat", console);
     }
 
@@ -58,7 +59,7 @@ public class CatTest {
         PrintStream console = null;
         console = System.out;
         thrown.expect(RuntimeException.class);
-        thrown.expectMessage("cat: file does not exist");
+        thrown.expectMessage(CoreMatchers.equalTo("cat: file does not exist"));
         jsh.start("cat xxx", console);
     }
 
