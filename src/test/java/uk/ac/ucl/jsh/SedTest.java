@@ -19,7 +19,7 @@ public class SedTest
     public ExpectedException thrown = ExpectedException.none();
 
     @Test
-    public void SedMissingArgumentThrowsException() throws Exception
+    public void SedMissingArgumentThrowsException() throws RuntimeException, IOException
     {
         Jsh jsh = new Jsh();
         PrintStream console = null;
@@ -30,5 +30,17 @@ public class SedTest
         jsh.start("sed", console);
     }
 
+    @Test
+    public void SedWrongReplacementFormatThrowsException() throws RuntimeException, IOException
+    {
+        Jsh jsh = new Jsh();
+        PrintStream console = null;
 
+        console = System.out;
+        thrown.expect(RuntimeException.class);
+        thrown.expectMessage(CoreMatchers.equalTo("sed: wrong replacement format, replace a/ with s/"));
+        jsh.start("sed a/hi/hello test", console);
+    }
+
+    
 }
