@@ -1,6 +1,5 @@
 package uk.ac.ucl.jsh;
 
-import java.io.IOError;
 import java.io.IOException;
 import java.io.PrintStream;
 

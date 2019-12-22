@@ -2,16 +2,12 @@ package uk.ac.ucl.jsh;
 
 import static org.junit.Assert.assertEquals;
 
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
 import java.io.PrintStream;
-import java.util.ArrayList;
 import java.util.Scanner;
 
-import org.junit.After;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -66,21 +62,4 @@ public class CatTest {
         jsh.start("cat xxx", console);
     }
 
-    private void buildTestFile(ArrayList<String> testedStrings) throws IOException
-    {
-        FileOutputStream file_writer = new FileOutputStream("cat_test.txt");
-
-        for (String string : testedStrings)
-        {
-            file_writer.write(string.getBytes());
-        }
-        file_writer.close();
-    }
-
-    @After
-    public void deleteTestFile()
-    {
-        File file = new File("cat_test.txt");
-        file.delete();
-    }
 }

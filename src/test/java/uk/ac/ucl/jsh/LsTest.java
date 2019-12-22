@@ -43,7 +43,7 @@ public class LsTest {
         {
             assertTrue(fileName, listFiles.contains(fileName));
         }
-        
+        scn.close();
     }
 
     // ls one argument test
