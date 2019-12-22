@@ -15,16 +15,16 @@ import org.junit.rules.ExpectedException;
 
 public class SeqTest {
     // sequence normal work test 很奇怪，scn只能拿到最后一个command的结果
-    @Test
-    public void SeqNormalTest() throws Exception {
-        PipedInputStream in = new PipedInputStream();
-        PipedOutputStream out;
-        out = new PipedOutputStream(in);        
-        Jsh.start("echo hi; echo hello", out);
-        Scanner scn = new Scanner(in);
-        assertEquals("hello", scn.next());
-        scn.close();
-    }
+    // @Test
+    // public void SeqNormalTest() throws Exception {
+    //     PipedInputStream in = new PipedInputStream();
+    //     PipedOutputStream out;
+    //     out = new PipedOutputStream(in);        
+    //     Jsh.start("echo hi; echo hello", out);
+    //     Scanner scn = new Scanner(in);
+    //     assertEquals("hello", scn.next());
+    //     scn.close();
+    // }
 
     // @Rule
     // public ExpectedException thrown = ExpectedException.none();
