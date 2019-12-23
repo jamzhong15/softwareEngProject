@@ -328,11 +328,10 @@ class tail implements AppCase {
 
                     ArrayList<String> storage = new ArrayList<>();
                     BufferedReader stdinReader = new BufferedReader(new InputStreamReader(input));
-                    for (int i = 0; i < tailLines; i++) {
-                        String stringInStdin = null;
-                        while ((stringInStdin = stdinReader.readLine()) != null) {
-                            storage.add(stringInStdin);
-                        }
+                    String stringInStdin = null;
+                    while ((stringInStdin = stdinReader.readLine()) != null) {
+                        storage.add(stringInStdin);
+                    }
                     int index = 0;
                     if (tailLines > storage.size()) {
                         index = 0;
@@ -343,7 +342,6 @@ class tail implements AppCase {
                         stdoutWriter.write(storage.get(p) + System.getProperty("line.separator"));
                         stdoutWriter.flush();
                     }
-                }
                 }
             }
             else {
