@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
@@ -38,6 +39,26 @@ public class TailTest {
     }
 
     // tail 1 filename argument test something wrong here
+    @Before
+    public void createNewFile() throws IOException {
+        String filePath = System.getProperty("user.dir") + File.separator + "testFile.txt";
+        File file = new File(filePath);
+        file.createNewFile();
+        FileWriter fileWriter = new FileWriter(file);
+        String data1 = "first line\n";
+        String data2 = "second line";
+        fileWriter.write(data1);
+        fileWriter.write(data2);
+        fileWriter.close();
+    }
+ 
+    @After
+    public void deleteFile() {
+        String filePath = System.getProperty("user.dir") + File.separator + "testFile.txt";
+        File file = new File(filePath);
+        file.delete();
+    }
+
     @Test
     public void TailOneFileNameArgumentTest() throws Exception {
         Jsh jsh = new Jsh();
@@ -50,6 +71,8 @@ public class TailTest {
         assertEquals("first line", scn.nextLine());
         scn.close();
     }
+
+
 
     // tail with 3 arguments test something wrong also
     @Test
