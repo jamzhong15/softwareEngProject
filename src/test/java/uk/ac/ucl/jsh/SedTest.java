@@ -78,39 +78,40 @@ public class SedTest
     }
 
     // sed without the g specifier, and reading form stdin
-    // @Test
-    // public void SedNotGlobalWithOneArgumentTest() throws Exception
-    // {
-    //     Jsh jsh = new Jsh();
+    @Test
+    public void SedNotGlobalWithOneArgumentTest() throws Exception
+    {
+        Jsh jsh = new Jsh();
         
-    //     PipedInputStream in = new PipedInputStream();
-    //     PipedOutputStream out = new PipedOutputStream(in);
-    //     OutputStreamWriter writer = new OutputStreamWriter(out);
-    //     BufferedReader originalFileReader = new BufferedReader(new FileReader("sed_test.txt"));
+        PipedInputStream in = new PipedInputStream();
+        PipedOutputStream out = new PipedOutputStream(in);
+        OutputStreamWriter writerExpStr = new OutputStreamWriter(out);
+        BufferedReader originalFileReader = new BufferedReader(new FileReader("sed_test.txt"));
 
-    //     String str;
-    //     while ((str = originalFileReader.readLine()) != null)
-    //     {
-    //         writer.write((str.replaceFirst("first", "FIRST")));
-    //         writer.write(System.getProperty("line.separator"));
-    //         writer.flush();
-    //     }
-    //     writer.close();
-    //     originalFileReader.close();
+        String str;
+        while ((str = originalFileReader.readLine()) != null)
+        {
+            writerExpStr.write((str.replaceFirst("first", "FIRST")));
+            writerExpStr.write(System.getProperty("line.separator"));
+            writerExpStr.flush();
+        }
+        writerExpStr.close();
+        originalFileReader.close();
 
-
-    //     jsh.start("cat sed_test.txt | sed s/first/FIRST", out);
+        PipedInputStream stdin = new PipedInputStream();
+        PipedOutputStream stdout = new PipedOutputStream(stdin);
+        jsh.start("cat sed_test.txt | sed s/first/FIRST", stdout);
         
-    //     BufferedReader pipeInReader = new BufferedReader(new InputStreamReader(in));
-        
-    //     // String expectedStr;
-    //     // while ((expectedStr = pipeInReader.readLine()) != null)
-    //     // {
-    //     //     String actualStr = editedFileReader.readLine();
-    //     //     assertEquals(expectedStr, actualStr);
-    //     // }
-    //     // editedFileReader.close();
-    // }
+        BufferedReader stdinReader = new BufferedReader(new InputStreamReader(stdin));
+        BufferedReader inReader = new BufferedReader(new InputStreamReader(in));
+
+        String expectedStr;
+        while ((expectedStr = inReader.readLine()) != null)
+        {
+            String actualStr = stdinReader.readLine();
+            assertEquals(expectedStr, actualStr);
+        }
+    }
 
     @Rule
     public ExpectedException thrown = ExpectedException.none();
