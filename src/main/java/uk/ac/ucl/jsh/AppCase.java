@@ -446,73 +446,108 @@ class wc implements AppCase
     @Override
     public void runCommand(ArrayList<String> appArgs, String currentDirectory, InputStream input, OutputStream output)
             throws IOException {
-                if (appArgs.isEmpty() && input == null)
-                {
-                    throw new RuntimeException("wc: missing arguments");
-                }
     
-                else if(appArgs.size() == 1)
+                if(appArgs.isEmpty() || (appArgs.size() == 1 && (appArgs.get(0).equals("-m") || 
+                appArgs.get(0).equals("-w") || appArgs.get(0).equals("-l") ) ))
                 {
                     OutputStreamWriter writer = new OutputStreamWriter(output);
+                    String command = "";
+
                     try (BufferedReader reader = new BufferedReader(new InputStreamReader(input))) 
                     {
-                        int count = 0;
+                        int charCount = 0;
+                        int wordCount = 0;
+                        int lineCount = 0;
+                        
+                        if(!appArgs.isEmpty())
+                        {
+                            command = appArgs.get(0);
+                        }
+
                         String line = null;
-                        String command = appArgs.get(0);
+                        while ((line = reader.readLine()) != null) 
+                        {
+                            lineCount ++; 
+                            wordCount += line.length();
+                            charCount += line.split(" ").length;         
+                        }
+
                         switch(command)
                         {
                             case "-m":
-                                while ((line = reader.readLine())!= null)
-                                {
-                                    count += line.length(); 
-                                }   
+                                writer.write(Integer.toString(charCount));  
                                 break;
 
                             case "-w":
-                                String[] words= null;
-                                while ((line = reader.readLine())!= null)
-                                {
-                                    words = line.split(" ");
-                                    count += words.length;  
-                                }   
+                                writer.write(Integer.toString(wordCount));
                                 break;
 
                             case "-l":
-                                while (reader.readLine() != null)
-                                {
-                                    count++; 
-                                }
+                                writer.write(Integer.toString(lineCount));
                                 break;
-                            }
-                        
-                        writer.write(Integer.toString(count));
+                            default:
+                                writer.write(Integer.toString(charCount) + "\t");
+                                writer.write(Integer.toString(wordCount) + "\t");
+                                writer.write(Integer.toString(lineCount));
+                                break;
+                        }
                         writer.write(System.getProperty("line.separator"));
                         writer.flush();
 
                     } catch (IOException e) {
-                        throw new RuntimeException("wc: cannot read from stdInput");
+                        throw new RuntimeException("wc: missing arguments");
                     } 
                 }
-                else if(appArgs.size() > 2 )
+                else 
                 {
                     OutputStreamWriter writer = new OutputStreamWriter(output);
-                    for (String arg : appArgs.subList( 1, appArgs.size() )) 
+                    
+                    String command = appArgs.get(0);
+                    int charCount = 0;
+                    int wordCount = 0;
+                    int lineCount = 0;
+
+                    for (String arg : appArgs) 
                     {
                         Charset encoding = StandardCharsets.UTF_8;
-                        File currFile = new File(currentDirectory + File.separator + arg);
+                        File currFile = new File(arg);
                         if (currFile.exists())
                         {
-                            Path filePath = Paths.get(currentDirectory + File.separator + arg);
+                            Path filePath = Paths.get(arg);
                             
                             try (BufferedReader reader = Files.newBufferedReader(filePath, encoding)) 
                             {
                                 String line = null;
                                 while ((line = reader.readLine()) != null) 
                                 {
-                                    writer.write(String.valueOf(line));
-                                    writer.write(System.getProperty("line.separator"));
-                                    writer.flush();
+                                    lineCount ++; 
+                                    wordCount += line.length();
+                                    charCount += line.split(" ").length;         
                                 }
+
+                                switch(command)
+                                {
+                                case "-m":
+                                    writer.write(Integer.toString(charCount));  
+                                    break;
+
+                                case "-w":
+                                    writer.write(Integer.toString(wordCount));
+                                    break;
+
+                                case "-l":
+                                    writer.write(Integer.toString(lineCount));
+                                    break;
+                                default:
+                                    writer.write(Integer.toString(charCount) + "\t");
+                                    writer.write(Integer.toString(wordCount) + "\t");
+                                    writer.write(Integer.toString(lineCount));
+                                    break;
+                                }
+                                writer.write(System.getProperty("line.separator"));
+                                writer.flush();
+                                
+
                             } catch (IOException e) {
                                 throw new RuntimeException("wc: cannot open " + arg);
                                 }
@@ -524,11 +559,6 @@ class wc implements AppCase
                     }
                 }
 
-    }
-
-    private void getLines(OutputStream output)
-    {
-        
     }
     
 }
