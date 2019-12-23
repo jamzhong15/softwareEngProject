@@ -159,31 +159,22 @@ class echo implements AppCase {
     public void runCommand(ArrayList<String> appArgs, String currentDirectory, InputStream input, OutputStream output)
             throws IOException {
         OutputStreamWriter writer = new OutputStreamWriter(output);
-
-        // boolean atLeastOnePrinted = false;
-        for (int i = 0; i < appArgs.size()-1; i++) {
-            String arg = appArgs.get(i);
-            writer.write(arg);
-            writer.write(" ");
+        if (appArgs.isEmpty()) {
             writer.flush();
-            // atLeastOnePrinted = true;
         }
-        String lastArg = appArgs.get(appArgs.size()-1);
-        writer.write(lastArg);
-        writer.flush();
-        writer.write(System.getProperty("line.separator"));
-        writer.flush();
-
-        // for (String arg : appArgs) {
-        //     writer.write(arg);
-        //     writer.write("1");
-        //     writer.flush();
-        //     atLeastOnePrinted = true;
-        // }
-        // if (atLeastOnePrinted) {
-        //     writer.write(System.getProperty("line.separator"));
-        //     writer.flush();
-        // }
+        else {
+            for (int i = 0; i < appArgs.size()-1; i++) {
+                String arg = appArgs.get(i);
+                writer.write(arg);
+                writer.write(" ");
+                writer.flush();
+            }
+            String lastArg = appArgs.get(appArgs.size()-1);
+            writer.write(lastArg);
+            writer.flush();
+            writer.write(System.getProperty("line.separator"));
+            writer.flush();
+        }
     }
 }
 
