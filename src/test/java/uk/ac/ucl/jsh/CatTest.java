@@ -48,7 +48,7 @@ public class CatTest {
         out = new PipedOutputStream(in);        
         jsh.start("echo hi |cat", out);
         Scanner scn = new Scanner(in);
-        assertEquals("hi ", scn.nextLine());
+        assertEquals("hi", scn.nextLine());
         scn.close();
     }
 
