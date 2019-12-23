@@ -9,6 +9,7 @@ import java.util.Scanner;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
+import org.hamcrest.CoreMatchers;
 import org.junit.After;
 
 public class GrepTest {
@@ -46,16 +47,16 @@ public class GrepTest {
     public void GrepWrongFileArgumentTest() throws Exception {
         Jsh jsh = new Jsh();
         thrown.expect(RuntimeException.class);
-        thrown.expectMessage("grep: wrong file argument");
+        thrown.expectMessage(CoreMatchers.equalTo("grep: wrong file argument"));
         jsh.start("grep xx xx", System.out);
     }
 
-   // wrong number of argument
+   // missing arguments
     @Test
-    public void GrepWrongNoOfArgumentTest() throws Exception {
+    public void GrepMissingArgumentTest() throws Exception {
         Jsh jsh = new Jsh();
         thrown.expect(RuntimeException.class);
-        thrown.expectMessage("grep: wrong number of argument");
+        thrown.expectMessage(CoreMatchers.equalTo("grep: missing arguments"));
         jsh.start("grep", System.out);
     }
 
@@ -64,7 +65,7 @@ public class GrepTest {
     public void GrepCannotOpenFileTest() throws Exception {
         Jsh jsh = new Jsh();
         thrown.expect(RuntimeException.class);
-        thrown.expectMessage("grep: cannot open jsh-1.0-SNAPSHOT-jar-with-dependencies.jar");
+        thrown.expectMessage(CoreMatchers.equalTo("grep: cannot open jsh-1.0-SNAPSHOT-jar-with-dependencies.jar"));
         jsh.start("cd target", System.out);
         jsh.start("grep x jsh-1.0-SNAPSHOT-jar-with-dependencies.jar", System.out);
     }

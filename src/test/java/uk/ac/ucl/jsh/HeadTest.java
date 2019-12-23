@@ -11,6 +11,7 @@ import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Scanner;
 
+import org.hamcrest.CoreMatchers;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
@@ -24,14 +25,12 @@ public class HeadTest {
     {
         String absoluteFilePath = System.getProperty("user.dir") + File.separator + "head_test.txt";
         File testFile = new File(absoluteFilePath);
-        ArrayList<String> testedStrings = new ArrayList<>();
-        testedStrings.add("first line\n");
-        testedStrings.add("second line");
+        String testedStrings1 = "first line\n";
+        String testedStrings2 = "second line\n";
+
         FileOutputStream file_writer = new FileOutputStream(testFile);
-        for (String string : testedStrings)
-        {
-            file_writer.write(string.getBytes());
-        }
+        file_writer.write(testedStrings1.getBytes());
+        file_writer.write(testedStrings2.getBytes());
         file_writer.close();
     }
 
@@ -74,7 +73,7 @@ public class HeadTest {
 
         console = System.out;
         thrown.expect(RuntimeException.class);
-        thrown.expectMessage("head: missing argument");
+        thrown.expectMessage(CoreMatchers.equalTo("head: missing arguments"));
         jsh.start("head", console);
     }
 
@@ -86,7 +85,7 @@ public class HeadTest {
     
         console = System.out;
         thrown.expect(RuntimeException.class);
-        thrown.expectMessage("head: wrong arguments");
+        thrown.expectMessage(CoreMatchers.equalTo("head: wrong arguments"));
         jsh.start("head -n Dockerfile", console);
     }
     
@@ -98,7 +97,7 @@ public class HeadTest {
     
         console = System.out;
         thrown.expect(RuntimeException.class);
-        thrown.expectMessage("head: wrong argument -s");
+        thrown.expectMessage(CoreMatchers.equalTo("head: wrong argument -s"));
         jsh.start("head -s 3 Dockerfile", console);
     }
 
@@ -110,7 +109,7 @@ public class HeadTest {
     
         console = System.out;
         thrown.expect(RuntimeException.class);
-        thrown.expectMessage("head: wrong argument s");
+        thrown.expectMessage(CoreMatchers.equalTo("head: wrong argument s"));
         jsh.start("head -n s Dockerfile", console);
     }
 
@@ -122,7 +121,7 @@ public class HeadTest {
     
         console = System.out;
         thrown.expect(RuntimeException.class);
-        thrown.expectMessage("head: xxx does not exist");
+        thrown.expectMessage(CoreMatchers.equalTo("head: xxx does not exist"));
         jsh.start("head -n 3 xxx", console);
     }
     
@@ -134,7 +133,7 @@ public class HeadTest {
     
         console = System.out;
         thrown.expect(RuntimeException.class);
-        thrown.expectMessage("head: cannot open target");
+        thrown.expectMessage(CoreMatchers.equalTo("head: cannot open target"));
         jsh.start("head target", console);
     }
 

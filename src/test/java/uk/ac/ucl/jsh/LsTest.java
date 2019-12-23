@@ -1,10 +1,12 @@
 package uk.ac.ucl.jsh;
 
+import org.hamcrest.CoreMatchers;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
@@ -20,23 +22,29 @@ public class LsTest {
     public void lsWithoutArgument() throws Exception {
         Jsh jsh = new Jsh();
         String currentDirectory = jsh.getcurrentDirectory();
-        File currDir;
-        currDir = new File(currentDirectory);
+        File currDir = new File(currentDirectory);
         ArrayList<String> listFiles = new ArrayList<>();
         File[] listOfFiles = currDir.listFiles();
-        boolean atLeastOnePrinted = false;
+
+        PipedInputStream in = new PipedInputStream();
+        PipedOutputStream out = new PipedOutputStream(in);
+        jsh.start("ls", out);
+        Scanner scn = new Scanner(in);
+        String contentString = scn.nextLine();
+        String[] files = contentString.split("\t");
+        
+        // obtaining expected files names
         for (File file : listOfFiles) {
-            if (!file.getName().startsWith(".")) {
+            if (!file.getName().startsWith(".")) 
+            {
                 listFiles.add(file.getName().toString());
-                atLeastOnePrinted = true;
             }
         }
-        String listString = String.join("\t", listFiles);
-        if (atLeastOnePrinted) {
-            listString.concat("\r\n");
+        for (String fileName : files)
+        {
+            assertTrue(fileName, listFiles.contains(fileName));
         }
-        jsh.start("ls", System.out);
-        assertEquals("analysis	test	Dockerfile	target	pom.xml	jsh	README.md	coverage	src", listString);
+        scn.close();
     }
 
     // ls one argument test
@@ -62,7 +70,7 @@ public class LsTest {
         PrintStream console = null;
         console = System.out;
         thrown.expect(RuntimeException.class);
-        thrown.expectMessage("ls: too many arguments");
+        thrown.expectMessage(CoreMatchers.equalTo("ls: too many arguments"));
         jsh.start("ls arg1 arg2", console);
     }
 
@@ -74,7 +82,7 @@ public class LsTest {
 
         console = System.out;
         thrown.expect(RuntimeException.class);
-        thrown.expectMessage("ls: no such directory");
+        thrown.expectMessage(CoreMatchers.equalTo("ls: no such directory"));
         jsh.start("ls xxx", console);
     }
 }

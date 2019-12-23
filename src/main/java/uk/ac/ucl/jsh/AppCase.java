@@ -2,6 +2,7 @@ package uk.ac.ucl.jsh;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -16,15 +17,16 @@ import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public interface AppCase 
-{
-    void runCommand(ArrayList<String> appArgs, String currentDirectory, InputStream input, OutputStream output) throws IOException;
+public interface AppCase {
+    void runCommand(ArrayList<String> appArgs, String currentDirectory, InputStream input, OutputStream output)
+            throws IOException;
 }
 
 class cd implements AppCase {
 
     @Override
-    public void runCommand(ArrayList<String> appArgs, String currentDirectory, InputStream input, OutputStream output) throws IOException {
+    public void runCommand(ArrayList<String> appArgs, String currentDirectory, InputStream input, OutputStream output)
+            throws IOException {
         if (appArgs.isEmpty()) {
             throw new RuntimeException("cd: missing argument");
         } else if (appArgs.size() > 1) {
@@ -48,47 +50,49 @@ class cd implements AppCase {
 class pwd implements AppCase {
 
     @Override
-    public void runCommand(ArrayList<String> appArgs, String currentDirectory, InputStream input, OutputStream output) throws IOException {
+    public void runCommand(ArrayList<String> appArgs, String currentDirectory, InputStream input, OutputStream output)
+            throws IOException {
         OutputStreamWriter writer = new OutputStreamWriter(output);
-			writer.write(currentDirectory);
-            writer.write(System.getProperty("line.separator"));
-            writer.flush();
-        } 
+        writer.write(currentDirectory);
+        writer.write(System.getProperty("line.separator"));
+        writer.flush();
+    }
 }
 
 class ls implements AppCase {
 
     @Override
-    public void runCommand(ArrayList<String> appArgs, String currentDirectory, InputStream input, OutputStream output) throws IOException {
-        
+    public void runCommand(ArrayList<String> appArgs, String currentDirectory, InputStream input, OutputStream output)
+            throws IOException {
+
         OutputStreamWriter writer = new OutputStreamWriter(output);
 
         File currDir;
-            if (appArgs.isEmpty()) {
-                currDir = new File(currentDirectory);
-            } else if (appArgs.size() == 1) {
-                currDir = new File(appArgs.get(0));
-            } else {
-                throw new RuntimeException("ls: too many arguments");
-            }
-            try {
-                File[] listOfFiles = currDir.listFiles();
-                boolean atLeastOnePrinted = false;
-                for (File file : listOfFiles) {
-                    if (!file.getName().startsWith(".")) {
-                        writer.write(file.getName());
-                        writer.write("\t");
-                        writer.flush();
-                        atLeastOnePrinted = true;
-                    }
-                }
-                if (atLeastOnePrinted) {
-                    writer.write(System.getProperty("line.separator"));
+        if (appArgs.isEmpty()) {
+            currDir = new File(currentDirectory);
+        } else if (appArgs.size() == 1) {
+            currDir = new File(appArgs.get(0));
+        } else {
+            throw new RuntimeException("ls: too many arguments");
+        }
+        try {
+            File[] listOfFiles = currDir.listFiles();
+            boolean atLeastOnePrinted = false;
+            for (File file : listOfFiles) {
+                if (!file.getName().startsWith(".")) {
+                    writer.write(file.getName());
+                    writer.write("\t");
                     writer.flush();
+                    atLeastOnePrinted = true;
                 }
-            } catch (NullPointerException e) {
-                throw new RuntimeException("ls: no such directory");
             }
+            if (atLeastOnePrinted) {
+                writer.write(System.getProperty("line.separator"));
+                writer.flush();
+            }
+        } catch (NullPointerException e) {
+            throw new RuntimeException("ls: no such directory");
+        }
     }
 
 }
@@ -98,20 +102,18 @@ class cat implements AppCase {
     @Override
     public void runCommand(ArrayList<String> appArgs, String currentDirectory, InputStream input, OutputStream output)
             throws IOException {
-                OutputStreamWriter writer = new OutputStreamWriter(output);
+        OutputStreamWriter writer = new OutputStreamWriter(output);
 
-        /* if appArgs is empty (meaning no files are specified in the argument), check if stack inputstream is null. 
-                                if stack inputstream is not null, pop from stack and read this inputstream as input.
-                                if stack inputstream is null, then throw exception.
-        */
-        if (appArgs.isEmpty())  
-        {
+        /*
+         * if appArgs is empty (meaning no files are specified in the argument), check
+         * if stack inputstream is null. if stack inputstream is not null, pop from
+         * stack and read this inputstream as input. if stack inputstream is null, then
+         * throw exception.
+         */
+        if (appArgs.isEmpty()) {
             throw new RuntimeException("cat: missing arguments");
-        } 
-        else 
-        {
-            for (String arg : appArgs) 
-            {
+        } else {
+            for (String arg : appArgs) {
                 Charset encoding = StandardCharsets.UTF_8;
                 File currFile = new File(currentDirectory + File.separator + arg);
                 if (currFile.exists()) {
@@ -133,60 +135,29 @@ class cat implements AppCase {
             }
 
         }
-        
+
     }
 }
-
-// class echo2 implements AppCase {
-
-//     @Override
-//     public void runCommand(ArrayList<String> appArgs, String currentDirectory, InputStream input, OutputStream output)
-//             throws IOException {
-//             OutputStreamWriter writer = new OutputStreamWriter(output);
-            
-//             boolean atLeastOnePrinted = false;
-//             for (String arg : appArgs) {
-//                 writer.write(arg);
-//                 writer.write(" ");
-//                 writer.flush();
-//                 atLeastOnePrinted = true;
-//             }
-//             BufferedReader br = new BufferedReader(new InputStreamReader(stdin));
-//             String line;
-//             while((line = br.readLine()) != null) {
-//                 writer.write(line);
-//                 writer.write(" ");
-//                 writer.flush();
-//                 atLeastOnePrinted = true;
-//             }
-//             if (atLeastOnePrinted) {
-//                 writer.write(System.getProperty("line.separator"));
-//                 writer.flush();
-//             }
-//     }
-
-// }
 
 class echo implements AppCase {
 
     @Override
     public void runCommand(ArrayList<String> appArgs, String currentDirectory, InputStream input, OutputStream output)
             throws IOException {
-            OutputStreamWriter writer = new OutputStreamWriter(output);
-            
-            boolean atLeastOnePrinted = false;
-            for (String arg : appArgs) {
-                writer.write(arg);
-                writer.write(" ");
-                writer.flush();
-                atLeastOnePrinted = true;
-            }
-            if (atLeastOnePrinted) {
-                writer.write(System.getProperty("line.separator"));
-                writer.flush();
-            }
-    }
+        OutputStreamWriter writer = new OutputStreamWriter(output);
 
+        boolean atLeastOnePrinted = false;
+        for (String arg : appArgs) {
+            writer.write(arg);
+            writer.write(" ");
+            writer.flush();
+            atLeastOnePrinted = true;
+        }
+        if (atLeastOnePrinted) {
+            writer.write(System.getProperty("line.separator"));
+            writer.flush();
+        }
+    }
 }
 
 class head implements AppCase {
@@ -194,48 +165,48 @@ class head implements AppCase {
     @Override
     public void runCommand(ArrayList<String> appArgs, String currentDirectory, InputStream input, OutputStream output)
             throws IOException {
-                OutputStreamWriter writer = new OutputStreamWriter(output);
+        OutputStreamWriter writer = new OutputStreamWriter(output);
 
-                if (appArgs.isEmpty()) {
-                    throw new RuntimeException("head: missing arguments");
-                }
-                if (appArgs.size() != 1 && appArgs.size() != 3) {
-                    throw new RuntimeException("head: wrong arguments");
-                }
-                if (appArgs.size() == 3 && !appArgs.get(0).equals("-n")) {
-                    throw new RuntimeException("head: wrong argument " + appArgs.get(0));
-                }
-                int headLines = 10;
-                String headArg;
-                if (appArgs.size() == 3) {
-                    try {
-                        headLines = Integer.parseInt(appArgs.get(1));
-                    } catch (Exception e) {
-                        throw new RuntimeException("head: wrong argument " + appArgs.get(1));
+        if (appArgs.isEmpty()) {
+            throw new RuntimeException("head: missing arguments");
+        }
+        if (appArgs.size() != 1 && appArgs.size() != 3) {
+            throw new RuntimeException("head: wrong arguments");
+        }
+        if (appArgs.size() == 3 && !appArgs.get(0).equals("-n")) {
+            throw new RuntimeException("head: wrong argument " + appArgs.get(0));
+        }
+        int headLines = 10;
+        String headArg;
+        if (appArgs.size() == 3) {
+            try {
+                headLines = Integer.parseInt(appArgs.get(1));
+            } catch (Exception e) {
+                throw new RuntimeException("head: wrong argument " + appArgs.get(1));
+            }
+            headArg = appArgs.get(2);
+        } else {
+            headArg = appArgs.get(0);
+        }
+        File headFile = new File(currentDirectory + File.separator + headArg);
+        if (headFile.exists()) {
+            Charset encoding = StandardCharsets.UTF_8;
+            Path filePath = Paths.get((String) currentDirectory + File.separator + headArg);
+            try (BufferedReader reader = Files.newBufferedReader(filePath, encoding)) {
+                for (int i = 0; i < headLines; i++) {
+                    String line = null;
+                    if ((line = reader.readLine()) != null) {
+                        writer.write(line);
+                        writer.write(System.getProperty("line.separator"));
+                        writer.flush();
                     }
-                    headArg = appArgs.get(2);
-                } else {
-                    headArg = appArgs.get(0);
                 }
-                File headFile = new File(currentDirectory + File.separator + headArg);
-                if (headFile.exists()) {
-                    Charset encoding = StandardCharsets.UTF_8;
-                    Path filePath = Paths.get((String) currentDirectory + File.separator + headArg);
-                    try (BufferedReader reader = Files.newBufferedReader(filePath, encoding)) {
-                        for (int i = 0; i < headLines; i++) {
-                            String line = null;
-                            if ((line = reader.readLine()) != null) {
-                                writer.write(line);
-                                writer.write(System.getProperty("line.separator"));
-                                writer.flush();
-                            }
-                        }
-                    } catch (IOException e) {
-                        throw new RuntimeException("head: cannot open " + headArg);
-                    }
-                } else {
-                    throw new RuntimeException("head: " + headArg + " does not exist");
-                }
+            } catch (IOException e) {
+                throw new RuntimeException("head: cannot open " + headArg);
+            }
+        } else {
+            throw new RuntimeException("head: " + headArg + " does not exist");
+        }
 
     }
 
@@ -288,7 +259,7 @@ class tail implements AppCase {
                 for (int i = index; i < storage.size(); i++) {
                     writer.write(storage.get(i) + System.getProperty("line.separator"));
                     writer.flush();
-                }            
+                }
             } catch (IOException e) {
                 throw new RuntimeException("tail: cannot open " + tailArg);
             }
@@ -305,13 +276,9 @@ class grep implements AppCase {
     public void runCommand(ArrayList<String> appArgs, String currentDirectory, InputStream input, OutputStream output)
             throws IOException {
         OutputStreamWriter writer = new OutputStreamWriter(output);
-        if (appArgs.size() == 0) {
-            throw new RuntimeException("grep: wrong number of argument");
-        }
 
-        if (appArgs.size() == 0)
-        {
-            throw new RuntimeException("grep: wrong number of arguments");
+        if (appArgs.isEmpty()) {
+            throw new RuntimeException("grep: missing arguments");
         }
         if (appArgs.size() == 1) {
             Pattern grepPattern = Pattern.compile(appArgs.get(0));
@@ -325,10 +292,8 @@ class grep implements AppCase {
                         writer.flush();
                     }
                 }
-            } 
-        }
-        else
-        {
+            }
+        } else {
             Pattern grepPattern = Pattern.compile(appArgs.get(0));
             int numOfFiles = appArgs.size() - 1;
             Path filePath;
@@ -336,8 +301,8 @@ class grep implements AppCase {
             Path currentDir = Paths.get(currentDirectory);
             for (int i = 0; i < numOfFiles; i++) {
                 filePath = currentDir.resolve(appArgs.get(i + 1));
-                if (Files.notExists(filePath) || Files.isDirectory(filePath) || 
-                    !Files.exists(filePath) || !Files.isReadable(filePath)) {
+                if (Files.notExists(filePath) || Files.isDirectory(filePath) || !Files.exists(filePath)
+                        || !Files.isReadable(filePath)) {
                     throw new RuntimeException("grep: wrong file argument");
                 }
                 filePathArray[i] = filePath;
@@ -363,35 +328,117 @@ class grep implements AppCase {
 }
 
 class sed implements AppCase {
+    
+    // sed REPLACEMENT [FILE]
+    // REPLACEMENT :: s/regexp/replacementString/
+    //                s/regexp/replacementString/g
 
     @Override
     public void runCommand(ArrayList<String> appArgs, String currentDirectory, InputStream input, OutputStream output)
             throws IOException {
-        // sed REPLACEMENT [FILE]
-        // REPLACEMENT :: s/regexp/replacement/
-        //                s/regexp/replacement/g
+        OutputStreamWriter writer = new OutputStreamWriter(output);
 
-        if (appArgs.size() == 0)
+        if (appArgs.isEmpty()){throw new RuntimeException("sed: missing arguments");}
+        
+        // first SYMBOL after s is used as delimiter for extracting regexp and replacement
+        String replacement = appArgs.get(0);
+        String delimiter = Character.toString(replacement.charAt(1));
+        String[] replacementArgs = replacement.split(delimiter, 0);
+        Pattern regexPattern = Pattern.compile(replacementArgs[1]);
+        String regexp = replacementArgs[1];
+        String replacementString = replacementArgs[2];
+        Boolean global = false;
+        if (!replacementArgs[0].equals("s")){throw new RuntimeException("sed: wrong replacement format, replace "+replacementArgs[0]+delimiter+ " with s"+delimiter);}
+
+        if (replacementArgs.length == 4)
         {
-            throw new RuntimeException("sed: wrong number of arguments");
+            if (replacementArgs[3].equals("g")){global = true;}
+            else {throw new RuntimeException("sed: wrong global spedifier, replace "+delimiter+replacementArgs[4]+ " with "+delimiter+"g");}
         }
-
-        if (appArgs.size() == 1) // read FILE from standard input
+        
+        if (appArgs.size() == 1) // read strings from standard input, and print to stdard output
         {
-
+            try (BufferedReader stdinReader = new BufferedReader(new InputStreamReader(input)))
+            {
+                StringBuffer replacedString = new StringBuffer();
+                String stringInStdin = null;
+                while ((stringInStdin = stdinReader.readLine()) != null) 
+                {
+                    Matcher matcher = regexPattern.matcher(stringInStdin);
+                    if (matcher.find())
+                    {
+                        String newLine;
+                        if (global == true){newLine = stringInStdin.replaceAll(regexp, replacementString);}
+                        else {newLine = stringInStdin.replaceFirst(regexp, replacementString);}
+                        replacedString.append(newLine);
+                        replacedString.append('\n');
+                    }
+                    else
+                    {
+                        replacedString.append(stringInStdin);
+                        replacedString.append('\n');
+                    }
+                }
+                String inputStr = replacedString.toString();
+                writer.write(inputStr);
+                writer.flush();
+            }
+            catch (NullPointerException e)
+            {
+                throw new RuntimeException("sed: cannot read from stdin, please provide filename");
+            }
         }
-        else
+        else // read from files, and operate on file contents
         {
-            String replacement = appArgs.get(0);
-            String delimiter = "\\|'\\|'";
-            String[] replacementArgs = replacement.split(delimiter);
-            // prints the count of tokens
-            System.out.println("Count of tokens = " + replacementArgs.length);
-            
-            for(String token : replacementArgs) {
-                System.out.print(token);
-            } 
+            int i;
+            for (i = 1; i<appArgs.size() ;i++)
+            {
+                String arg = appArgs.get(i);
+                editFile(currentDirectory, arg, replacement, regexPattern, regexp, replacementString, global);
+            }
         }
+    }
 
+    public void editFile(String currentDirectory, String arg, String replacement, Pattern regexPattern, String regexp, String replacementString, Boolean global)
+    {
+        arg.trim();
+        Charset encoding = StandardCharsets.UTF_8;
+        File currFile = new File(currentDirectory + File.separator + arg);
+        if (currFile.exists()) {
+            StringBuffer replacedString = new StringBuffer();
+
+            Path filePath = Paths.get(currentDirectory + File.separator + arg);
+            try (BufferedReader reader = Files.newBufferedReader(filePath, encoding)) {
+                String line = null;
+                while ((line = reader.readLine()) != null) 
+                {
+                    Matcher matcher = regexPattern.matcher(line);
+                    if (matcher.find())
+                    {
+                        String newLine;
+                        if (global == true){newLine = line.replaceAll(regexp, replacementString);}
+                        else {newLine = line.replaceFirst(regexp, replacementString);}
+                        replacedString.append(newLine);
+                        replacedString.append('\n');
+                    }
+                    else
+                    {
+                        replacedString.append(line);
+                        replacedString.append('\n');
+                    }
+                }
+                reader.close();
+
+                String inputStr = replacedString.toString();
+                FileOutputStream fileOut = new FileOutputStream(currFile);
+                fileOut.write(inputStr.getBytes());
+                fileOut.close();
+
+            } catch (IOException e) {
+                throw new RuntimeException("sed: cannot open " + arg);
+            }
+        } else {
+            throw new RuntimeException("sed: file "+arg+ " does not exist");
+        }
     }
 }
