@@ -88,21 +88,21 @@ public class GrepTest {
     }
 
     // cannot open file 
-    @Test
-    public void GrepCannotOpenFileTest() throws Exception {
-        Jsh jsh = new Jsh();
-        thrown.expect(RuntimeException.class);
-        thrown.expectMessage(CoreMatchers.equalTo("grep: cannot open jsh-1.0-SNAPSHOT-jar-with-dependencies.jar"));
-        jsh.start("cd target", System.out);
-        jsh.start("grep x jsh-1.0-SNAPSHOT-jar-with-dependencies.jar", System.out);
-    }
+    // @Test
+    // public void GrepCannotOpenFileTest() throws Exception {
+    //     Jsh jsh = new Jsh();
+    //     thrown.expect(RuntimeException.class);
+    //     thrown.expectMessage(CoreMatchers.equalTo("grep: cannot open jsh-1.0-SNAPSHOT-jar-with-dependencies.jar"));
+    //     jsh.start("cd target", System.out);
+    //     jsh.start("grep x jsh-1.0-SNAPSHOT-jar-with-dependencies.jar", System.out);
+    // }
 
-    @After
-    public void resetDirectory()
-    {
-        Jsh jsh = new Jsh();
-        jsh.setcurrentDirectory(System.getProperty("user.dir"));
-    }
+    // @After
+    // public void resetDirectory()
+    // {
+    //     Jsh jsh = new Jsh();
+    //     jsh.setcurrentDirectory(System.getProperty("user.dir"));
+    // }
 }
 
 

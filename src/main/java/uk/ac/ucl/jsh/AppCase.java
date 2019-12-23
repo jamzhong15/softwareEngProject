@@ -11,8 +11,10 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.PathMatcher;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.regex.Matcher;
@@ -402,6 +404,9 @@ class grep implements AppCase {
     public void runCommand(ArrayList<String> appArgs, String currentDirectory, InputStream input, OutputStream output)
             throws IOException {
         OutputStreamWriter writer = new OutputStreamWriter(output);
+        if (appArgs.size() == 0) {
+            throw new RuntimeException("grep: wrong number of argument");
+        }
 
         if (appArgs.isEmpty()) {
             throw new RuntimeException("grep: missing arguments");
@@ -475,12 +480,13 @@ class sed implements AppCase {
         String replacementString = replacementArgs[2];
         Boolean global = false;
         if (!replacementArgs[0].equals("s")){throw new RuntimeException("sed: wrong replacement format, replace "+replacementArgs[0]+delimiter+ " with s"+delimiter);}
-
         if (replacementArgs.length == 4)
         {
             if (replacementArgs[3].equals("g")){global = true;}
-            else {throw new RuntimeException("sed: wrong global spedifier, replace "+delimiter+replacementArgs[4]+ " with "+delimiter+"g");}
+            else {throw new ArrayIndexOutOfBoundsException("sed: wrong global specifier, replace " + delimiter + replacementArgs[3] + " with " + delimiter + "g");
+            }
         }
+        if (replacementArgs.length > 4){throw new RuntimeException("sed: too many arguments. Try s" + delimiter + replacementArgs[1] + delimiter + replacementArgs[2]+ delimiter + "g");}
         
         if (appArgs.size() == 1) // read strings from standard input, and print to stdard output
         {
@@ -568,3 +574,208 @@ class sed implements AppCase {
         }
     }
 }
+
+class find implements AppCase
+{
+    @Override
+    public void runCommand(ArrayList<String> appArgs, String currentDirectory, InputStream input, OutputStream output)
+            throws IOException {
+
+                if (appArgs.size() < 2)  
+                {
+                    throw new RuntimeException("find: missing arguments");
+                }
+                else if (appArgs.size() > 3) 
+                {
+                    throw new RuntimeException("find; too many arguments");
+                }
+
+
+                if (appArgs.size() == 2)  
+                {
+                    if(!appArgs.get(0).equals("-name"))
+                    {
+                        throw new RuntimeException("find: invalid arguments"); 
+                    }
+
+                    File currDir = new File(currentDirectory);
+                    String pattern = appArgs.get(1);
+                    printFiles(currDir, currDir, pattern, output);
+                }
+                else if (appArgs.size() == 3)  
+                {
+                    if(!appArgs.get(1).equals("-name"))
+                    {
+                        throw new RuntimeException("find: invalid arguments"); 
+                    }
+                    File baseDir = new File(currentDirectory);
+                    File currDir= new File(appArgs.get(0));
+                    String pattern = appArgs.get(2);
+                    printFiles(baseDir, currDir, pattern, output);
+                }    
+    }
+
+    public void printFiles(File baseDirectory, File currDirectory, String pattern, OutputStream output)
+    { 
+        // Create a matcher for glob patterns
+        final PathMatcher matcher = FileSystems.getDefault().getPathMatcher("glob:" + pattern);
+        if(currDirectory.isDirectory())
+        {
+            File[] subDir = currDirectory.listFiles();
+
+            // Recursively search through the subdirectories
+            for(File file: subDir)
+            {
+                printFiles(baseDirectory, file,  pattern, output);
+            }
+        }
+        else if(matcher.matches(currDirectory.toPath().getFileName()))
+        {
+            // Write the relative pathname of the file if it matches the pattern
+            OutputStreamWriter writer = new OutputStreamWriter(output);
+            
+            try {
+                String base = baseDirectory.getCanonicalPath();
+                String current = currDirectory.getCanonicalPath(); 
+                String relative = current.substring(base.length());
+
+                writer.write(relative + "\n");
+                writer.flush();
+                } catch (IOException e) 
+                {
+                    e.printStackTrace();
+                }
+            }
+                            
+        }
+
+    }
+
+class wc implements AppCase
+{
+
+    @Override
+    public void runCommand(ArrayList<String> appArgs, String currentDirectory, InputStream input, OutputStream output)
+            throws IOException {
+    
+                if(appArgs.isEmpty() || (appArgs.size() == 1 && (appArgs.get(0).equals("-m") || 
+                appArgs.get(0).equals("-w") || appArgs.get(0).equals("-l") ) ))
+                {
+                    OutputStreamWriter writer = new OutputStreamWriter(output);
+                    String command = "";
+
+                    try (BufferedReader reader = new BufferedReader(new InputStreamReader(input))) 
+                    {
+                        int charCount = 0;
+                        int wordCount = 0;
+                        int lineCount = 0;
+                        
+                        if(!appArgs.isEmpty())
+                        {
+                            command = appArgs.get(0);
+                        }
+
+                        String line = null;
+                        while ((line = reader.readLine()) != null) 
+                        {
+                            lineCount ++; 
+                            wordCount += line.length();
+                            charCount += line.split(" ").length;         
+                        }
+
+                        switch(command)
+                        {
+                            case "-m":
+                                writer.write(Integer.toString(charCount));  
+                                break;
+
+                            case "-w":
+                                writer.write(Integer.toString(wordCount));
+                                break;
+
+                            case "-l":
+                                writer.write(Integer.toString(lineCount));
+                                break;
+                            default:
+                                writer.write(Integer.toString(charCount) + "\t");
+                                writer.write(Integer.toString(wordCount) + "\t");
+                                writer.write(Integer.toString(lineCount));
+                                break;
+                        }
+                        writer.write(System.getProperty("line.separator"));
+                        writer.flush();
+
+                    } catch (IOException e) {
+                        throw new RuntimeException("wc: missing arguments");
+                    } 
+                }
+                else 
+                {
+                    OutputStreamWriter writer = new OutputStreamWriter(output);
+                    
+                    String command = appArgs.get(0);
+                    int charCount = 0;
+                    int wordCount = 0;
+                    int lineCount = 0;
+
+                    for (String arg : appArgs) 
+                    {
+                        Charset encoding = StandardCharsets.UTF_8;
+                        File currFile = new File(arg);
+                        if (currFile.exists())
+                        {
+                            Path filePath = Paths.get(arg);
+                            
+                            try (BufferedReader reader = Files.newBufferedReader(filePath, encoding)) 
+                            {
+                                String line = null;
+                                while ((line = reader.readLine()) != null) 
+                                {
+                                    lineCount ++; 
+                                    wordCount += line.length();
+                                    charCount += line.split(" ").length;         
+                                }
+
+                                switch(command)
+                                {
+                                case "-m":
+                                    writer.write(Integer.toString(charCount));  
+                                    break;
+
+                                case "-w":
+                                    writer.write(Integer.toString(wordCount));
+                                    break;
+
+                                case "-l":
+                                    writer.write(Integer.toString(lineCount));
+                                    break;
+                                default:
+                                    writer.write(Integer.toString(charCount) + "\t");
+                                    writer.write(Integer.toString(wordCount) + "\t");
+                                    writer.write(Integer.toString(lineCount));
+                                    break;
+                                }
+                                writer.write(System.getProperty("line.separator"));
+                                writer.flush();
+                                
+
+                            } catch (IOException e) {
+                                throw new RuntimeException("wc: cannot open " + arg);
+                                }
+                        } 
+                        else
+                        {
+                            throw new RuntimeException("wc: file does not exist");
+                        }
+                    }
+                }
+
+    }
+    
+}
+
+
+
+
+
+

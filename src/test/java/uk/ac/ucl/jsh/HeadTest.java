@@ -8,7 +8,6 @@ import java.io.IOException;
 import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
 import java.io.PrintStream;
-import java.util.ArrayList;
 import java.util.Scanner;
 
 import org.hamcrest.CoreMatchers;
@@ -37,7 +36,8 @@ public class HeadTest {
     }
 
     @After
-    public void deleteTestFile() {
+    public void deleteTestFile()
+    {
         File file = new File("head_test.txt");
         file.delete();
     }
