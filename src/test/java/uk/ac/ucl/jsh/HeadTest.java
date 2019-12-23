@@ -21,8 +21,7 @@ import org.junit.rules.ExpectedException;
 public class HeadTest {
 
     @Before
-    public void buildTestFile() throws IOException
-    {
+    public void buildTestFile() throws IOException {
         String absoluteFilePath = System.getProperty("user.dir") + File.separator + "head_test.txt";
         File testFile = new File(absoluteFilePath);
         String testedStrings1 = "first line\n";
@@ -38,8 +37,7 @@ public class HeadTest {
     }
 
     @After
-    public void deleteTestFile()
-    {
+    public void deleteTestFile() {
         File file = new File("head_test.txt");
         file.delete();
     }

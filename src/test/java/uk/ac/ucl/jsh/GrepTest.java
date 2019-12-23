@@ -2,6 +2,9 @@ package uk.ac.ucl.jsh;
 
 import static org.junit.Assert.assertEquals;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
 import java.util.Scanner;
@@ -11,8 +14,32 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.hamcrest.CoreMatchers;
 import org.junit.After;
+import org.junit.Before;
 
 public class GrepTest {
+
+    @Before
+    public void buildTestFile() throws IOException {
+        String absoluteFilePath = System.getProperty("user.dir") + File.separator + "grep_test.txt";
+        File testFile = new File(absoluteFilePath);
+        String testedStrings1 = "first line\n";
+        String testedStrings2 = "second line\n";
+        String testedStrings3 = "third line\n";
+
+        FileOutputStream file_writer = new FileOutputStream(testFile);
+        file_writer.write(testedStrings1.getBytes());
+        file_writer.write(testedStrings2.getBytes());
+        file_writer.write(testedStrings3.getBytes());
+
+        file_writer.close();
+    }
+
+    @After
+    public void deleteTestFile() {
+        File file = new File("grep_test.txt");
+        file.delete();
+    }
+
     // grep with 2 arguments
     @Test
     public void GrepWIthTwoArgumentsTest() throws Exception {
