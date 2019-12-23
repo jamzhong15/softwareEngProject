@@ -29,6 +29,9 @@ class AppFactory {
         else if (appName.equals("find")) {
             return new find();
         }
+        else if (appName.equals("wc")) {
+            return new wc();
+        }
         else {
             throw new RuntimeException(appName + ": unknown application");
         }

@@ -10,8 +10,10 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.PathMatcher;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.regex.Matcher;
@@ -325,7 +327,7 @@ class grep implements AppCase {
                 }
             } catch (IOException e) {
                 throw new RuntimeException("grep: cannot read from stdInput");
-            }
+            } 
         }
         else
         {
@@ -360,12 +362,10 @@ class grep implements AppCase {
             }
         }
     }
-
 }
 
 class find implements AppCase
 {
-
     @Override
     public void runCommand(ArrayList<String> appArgs, String currentDirectory, InputStream input, OutputStream output)
             throws IOException {
@@ -374,58 +374,167 @@ class find implements AppCase
                 {
                     throw new RuntimeException("find: missing arguments");
                 }
-                else if (appArgs.size() == 2)  
+                else if (appArgs.size() > 3) 
+                {
+                    throw new RuntimeException("find; too many arguments");
+                }
+
+
+                if (appArgs.size() == 2)  
                 {
                     if(!appArgs.get(0).equals("-name"))
                     {
                         throw new RuntimeException("find: invalid arguments"); 
                     }
+
                     File currDir = new File(currentDirectory);
                     String pattern = appArgs.get(1);
                     printFiles(currDir, currDir, pattern, output);
-                }  
-
-
+                }
+                else if (appArgs.size() == 3)  
+                {
+                    if(!appArgs.get(1).equals("-name"))
+                    {
+                        throw new RuntimeException("find: invalid arguments"); 
+                    }
+                    File baseDir = new File(currentDirectory);
+                    File currDir= new File(appArgs.get(0));
+                    String pattern = appArgs.get(2);
+                    printFiles(baseDir, currDir, pattern, output);
+                }    
     }
 
-    public void printFiles(File baseDirectory, File directory, String pattern, OutputStream output)
-    {
-        OutputStreamWriter writer = new OutputStreamWriter(output);
-        if(directory.isDirectory())
+    public void printFiles(File baseDirectory, File currDirectory, String pattern, OutputStream output)
+    { 
+        // Create a matcher for glob patterns
+        final PathMatcher matcher = FileSystems.getDefault().getPathMatcher("glob:" + pattern);
+        if(currDirectory.isDirectory())
         {
-            File[] subDir = directory.listFiles();
+            File[] subDir = currDirectory.listFiles();
 
+            // Recursively search through the subdirectories
             for(File file: subDir)
             {
                 printFiles(baseDirectory, file,  pattern, output);
             }
         }
-        else
+        else if(matcher.matches(currDirectory.toPath().getFileName()))
         {
-            if(directory.getName().contains(pattern))
-            {
-                String base = baseDirectory.getPath();
-                String curr = directory.getPath();
-                String relative = "." + curr.substring(base.length());
+            // Write the relative pathname of the file if it matches the pattern
+            OutputStreamWriter writer = new OutputStreamWriter(output);
+            
+            try {
+                String base = baseDirectory.getCanonicalPath();
+                String current = currDirectory.getCanonicalPath(); 
+                String relative = current.substring(base.length());
 
-                try {
                 writer.write(relative + "\n");
                 writer.flush();
-                } catch (IOException e) {
-                e.printStackTrace();
+                } catch (IOException e) 
+                {
+                    e.printStackTrace();
                 }
             }
-
+                            
         }
 
     }
 
+class wc implements AppCase
+{
+
+    @Override
+    public void runCommand(ArrayList<String> appArgs, String currentDirectory, InputStream input, OutputStream output)
+            throws IOException {
+                if (appArgs.isEmpty() && input == null)
+                {
+                    throw new RuntimeException("wc: missing arguments");
+                }
+    
+                else if(appArgs.size() == 1)
+                {
+                    OutputStreamWriter writer = new OutputStreamWriter(output);
+                    try (BufferedReader reader = new BufferedReader(new InputStreamReader(input))) 
+                    {
+                        int count = 0;
+                        String line = null;
+                        String command = appArgs.get(0);
+                        switch(command)
+                        {
+                            case "-m":
+                                while ((line = reader.readLine())!= null)
+                                {
+                                    count += line.length(); 
+                                }   
+                                break;
+
+                            case "-w":
+                                String[] words= null;
+                                while ((line = reader.readLine())!= null)
+                                {
+                                    words = line.split(" ");
+                                    count += words.length;  
+                                }   
+                                break;
+
+                            case "-l":
+                                while (reader.readLine() != null)
+                                {
+                                    count++; 
+                                }
+                                break;
+                            }
+                        
+                        writer.write(Integer.toString(count));
+                        writer.write(System.getProperty("line.separator"));
+                        writer.flush();
+
+                    } catch (IOException e) {
+                        throw new RuntimeException("wc: cannot read from stdInput");
+                    } 
+                }
+                else if(appArgs.size() > 2 )
+                {
+                    OutputStreamWriter writer = new OutputStreamWriter(output);
+                    for (String arg : appArgs.subList( 1, appArgs.size() )) 
+                    {
+                        Charset encoding = StandardCharsets.UTF_8;
+                        File currFile = new File(currentDirectory + File.separator + arg);
+                        if (currFile.exists())
+                        {
+                            Path filePath = Paths.get(currentDirectory + File.separator + arg);
+                            
+                            try (BufferedReader reader = Files.newBufferedReader(filePath, encoding)) 
+                            {
+                                String line = null;
+                                while ((line = reader.readLine()) != null) 
+                                {
+                                    writer.write(String.valueOf(line));
+                                    writer.write(System.getProperty("line.separator"));
+                                    writer.flush();
+                                }
+                            } catch (IOException e) {
+                                throw new RuntimeException("wc: cannot open " + arg);
+                                }
+                        } 
+                        else
+                        {
+                            throw new RuntimeException("wc: file does not exist");
+                        }
+                    }
+                }
+
+    }
+
+    private void getLines(OutputStream output)
+    {
+        
+    }
+    
 }
 
 
 
 
 
-    
-    }
 
