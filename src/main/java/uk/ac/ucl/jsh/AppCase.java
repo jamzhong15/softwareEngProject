@@ -349,12 +349,13 @@ class sed implements AppCase {
         String replacementString = replacementArgs[2];
         Boolean global = false;
         if (!replacementArgs[0].equals("s")){throw new RuntimeException("sed: wrong replacement format, replace "+replacementArgs[0]+delimiter+ " with s"+delimiter);}
-
         if (replacementArgs.length == 4)
         {
             if (replacementArgs[3].equals("g")){global = true;}
-            else {throw new RuntimeException("sed: wrong global spedifier, replace "+delimiter+replacementArgs[4]+ " with "+delimiter+"g");}
+            else {throw new ArrayIndexOutOfBoundsException("sed: wrong global specifier, replace " + delimiter + replacementArgs[3] + " with " + delimiter + "g");
+            }
         }
+        if (replacementArgs.length > 4){throw new RuntimeException("sed: too many arguments. Try s" + delimiter + replacementArgs[1] + delimiter + replacementArgs[2]+ delimiter + "g");}
         
         if (appArgs.size() == 1) // read strings from standard input, and print to stdard output
         {

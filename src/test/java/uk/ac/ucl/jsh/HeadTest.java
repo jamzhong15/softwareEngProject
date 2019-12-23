@@ -8,7 +8,6 @@ import java.io.IOException;
 import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
 import java.io.PrintStream;
-import java.util.ArrayList;
 import java.util.Scanner;
 
 import org.hamcrest.CoreMatchers;
@@ -32,6 +31,13 @@ public class HeadTest {
         file_writer.write(testedStrings1.getBytes());
         file_writer.write(testedStrings2.getBytes());
         file_writer.close();
+    }
+
+    @After
+    public void deleteTestFile()
+    {
+        File file = new File("head_test.txt");
+        file.delete();
     }
 
     // head 1 filename argument test  (something wrong here)
@@ -135,12 +141,5 @@ public class HeadTest {
         thrown.expect(RuntimeException.class);
         thrown.expectMessage(CoreMatchers.equalTo("head: cannot open target"));
         jsh.start("head target", console);
-    }
-
-    @After
-    public void deleteTestFile()
-    {
-        File file = new File("head_test.txt");
-        file.delete();
     }
 }
