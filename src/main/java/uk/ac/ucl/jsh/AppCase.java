@@ -1,6 +1,7 @@
 package uk.ac.ucl.jsh;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -110,9 +111,22 @@ class cat implements AppCase {
          * stack and read this inputstream as input. if stack inputstream is null, then
          * throw exception.
          */
-        if (appArgs.isEmpty()) {
-            throw new RuntimeException("cat: missing arguments");
-        } else {
+        if (appArgs.isEmpty()) { // try to read from stdin
+            BufferedWriter stdoutWriter = new BufferedWriter(new OutputStreamWriter(output));
+            if (input == null) {
+                throw new RuntimeException("cat: missing arguments");
+            }
+            else {
+                BufferedReader stdinReader = new BufferedReader(new InputStreamReader(input));
+                String stringInStdin = null;
+                while ((stringInStdin = stdinReader.readLine()) != null) {
+                    stdoutWriter.write(String.valueOf(stringInStdin));   
+                    stdoutWriter.write(System.getProperty("line.separator"));
+                    stdoutWriter.flush();
+                }
+            }
+        } 
+        else { // get from user input
             for (String arg : appArgs) {
                 Charset encoding = StandardCharsets.UTF_8;
                 File currFile = new File(currentDirectory + File.separator + arg);
