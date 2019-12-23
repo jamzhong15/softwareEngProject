@@ -6,13 +6,16 @@ import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-    CatTest.class,
-    CdTest.class,
     EchoCmdTest.class,
+    CdTest.class,
+    PwdTest.class,
+    CatTest.class,
     HeadTest.class,
     LsTest.class,
-    PwdTest.class,
-    TailTest.class
+    TailTest.class,
+    WrongApplicationTest.class,
+    GrepTest.class,
+    SedTest.class
 })
 public class JshTestSuite {
     

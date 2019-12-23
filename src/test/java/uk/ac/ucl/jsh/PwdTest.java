@@ -11,6 +11,7 @@ import java.util.Scanner;
 public class PwdTest {
     @Test
     public void pwdTest() throws IOException {
+<<<<<<< HEAD
     //     PipedInputStream in = new PipedInputStream();
     //     PipedOutputStream out;
     //     out = new PipedOutputStream(in);
@@ -20,6 +21,17 @@ public class PwdTest {
     //     String currentDirectory = jsh.getcurrentDirectory();
     //     assertEquals(scn.next() , currentDirectory);
     //     scn.close();
+=======
+        Jsh jsh = new Jsh();
+        PipedInputStream in = new PipedInputStream();
+        PipedOutputStream out;
+        out = new PipedOutputStream(in);
+        jsh.start("pwd", out);
+        Scanner scn = new Scanner(in);
+        String currentDirectory = jsh.getcurrentDirectory();
+        assertEquals(currentDirectory, scn.next());
+        scn.close();
+>>>>>>> yingming
     }
 
 }

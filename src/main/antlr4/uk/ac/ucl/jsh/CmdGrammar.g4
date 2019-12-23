@@ -57,7 +57,4 @@ DOUBLEQUOTED : '"' (BACKQUOTED | ~('\n' | '`' | '"'))* '"';
 
 UNQUOTED : ~('\t' | '\'' | '"' | '`' | '\n' | ';' | '|' | '<' | '>' | ' ')+;
 
-//UNQUOTED : ~('\t' | '\'' | '"' | '`' | '\n' | ';' | '|' | '<' | '>' | ' ')*;
-
-
 WS : [ \t\r\n]+ -> skip; // skip spaces, tabs, newlines
