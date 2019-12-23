@@ -160,17 +160,30 @@ class echo implements AppCase {
             throws IOException {
         OutputStreamWriter writer = new OutputStreamWriter(output);
 
-        boolean atLeastOnePrinted = false;
-        for (String arg : appArgs) {
+        // boolean atLeastOnePrinted = false;
+        for (int i = 0; i < appArgs.size()-1; i++) {
+            String arg = appArgs.get(i);
             writer.write(arg);
             writer.write(" ");
             writer.flush();
-            atLeastOnePrinted = true;
+            // atLeastOnePrinted = true;
         }
-        if (atLeastOnePrinted) {
-            writer.write(System.getProperty("line.separator"));
-            writer.flush();
-        }
+        String lastArg = appArgs.get(appArgs.size()-1);
+        writer.write(lastArg);
+        writer.flush();
+        writer.write(System.getProperty("line.separator"));
+        writer.flush();
+
+        // for (String arg : appArgs) {
+        //     writer.write(arg);
+        //     writer.write("1");
+        //     writer.flush();
+        //     atLeastOnePrinted = true;
+        // }
+        // if (atLeastOnePrinted) {
+        //     writer.write(System.getProperty("line.separator"));
+        //     writer.flush();
+        // }
     }
 }
 
