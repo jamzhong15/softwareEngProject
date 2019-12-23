@@ -283,52 +283,117 @@ class tail implements AppCase {
         OutputStreamWriter writer = new OutputStreamWriter(output);
 
         if (appArgs.isEmpty()) {
-            throw new RuntimeException("tail: missing arguments");
+            BufferedWriter stdoutWriter = new BufferedWriter(new OutputStreamWriter(output));
+            if (input == null) {
+                throw new RuntimeException("tail: missing arguments");
         }
-        if (appArgs.size() != 1 && appArgs.size() != 3) {
-            throw new RuntimeException("tail: wrong arguments");
-        }
-        if (appArgs.size() == 3 && !appArgs.get(0).equals("-n")) {
-            throw new RuntimeException("tail: wrong argument " + appArgs.get(0));
-        }
-        int tailLines = 10;
-        String tailArg;
-        if (appArgs.size() == 3) {
-            try {
-                tailLines = Integer.parseInt(appArgs.get(1));
-            } catch (Exception e) {
-                throw new RuntimeException("tail: wrong argument " + appArgs.get(1));
-            }
-            tailArg = appArgs.get(2);
-        } else {
-            tailArg = appArgs.get(0);
-        }
-        File tailFile = new File(currentDirectory + File.separator + tailArg);
-        if (tailFile.exists()) {
-            Charset encoding = StandardCharsets.UTF_8;
-            Path filePath = Paths.get((String) currentDirectory + File.separator + tailArg);
+        else {
+            int tailLines = 10;
             ArrayList<String> storage = new ArrayList<>();
-            try (BufferedReader reader = Files.newBufferedReader(filePath, encoding)) {
-                String line = null;
-                while ((line = reader.readLine()) != null) {
-                    storage.add(line);
+            BufferedReader stdinReader = new BufferedReader(new InputStreamReader(input));
+            for (int i = 0; i < tailLines; i++) {
+                String stringInStdin = null;
+                        while ((stringInStdin = stdinReader.readLine()) != null) {
+                            storage.add(stringInStdin);
+                        }
+                    int index = 0;
+                    if (tailLines > storage.size()) {
+                        index = 0;
+                    } else {
+                        index = storage.size() - tailLines;
+                    }
+                    for (int p = index; p < storage.size(); p++) {
+                        stdoutWriter.write(storage.get(p) + System.getProperty("line.separator"));
+                        stdoutWriter.flush();
+                    }
                 }
-                int index = 0;
-                if (tailLines > storage.size()) {
-                    index = 0;
-                } else {
-                    index = storage.size() - tailLines;
-                }
-                for (int i = index; i < storage.size(); i++) {
-                    writer.write(storage.get(i) + System.getProperty("line.separator"));
-                    writer.flush();
-                }
-            } catch (IOException e) {
-                throw new RuntimeException("tail: cannot open " + tailArg);
             }
-        } else {
-            throw new RuntimeException("tail: " + tailArg + " does not exist");
         }
+        else if (appArgs.size() != 1 && appArgs.size() != 3) {
+            BufferedWriter stdoutWriter = new BufferedWriter(new OutputStreamWriter(output));
+            int tailLines = 10;
+            if (appArgs.size() == 2) {
+                if (input == null) {
+                    throw new RuntimeException("tail: wrong arguments");
+                }
+                else {
+                    if (!appArgs.get(0).equals("-n")) {
+                        throw new RuntimeException("tail: wrong argument " + appArgs.get(0));
+                    }
+                    try {
+                        tailLines = Integer.parseInt(appArgs.get(1));
+                    } catch (Exception e) {
+                        throw new RuntimeException("tail: wrong argument " + appArgs.get(1));
+                    }
+
+                    ArrayList<String> storage = new ArrayList<>();
+                    BufferedReader stdinReader = new BufferedReader(new InputStreamReader(input));
+                    for (int i = 0; i < tailLines; i++) {
+                        String stringInStdin = null;
+                        while ((stringInStdin = stdinReader.readLine()) != null) {
+                            storage.add(stringInStdin);
+                        }
+                    int index = 0;
+                    if (tailLines > storage.size()) {
+                        index = 0;
+                    } else {
+                        index = storage.size() - tailLines;
+                    }
+                    for (int p = index; p < storage.size(); p++) {
+                        stdoutWriter.write(storage.get(p) + System.getProperty("line.separator"));
+                        stdoutWriter.flush();
+                    }
+                }
+                }
+            }
+            else {
+                throw new RuntimeException("tail: wrong arguments");
+            }
+        }
+        else {
+            if (appArgs.size() == 3 && !appArgs.get(0).equals("-n")) {
+                throw new RuntimeException("tail: wrong argument " + appArgs.get(0));
+            }
+            int tailLines = 10;
+            String tailArg;
+            if (appArgs.size() == 3) {
+                try {
+                    tailLines = Integer.parseInt(appArgs.get(1));
+                } catch (Exception e) {
+                    throw new RuntimeException("tail: wrong argument " + appArgs.get(1));
+                }
+                tailArg = appArgs.get(2);
+            } else {
+                tailArg = appArgs.get(0);
+            }
+            File tailFile = new File(currentDirectory + File.separator + tailArg);
+            if (tailFile.exists()) {
+                Charset encoding = StandardCharsets.UTF_8;
+                Path filePath = Paths.get((String) currentDirectory + File.separator + tailArg);
+                ArrayList<String> storage = new ArrayList<>();
+                try (BufferedReader reader = Files.newBufferedReader(filePath, encoding)) {
+                    String line = null;
+                    while ((line = reader.readLine()) != null) {
+                        storage.add(line);
+                    }
+                    int index = 0;
+                    if (tailLines > storage.size()) {
+                        index = 0;
+                    } else {
+                        index = storage.size() - tailLines;
+                    }
+                    for (int i = index; i < storage.size(); i++) {
+                        writer.write(storage.get(i) + System.getProperty("line.separator"));
+                        writer.flush();
+                    }
+                } catch (IOException e) {
+                    throw new RuntimeException("tail: cannot open " + tailArg);
+                }
+            } else {
+                throw new RuntimeException("tail: " + tailArg + " does not exist");
+            }
+        }
+        
     }
 
 }

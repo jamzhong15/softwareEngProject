@@ -92,6 +92,7 @@ public class HeadTest {
         scn.close();
     }
 
+    // head stdin 2 args test
     @Test
     public void HeadStdinVersionTwoArgumentsTest() throws Exception {
         Jsh jsh = new Jsh();

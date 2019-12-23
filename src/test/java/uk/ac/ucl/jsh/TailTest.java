@@ -23,42 +23,27 @@ import org.junit.rules.ExpectedException;
 public class TailTest {
 
     @Before
-    public void buildTestFile() throws IOException
-    {
+    public void buildTestFile() throws IOException {
         String absoluteFilePath = System.getProperty("user.dir") + File.separator + "tail_test.txt";
         File testFile = new File(absoluteFilePath);
         ArrayList<String> testedStrings = new ArrayList<>();
         testedStrings.add("first line\n");
-        testedStrings.add("second line");
+        testedStrings.add("second line\n");
+        testedStrings.add("third line");
         FileOutputStream file_writer = new FileOutputStream(testFile);
-        for (String string : testedStrings)
-        {
+        for (String string : testedStrings) {
             file_writer.write(string.getBytes());
         }
         file_writer.close();
     }
 
-    // tail 1 filename argument test something wrong here
-    @Before
-    public void createNewFile() throws IOException {
-        String filePath = System.getProperty("user.dir") + File.separator + "testFile.txt";
-        File file = new File(filePath);
-        file.createNewFile();
-        FileWriter fileWriter = new FileWriter(file);
-        String data1 = "first line\n";
-        String data2 = "second line";
-        fileWriter.write(data1);
-        fileWriter.write(data2);
-        fileWriter.close();
-    }
- 
     @After
-    public void deleteFile() {
-        String filePath = System.getProperty("user.dir") + File.separator + "testFile.txt";
-        File file = new File(filePath);
+    public void deleteTestFile() {
+        File file = new File("tail_test.txt");
         file.delete();
     }
 
+    // tail 1 argument test 
     @Test
     public void TailOneFileNameArgumentTest() throws Exception {
         Jsh jsh = new Jsh();
@@ -69,12 +54,12 @@ public class TailTest {
         jsh.start("tail tail_test.txt", out);
         Scanner scn = new Scanner(in);
         assertEquals("first line", scn.nextLine());
+        assertEquals("second line", scn.nextLine());
+        assertEquals("third line", scn.nextLine());
         scn.close();
     }
 
-
-
-    // tail with 3 arguments test something wrong also
+    // tail with 3 arguments test
     @Test
     public void TailThreeArgumentsTest() throws Exception {
         Jsh jsh = new Jsh();
@@ -82,9 +67,41 @@ public class TailTest {
         PipedInputStream in = new PipedInputStream();
         PipedOutputStream out;
         out = new PipedOutputStream(in);
-        jsh.start("tail -n 1 tail_test.txt", out);
+        jsh.start("tail -n 2 tail_test.txt", out);
         Scanner scn = new Scanner(in);
         assertEquals("second line", scn.nextLine());
+        assertEquals("third line", scn.nextLine());
+        scn.close();
+    }
+
+    // tail stdin no argument test
+    @Test
+    public void HeadStdinVersionNoArgumentsTest() throws Exception {
+        Jsh jsh = new Jsh();
+
+        PipedInputStream in = new PipedInputStream();
+        PipedOutputStream out;
+        out = new PipedOutputStream(in);
+        jsh.start("cat tail_test.txt | tail", out);
+        Scanner scn = new Scanner(in);
+        assertEquals("first line", scn.nextLine());
+        assertEquals("second line", scn.nextLine());
+        assertEquals("third line", scn.nextLine());
+        scn.close();
+    }
+
+    // tail stdin 2 arguments test
+    @Test
+    public void HeadStdinVersionTwoArgumentsTest() throws Exception {
+        Jsh jsh = new Jsh();
+
+        PipedInputStream in = new PipedInputStream();
+        PipedOutputStream out;
+        out = new PipedOutputStream(in);
+        jsh.start("cat tail_test.txt | tail -n 2", out);
+        Scanner scn = new Scanner(in);
+        assertEquals("second line", scn.nextLine());
+        assertEquals("third line", scn.nextLine());
         scn.close();
     }
 
@@ -125,6 +142,17 @@ public class TailTest {
         jsh.start("tail -s 3 Dockerfile", console);
     }
 
+    // head obtain from stdin and first arg is not -n
+    @Test
+    public void TailStdinVersionWithWrongFIrstArgumentThrowsException() throws RuntimeException, IOException {
+        Jsh jsh = new Jsh();
+        PrintStream console = null;
+        console = System.out;
+        thrown.expect(RuntimeException.class);
+        thrown.expectMessage(CoreMatchers.equalTo("tail: wrong argument -s"));
+        jsh.start("cat dockerfile |tail -s 3 ", console);
+    }
+
     // tail 3 argument but second argument is not number
     @Test
     public void TailThreeArgumentsWithWrongSecondArgumentThrowsException() throws RuntimeException, IOException {
@@ -134,6 +162,17 @@ public class TailTest {
         thrown.expect(RuntimeException.class);
         thrown.expectMessage(CoreMatchers.equalTo("tail: wrong argument s"));
         jsh.start("tail -n s Dockerfile", console);
+    }
+
+    // tail obtain from stdin and second arg is not number
+    @Test
+    public void TailStdinVersionWithWrongSecondArgumentThrowsException() throws RuntimeException, IOException {
+        Jsh jsh = new Jsh();
+        PrintStream console = null;
+        console = System.out;
+        thrown.expect(RuntimeException.class);
+        thrown.expectMessage(CoreMatchers.equalTo("tail: wrong argument s"));
+        jsh.start("cat dockerfile | tail -n s", console);
     }
 
     // tail file does not exist
@@ -156,12 +195,5 @@ public class TailTest {
         thrown.expect(RuntimeException.class);
         thrown.expectMessage(CoreMatchers.equalTo("tail: cannot open target"));
         jsh.start("tail target", console);
-    }
-
-    @After
-    public void deleteTestFile()
-    {
-        File file = new File("tail_test.txt");
-        file.delete();
     }
 }
