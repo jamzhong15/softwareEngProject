@@ -38,6 +38,13 @@ public class TailTest {
         file_writer.close();
     }
 
+    @After
+    public void deleteTestFile()
+    {
+        File file = new File("tail_test.txt");
+        file.delete();
+    }
+
     // tail 1 filename argument test something wrong here
     @Before
     public void createNewFile() throws IOException {
@@ -156,12 +163,5 @@ public class TailTest {
         thrown.expect(RuntimeException.class);
         thrown.expectMessage(CoreMatchers.equalTo("tail: cannot open target"));
         jsh.start("tail target", console);
-    }
-
-    @After
-    public void deleteTestFile()
-    {
-        File file = new File("tail_test.txt");
-        file.delete();
     }
 }
