@@ -3,11 +3,7 @@ package uk.ac.ucl.jsh;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
-<<<<<<< HEAD
-import java.io.FileFilter;
-=======
 import java.io.FileOutputStream;
->>>>>>> yingming
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -307,15 +303,10 @@ class grep implements AppCase {
             throw new RuntimeException("grep: wrong number of argument");
         }
 
-<<<<<<< HEAD
-        if (appArgs.size()  == 1) { 
-            // throw new RuntimeException("grep: wrong number of arguments");
-=======
         if (appArgs.isEmpty()) {
             throw new RuntimeException("grep: missing arguments");
         }
         if (appArgs.size() == 1) {
->>>>>>> yingming
             Pattern grepPattern = Pattern.compile(appArgs.get(0));
             try (BufferedReader reader = new BufferedReader(new InputStreamReader(input))) {
                 String line = null;
@@ -327,17 +318,8 @@ class grep implements AppCase {
                         writer.flush();
                     }
                 }
-<<<<<<< HEAD
-            } catch (IOException e) {
-                throw new RuntimeException("grep: cannot read from stdInput");
-            } 
-        }
-        else
-        {
-=======
             }
         } else {
->>>>>>> yingming
             Pattern grepPattern = Pattern.compile(appArgs.get(0));
             int numOfFiles = appArgs.size() - 1;
             Path filePath;
