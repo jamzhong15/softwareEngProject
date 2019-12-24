@@ -22,145 +22,145 @@ import org.junit.rules.ExpectedException;
 
 public class SedTest
 {
-    @Before
-    public void buildTestFile() throws IOException
-    {
-        String absoluteFilePath = System.getProperty("user.dir") + File.separator + "sed_test.txt";
-        File testFile = new File(absoluteFilePath);
-        String testedStrings1 = "first line : this is first, first..\n";
-        String testedStrings2 = "second line : this is second, @second@\n";
+    // @Before
+    // public void buildTestFile() throws IOException
+    // {
+    //     String absoluteFilePath = System.getProperty("user.dir") + File.separator + "sed_test.txt";
+    //     File testFile = new File(absoluteFilePath);
+    //     String testedStrings1 = "first line : this is first, first..\n";
+    //     String testedStrings2 = "second line : this is second, @second@\n";
 
-        FileOutputStream file_writer = new FileOutputStream(testFile);
-        file_writer.write(testedStrings1.getBytes());
-        file_writer.write(testedStrings2.getBytes());
-        file_writer.close();
-    }
+    //     FileOutputStream file_writer = new FileOutputStream(testFile);
+    //     file_writer.write(testedStrings1.getBytes());
+    //     file_writer.write(testedStrings2.getBytes());
+    //     file_writer.close();
+    // }
 
-    @After
-    public void deleteTestFile()
-    {
-        File file = new File("sed_test.txt");
-        file.delete();
-    }
+    // @After
+    // public void deleteTestFile()
+    // {
+    //     File file = new File("sed_test.txt");
+    //     file.delete();
+    // }
 
-    // sed without the g specifier, and operate on sed_test.txt file
-    @Test
-    public void SedNotGlobalAndOneFileNameArgumentTest() throws Exception
-    {
-        Jsh jsh = new Jsh();
+    // // sed without the g specifier, and operate on sed_test.txt file
+    // @Test
+    // public void SedNotGlobalAndOneFileNameArgumentTest() throws Exception
+    // {
+    //     Jsh jsh = new Jsh();
         
-        PipedInputStream in = new PipedInputStream();
-        PipedOutputStream out = new PipedOutputStream(in);
-        OutputStreamWriter writer = new OutputStreamWriter(out);
-        BufferedReader originalFileReader = new BufferedReader(new FileReader("sed_test.txt"));
+    //     PipedInputStream in = new PipedInputStream();
+    //     PipedOutputStream out = new PipedOutputStream(in);
+    //     OutputStreamWriter writer = new OutputStreamWriter(out);
+    //     BufferedReader originalFileReader = new BufferedReader(new FileReader("sed_test.txt"));
 
-        String str;
-        while ((str = originalFileReader.readLine()) != null)
-        {
-            writer.write((str.replaceFirst("first", "FIRST")));
-            writer.write(System.getProperty("line.separator"));
-            writer.flush();
-        }
-        writer.close();
-        originalFileReader.close();
+    //     String str;
+    //     while ((str = originalFileReader.readLine()) != null)
+    //     {
+    //         writer.write((str.replaceFirst("first", "FIRST")));
+    //         writer.write(System.getProperty("line.separator"));
+    //         writer.flush();
+    //     }
+    //     writer.close();
+    //     originalFileReader.close();
 
-        jsh.start("sed s/first/FIRST sed_test.txt", System.out);
-        BufferedReader editedFileReader = new BufferedReader(new FileReader("sed_test.txt"));
-        BufferedReader pipeInReader = new BufferedReader(new InputStreamReader(in));
+    //     jsh.start("sed s/first/FIRST sed_test.txt", System.out);
+    //     BufferedReader editedFileReader = new BufferedReader(new FileReader("sed_test.txt"));
+    //     BufferedReader pipeInReader = new BufferedReader(new InputStreamReader(in));
         
-        String expectedStr;
-        while ((expectedStr = pipeInReader.readLine()) != null)
-        {
-            String actualStr = editedFileReader.readLine();
-            assertEquals(expectedStr, actualStr);
-        }
-        editedFileReader.close();
-    }
+    //     String expectedStr;
+    //     while ((expectedStr = pipeInReader.readLine()) != null)
+    //     {
+    //         String actualStr = editedFileReader.readLine();
+    //         assertEquals(expectedStr, actualStr);
+    //     }
+    //     editedFileReader.close();
+    // }
 
-    // sed without the g specifier, and reading form stdin
-    @Test
-    public void SedNotGlobalWithOneArgumentTest() throws Exception
-    {
-        Jsh jsh = new Jsh();
+    // // sed without the g specifier, and reading form stdin
+    // @Test
+    // public void SedNotGlobalWithOneArgumentTest() throws Exception
+    // {
+    //     Jsh jsh = new Jsh();
         
-        PipedInputStream in = new PipedInputStream();
-        PipedOutputStream out = new PipedOutputStream(in);
-        OutputStreamWriter writerExpStr = new OutputStreamWriter(out);
-        BufferedReader originalFileReader = new BufferedReader(new FileReader("sed_test.txt"));
+    //     PipedInputStream in = new PipedInputStream();
+    //     PipedOutputStream out = new PipedOutputStream(in);
+    //     OutputStreamWriter writerExpStr = new OutputStreamWriter(out);
+    //     BufferedReader originalFileReader = new BufferedReader(new FileReader("sed_test.txt"));
 
-        String str;
-        while ((str = originalFileReader.readLine()) != null)
-        {
-            writerExpStr.write((str.replaceFirst("first", "FIRST")));
-            writerExpStr.write(System.getProperty("line.separator"));
-            writerExpStr.flush();
-        }
-        writerExpStr.close();
-        originalFileReader.close();
+    //     String str;
+    //     while ((str = originalFileReader.readLine()) != null)
+    //     {
+    //         writerExpStr.write((str.replaceFirst("first", "FIRST")));
+    //         writerExpStr.write(System.getProperty("line.separator"));
+    //         writerExpStr.flush();
+    //     }
+    //     writerExpStr.close();
+    //     originalFileReader.close();
 
-        PipedInputStream stdin = new PipedInputStream();
-        PipedOutputStream stdout = new PipedOutputStream(stdin);
-        jsh.start("cat sed_test.txt | sed s/first/FIRST", stdout);
+    //     PipedInputStream stdin = new PipedInputStream();
+    //     PipedOutputStream stdout = new PipedOutputStream(stdin);
+    //     jsh.start("cat sed_test.txt | sed s/first/FIRST", stdout);
         
-        BufferedReader stdinReader = new BufferedReader(new InputStreamReader(stdin));
-        BufferedReader inReader = new BufferedReader(new InputStreamReader(in));
+    //     BufferedReader stdinReader = new BufferedReader(new InputStreamReader(stdin));
+    //     BufferedReader inReader = new BufferedReader(new InputStreamReader(in));
 
-        String expectedStr;
-        while ((expectedStr = inReader.readLine()) != null)
-        {
-            String actualStr = stdinReader.readLine();
-            assertEquals(expectedStr, actualStr);
-        }
-    }
+    //     String expectedStr;
+    //     while ((expectedStr = inReader.readLine()) != null)
+    //     {
+    //         String actualStr = stdinReader.readLine();
+    //         assertEquals(expectedStr, actualStr);
+    //     }
+    // }
 
-    @Rule
-    public ExpectedException thrown = ExpectedException.none();
+    // @Rule
+    // public ExpectedException thrown = ExpectedException.none();
 
-    @Test
-    public void SedMissingArgumentThrowsException() throws RuntimeException, IOException
-    {
-        Jsh jsh = new Jsh();
-        PrintStream console = null;
+    // @Test
+    // public void SedMissingArgumentThrowsException() throws RuntimeException, IOException
+    // {
+    //     Jsh jsh = new Jsh();
+    //     PrintStream console = null;
 
-        console = System.out;
-        thrown.expect(RuntimeException.class);
-        thrown.expectMessage(CoreMatchers.equalTo("sed: missing arguments"));
-        jsh.start("sed", console);
-    }
+    //     console = System.out;
+    //     thrown.expect(RuntimeException.class);
+    //     thrown.expectMessage(CoreMatchers.equalTo("sed: missing arguments"));
+    //     jsh.start("sed", console);
+    // }
 
-    @Test
-    public void SedWrongReplacementFormatThrowsException() throws RuntimeException, IOException
-    {
-        Jsh jsh = new Jsh();
-        PrintStream console = null;
+    // @Test
+    // public void SedWrongReplacementFormatThrowsException() throws RuntimeException, IOException
+    // {
+    //     Jsh jsh = new Jsh();
+    //     PrintStream console = null;
 
-        console = System.out;
-        thrown.expect(RuntimeException.class);
-        thrown.expectMessage(CoreMatchers.equalTo("sed: wrong replacement format, replace a/ with s/"));
-        jsh.start("sed a/hi/hello test", console);
-    }
+    //     console = System.out;
+    //     thrown.expect(RuntimeException.class);
+    //     thrown.expectMessage(CoreMatchers.equalTo("sed: wrong replacement format, replace a/ with s/"));
+    //     jsh.start("sed a/hi/hello test", console);
+    // }
 
-    @Test
-    public void SedWrongGlobalSpecifierTHrowsException() throws RuntimeException, IOException
-    {
-        Jsh jsh = new Jsh();
-        PrintStream console = null;
+    // @Test
+    // public void SedWrongGlobalSpecifierTHrowsException() throws RuntimeException, IOException
+    // {
+    //     Jsh jsh = new Jsh();
+    //     PrintStream console = null;
 
-        console = System.out;
-        thrown.expect(RuntimeException.class);
-        thrown.expectMessage(CoreMatchers.equalTo("sed: wrong global specifier, replace /global with /g"));
-        jsh.start("sed s/hi/hello/global test", console);
-    }
+    //     console = System.out;
+    //     thrown.expect(RuntimeException.class);
+    //     thrown.expectMessage(CoreMatchers.equalTo("sed: wrong global specifier, replace /global with /g"));
+    //     jsh.start("sed s/hi/hello/global test", console);
+    // }
     
-    @Test
-    public void SedTooManyArgumentsInREPLACEMENTThrowsException() throws RuntimeException, IOException
-    {
-        Jsh jsh = new Jsh();
-        PrintStream console = null;
+    // @Test
+    // public void SedTooManyArgumentsInREPLACEMENTThrowsException() throws RuntimeException, IOException
+    // {
+    //     Jsh jsh = new Jsh();
+    //     PrintStream console = null;
 
-        console = System.out;
-        thrown.expect(RuntimeException.class);
-        thrown.expectMessage(CoreMatchers.equalTo("sed: too many arguments. Try s/hi/hello/g"));
-        jsh.start("sed s/hi/hello/g/this test", console);
-    }
+    //     console = System.out;
+    //     thrown.expect(RuntimeException.class);
+    //     thrown.expectMessage(CoreMatchers.equalTo("sed: too many arguments. Try s/hi/hello/g"));
+    //     jsh.start("sed s/hi/hello/g/this test", console);
+    // }
 }
