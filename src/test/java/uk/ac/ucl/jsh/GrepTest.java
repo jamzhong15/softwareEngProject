@@ -21,23 +21,34 @@ public class GrepTest {
     @Before
     public void buildTestFile() throws IOException {
         String absoluteFilePath = System.getProperty("user.dir") + File.separator + "grep_test.txt";
+        String absoluteFilePath1 = System.getProperty("user.dir") + File.separator + "grep_test.jar";
+
         File testFile = new File(absoluteFilePath);
         String testedStrings1 = "first line\n";
         String testedStrings2 = "second line\n";
         String testedStrings3 = "third line\n";
 
-        FileOutputStream file_writer = new FileOutputStream(testFile);
+        File testFile1 = new File(absoluteFilePath1);
+        String testedStrings4 = "first line\n";
+
+        FileOutputStream file_writer = new FileOutputStream(testFile1);
         file_writer.write(testedStrings1.getBytes());
         file_writer.write(testedStrings2.getBytes());
         file_writer.write(testedStrings3.getBytes());
 
+        FileOutputStream file_writer1 = new FileOutputStream(testFile);
+        file_writer1.write(testedStrings4.getBytes());
+
         file_writer.close();
+        file_writer1.close();
     }
 
     @After
     public void deleteTestFile() {
         File file = new File("grep_test.txt");
+        File file1 = new File("grep_test.jar");
         file.delete();
+        file1.delete();
     }
 
     // grep with 2 arguments
@@ -78,7 +89,7 @@ public class GrepTest {
         jsh.start("grep xx xx", System.out);
     }
 
-   // missing arguments
+    // missing arguments
     @Test
     public void GrepMissingArgumentTest() throws Exception {
         Jsh jsh = new Jsh();
@@ -92,16 +103,8 @@ public class GrepTest {
     // public void GrepCannotOpenFileTest() throws Exception {
     //     Jsh jsh = new Jsh();
     //     thrown.expect(RuntimeException.class);
-    //     thrown.expectMessage(CoreMatchers.equalTo("grep: cannot open jsh-1.0-SNAPSHOT-jar-with-dependencies.jar"));
-    //     jsh.start("cd target", System.out);
-    //     jsh.start("grep x jsh-1.0-SNAPSHOT-jar-with-dependencies.jar", System.out);
-    // }
-
-    // @After
-    // public void resetDirectory()
-    // {
-    //     Jsh jsh = new Jsh();
-    //     jsh.setcurrentDirectory(System.getProperty("user.dir"));
+    //     thrown.expectMessage(CoreMatchers.equalTo("grep: cannot open grep_test.jar"));
+    //     jsh.start("grep x grep_test.jar", System.out);
     // }
 }
 
