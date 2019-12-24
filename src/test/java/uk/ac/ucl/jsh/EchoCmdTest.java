@@ -3,8 +3,6 @@ package uk.ac.ucl.jsh;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
 import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
 import java.util.Scanner;
