@@ -60,7 +60,7 @@ public class LsTest {
         scn.close();
     }
 
-    // too many arguments test
+    // // too many arguments test
     @Rule
     public ExpectedException thrown = ExpectedException.none();
 

@@ -113,6 +113,76 @@ public class SedTest
         }
     }
 
+    // sed with the g specifier, and operate on sed_test.txt file
+    @Test
+    public void SedGlobalAndOneFileNameArgumentTest() throws Exception
+    {
+        Jsh jsh = new Jsh();
+        
+        PipedInputStream in = new PipedInputStream();
+        PipedOutputStream out = new PipedOutputStream(in);
+        OutputStreamWriter writer = new OutputStreamWriter(out);
+        BufferedReader originalFileReader = new BufferedReader(new FileReader("sed_test.txt"));
+
+        String str;
+        while ((str = originalFileReader.readLine()) != null)
+        {
+            writer.write((str.replaceAll("first", "FIRST")));
+            writer.write(System.getProperty("line.separator"));
+            writer.flush();
+        }
+        writer.close();
+        originalFileReader.close();
+
+        jsh.start("sed s/first/FIRST/g sed_test.txt", System.out);
+        BufferedReader editedFileReader = new BufferedReader(new FileReader("sed_test.txt"));
+        BufferedReader pipeInReader = new BufferedReader(new InputStreamReader(in));
+        
+        String expectedStr;
+        while ((expectedStr = pipeInReader.readLine()) != null)
+        {
+            String actualStr = editedFileReader.readLine();
+            assertEquals(expectedStr, actualStr);
+        }
+        editedFileReader.close();
+    }
+
+    // sed with global specifier and read from stdin
+    @Test
+    public void SedGlobalWithOneArgumentTest() throws Exception
+    {
+        Jsh jsh = new Jsh();
+        
+        PipedInputStream in = new PipedInputStream();
+        PipedOutputStream out = new PipedOutputStream(in);
+        OutputStreamWriter writerExpStr = new OutputStreamWriter(out);
+        BufferedReader originalFileReader = new BufferedReader(new FileReader("sed_test.txt"));
+
+        String str;
+        while ((str = originalFileReader.readLine()) != null)
+        {
+            writerExpStr.write((str.replaceAll("first", "FIRST")));
+            writerExpStr.write(System.getProperty("line.separator"));
+            writerExpStr.flush();
+        }
+        writerExpStr.close();
+        originalFileReader.close();
+
+        PipedInputStream stdin = new PipedInputStream();
+        PipedOutputStream stdout = new PipedOutputStream(stdin);
+        jsh.start("cat sed_test.txt | sed s/first/FIRST/g", stdout);
+        
+        BufferedReader stdinReader = new BufferedReader(new InputStreamReader(stdin));
+        BufferedReader inReader = new BufferedReader(new InputStreamReader(in));
+
+        String expectedStr;
+        while ((expectedStr = inReader.readLine()) != null)
+        {
+            String actualStr = stdinReader.readLine();
+            assertEquals(expectedStr, actualStr);
+        }
+    }
+
     @Rule
     public ExpectedException thrown = ExpectedException.none();
 
@@ -162,5 +232,41 @@ public class SedTest
         thrown.expect(RuntimeException.class);
         thrown.expectMessage(CoreMatchers.equalTo("sed: too many arguments. Try s/hi/hello/g"));
         jsh.start("sed s/hi/hello/g/this test", console);
+    }
+
+    @Test
+    public void SedCannotReadFromStdinThrowsException() throws RuntimeException, IOException
+    {
+        Jsh jsh = new Jsh();
+        PrintStream console = null;
+
+        console = System.out;
+        thrown.expect(RuntimeException.class);
+        thrown.expectMessage(CoreMatchers.equalTo("sed: cannot read from stdin, please provide filename"));
+        jsh.start("sed s/hi/hello", console);
+    }
+
+    @Test
+    public void SedCannotOpenFileThrowsException() throws RuntimeException, IOException
+    {
+        Jsh jsh = new Jsh();
+        PrintStream console = null;
+
+        console = System.out;
+        thrown.expect(RuntimeException.class);
+        thrown.expectMessage(CoreMatchers.equalTo("sed: file HelloWorld.txt does not exist"));
+        jsh.start("sed s/hi/hello HelloWorld.txt", console);
+    }
+
+    @Test
+    public void SedFileExistsButCannotBeOpenedThrowsException() throws RuntimeException, IOException
+    {
+        Jsh jsh = new Jsh();
+        PrintStream console = null;
+
+        console = System.out;
+        thrown.expect(RuntimeException.class);
+        thrown.expectMessage(CoreMatchers.equalTo("sed: cannot open src"));
+        jsh.start("sed s/hi/hello src", console);
     }
 }

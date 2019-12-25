@@ -1,6 +1,5 @@
 package uk.ac.ucl.jsh;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import org.antlr.v4.runtime.tree.ParseTree;
 

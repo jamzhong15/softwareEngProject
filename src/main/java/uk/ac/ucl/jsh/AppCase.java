@@ -404,9 +404,6 @@ class grep implements AppCase {
     public void runCommand(ArrayList<String> appArgs, String currentDirectory, InputStream input, OutputStream output)
             throws IOException {
         OutputStreamWriter writer = new OutputStreamWriter(output);
-        // if (appArgs.size() == 0) {
-        //     throw new RuntimeException("grep: wrong number of argument");
-        // }
 
         if (appArgs.isEmpty()) {
             throw new RuntimeException("grep: missing arguments");
@@ -587,7 +584,7 @@ class find implements AppCase
                 }
                 else if (appArgs.size() > 3) 
                 {
-                throw new RuntimeException("find: too many arguments");
+                    throw new RuntimeException("find: too many arguments");
                 }
 
 
@@ -718,8 +715,11 @@ class wc implements AppCase
                     int wordCount = 0;
                     int lineCount = 0;
 
-                    for (String arg : appArgs) 
+                    // for (String arg : appArgs)
+                    int i;
+                    for (i=1; i<appArgs.size(); i++)
                     {
+                        String arg = appArgs.get(i);
                         Charset encoding = StandardCharsets.UTF_8;
                         File currFile = new File(arg);
                         if (currFile.exists())
