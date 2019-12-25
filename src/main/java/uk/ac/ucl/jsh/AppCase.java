@@ -475,7 +475,7 @@ class find implements AppCase {
         if (appArgs.size() < 2) {
             throw new RuntimeException("find: missing arguments");
         } else if (appArgs.size() > 3) {
-            throw new RuntimeException("find; too many arguments");
+            throw new RuntimeException("find: too many arguments");
         }
 
         if (appArgs.size() == 2) {
