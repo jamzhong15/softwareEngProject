@@ -523,9 +523,7 @@ class find implements AppCase {
                 e.printStackTrace();
             }
         }
-
     }
-
 }
 
 class wc implements AppCase {
