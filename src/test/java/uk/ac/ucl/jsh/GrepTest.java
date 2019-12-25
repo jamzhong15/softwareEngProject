@@ -4,8 +4,10 @@ import static org.junit.Assert.assertEquals;
 
 import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
+import java.io.PrintStream;
 import java.util.Scanner;
 
+import org.junit.After;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -60,7 +62,7 @@ public class GrepTest {
         jsh.start("grep", System.out);
     }
 
-    // cannot open file 2
+    // // cannot open file 2
     // @Test
     // public void GrepCannotOpenFileTest() throws Exception {
     //     Jsh jsh = new Jsh();
