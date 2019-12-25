@@ -1,42 +1,35 @@
 package uk.ac.ucl.jsh;
 
 class AppFactory {
-    public static AppCase createApp(String appName) {
-        if (appName.equals("cd")) {
+    public static AppCase createApp(String appName) 
+    {
+        switch (appName) 
+        {
+        case "cd":
             return new cd();
-        }
-        else if (appName.equals("pwd")) {
+        case "pwd":
             return new pwd();
-        }
-        else if (appName.equals("ls")) {
+        case "ls":
             return new ls();
-        }
-        else if (appName.equals("cat")) {
+        case "cat":
             return new cat();
-        }
-        else if (appName.equals("echo")) {
+        case "echo":
             return new echo();
-        }
-        else if (appName.equals("head")) {
+        case "head":
             return new head();
-        }
-        else if (appName.equals("tail")) {
+        case "tail":
             return new tail();
-        }
-        else if (appName.equals("grep")) {
+        case "grep":
             return new grep();
-        }
-        else if (appName.equals("sed")) {
+        case "sed":
             return new sed();
-        }
-        else if (appName.equals("find")) {
+        case "find":
             return new find();
-        }
-        else if (appName.equals("wc")) {
+        case "wc":
             return new wc();
-        }
-        else {
+        default:
             throw new RuntimeException(appName + ": unknown application");
         }
+        
     }
 }
