@@ -162,16 +162,19 @@ class echo implements AppCase {
             throws IOException {
         OutputStreamWriter writer = new OutputStreamWriter(output);
         if (appArgs.isEmpty()) {
+            writer.write(System.getProperty("line.separator"));
             writer.flush();
         }
         else {
             for (int i = 0; i < appArgs.size()-1; i++) {
                 String arg = appArgs.get(i);
+                if (arg.startsWith("\"")){arg = arg.substring(1, arg.length()-1);}
                 writer.write(arg);
                 writer.write(" ");
                 writer.flush();
             }
             String lastArg = appArgs.get(appArgs.size()-1);
+            if (lastArg.startsWith("\"")){lastArg = lastArg.substring(1, lastArg.length()-1);}
             writer.write(lastArg);
             writer.flush();
             writer.write(System.getProperty("line.separator"));
