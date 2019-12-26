@@ -153,7 +153,7 @@ public class HeadTest {
         jsh.start("head -s 3 head_test.txt", console);
     }
 
-    // head 3 argument but second argument is not number
+    // head 3 argument but second arg is not number
     @Test
     public void HeadThreeArgumentsWithWrongSecondArgumentThrowsException() throws RuntimeException, IOException {
         Jsh jsh = new Jsh();
@@ -175,18 +175,6 @@ public class HeadTest {
         thrown.expect(RuntimeException.class);
         thrown.expectMessage(CoreMatchers.equalTo("head: wrong argument -s"));
         jsh.start("cat head_test.txt | head -s 3", console);
-    }
-
-    // head obtain from stdin and second arg is not number
-    @Test
-    public void HeadStdinVersionWithWrongSecondArgumentThrowsException() throws RuntimeException, IOException {
-        Jsh jsh = new Jsh();
-        PrintStream console = null;
-    
-        console = System.out;
-        thrown.expect(RuntimeException.class);
-        thrown.expectMessage(CoreMatchers.equalTo("head: wrong argument s"));
-        jsh.start("cat head_test.txt | head -n s", console);
     }
 
     // head file does not exist

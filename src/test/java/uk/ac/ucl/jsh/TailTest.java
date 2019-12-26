@@ -71,7 +71,23 @@ public class TailTest {
 
     // tail with 3 arguments test
     @Test
-    public void TailThreeArgumentsTest() throws Exception {
+    public void HeadStdinVersionNoArgumentsTest() throws Exception {
+        Jsh jsh = new Jsh();
+
+        PipedInputStream in = new PipedInputStream();
+        PipedOutputStream out;
+        out = new PipedOutputStream(in);
+        jsh.start("cat tail_test.txt | tail", out);
+        Scanner scn = new Scanner(in);
+        assertEquals("first line", scn.nextLine());
+        assertEquals("second line", scn.nextLine());
+        assertEquals("third line", scn.nextLine());
+        scn.close();
+    }
+
+    // tail stdin 2 arguments test
+    @Test
+    public void HeadStdinVersionTwoArgumentsTest() throws Exception {
         Jsh jsh = new Jsh();
 
         PipedInputStream in = new PipedInputStream();
@@ -136,17 +152,6 @@ public class TailTest {
         jsh.start("tail -s 3 tail_test.txt", console);
     }
 
-    // tail 3 argument but second argument is not number
-    @Test
-    public void TailThreeArgumentsWithWrongSecondArgumentThrowsException() throws RuntimeException, IOException {
-        Jsh jsh = new Jsh();
-        PrintStream console = null;
-        console = System.out;
-        thrown.expect(RuntimeException.class);
-        thrown.expectMessage(CoreMatchers.equalTo("tail: wrong argument s"));
-        jsh.start("tail -n s tail_test.txt", console);
-    }
-
     // head obtain from stdin and first arg is not -n
     @Test
     public void TailStdinVersionWithWrongFIrstArgumentThrowsException() throws RuntimeException, IOException {
@@ -156,6 +161,17 @@ public class TailTest {
         thrown.expect(RuntimeException.class);
         thrown.expectMessage(CoreMatchers.equalTo("tail: wrong argument -s"));
         jsh.start("cat tail_test.txt |tail -s 3 ", console);
+    }
+
+    // tail 3 argument but second argument is not number
+    @Test
+    public void TailThreeArgumentsWithWrongSecondArgumentThrowsException() throws RuntimeException, IOException {
+        Jsh jsh = new Jsh();
+        PrintStream console = null;
+        console = System.out;
+        thrown.expect(RuntimeException.class);
+        thrown.expectMessage(CoreMatchers.equalTo("tail: wrong argument s"));
+        jsh.start("tail -n s tail_test.txt", console);
     }
 
     // tail obtain from stdin and second arg is not number
@@ -168,7 +184,6 @@ public class TailTest {
         thrown.expectMessage(CoreMatchers.equalTo("tail: wrong argument s"));
         jsh.start("cat tail_test.txt | tail -n s", console);
     }
-
 
     // tail file does not exist
     @Test

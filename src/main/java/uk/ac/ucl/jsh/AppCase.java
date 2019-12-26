@@ -274,8 +274,8 @@ class head implements AppCase {
             }
         }
     }
-}
 
+}
 
 class tail implements AppCase {
 
@@ -284,25 +284,20 @@ class tail implements AppCase {
             throws IOException {
         OutputStreamWriter writer = new OutputStreamWriter(output);
 
-        if (appArgs.isEmpty()) 
-        {
+        if (appArgs.isEmpty()) {
             BufferedWriter stdoutWriter = new BufferedWriter(new OutputStreamWriter(output));
-            if (input == null) 
-            {
+            if (input == null) {
                 throw new RuntimeException("tail: missing arguments");
-            }
-            else 
-            {
-                int tailLines = 10;
-                ArrayList<String> storage = new ArrayList<>();
-                BufferedReader stdinReader = new BufferedReader(new InputStreamReader(input));
-                for (int i = 0; i < tailLines; i++) 
-                {
-                    String stringInStdin = null;
-                    while ((stringInStdin = stdinReader.readLine()) != null) 
-                    {
-                        storage.add(stringInStdin);
-                    }
+        }
+        else {
+            int tailLines = 10;
+            ArrayList<String> storage = new ArrayList<>();
+            BufferedReader stdinReader = new BufferedReader(new InputStreamReader(input));
+            for (int i = 0; i < tailLines; i++) {
+                String stringInStdin = null;
+                        while ((stringInStdin = stdinReader.readLine()) != null) {
+                            storage.add(stringInStdin);
+                        }
                     int index = 0;
                     if (tailLines > storage.size()) {
                         index = 0;
@@ -355,8 +350,7 @@ class tail implements AppCase {
                 throw new RuntimeException("tail: wrong arguments");
             }
         }
-        else 
-        {
+        else {
             if (appArgs.size() == 3 && !appArgs.get(0).equals("-n")) {
                 throw new RuntimeException("tail: wrong argument " + appArgs.get(0));
             }
@@ -373,8 +367,7 @@ class tail implements AppCase {
                 tailArg = appArgs.get(0);
             }
             File tailFile = new File(currentDirectory + File.separator + tailArg);
-            if (tailFile.exists()) 
-            {
+            if (tailFile.exists()) {
                 Charset encoding = StandardCharsets.UTF_8;
                 Path filePath = Paths.get((String) currentDirectory + File.separator + tailArg);
                 ArrayList<String> storage = new ArrayList<>();
@@ -400,7 +393,9 @@ class tail implements AppCase {
                 throw new RuntimeException("tail: " + tailArg + " does not exist");
             }
         }
+        
     }
+
 }
 
 class grep implements AppCase {
@@ -435,7 +430,7 @@ class grep implements AppCase {
             Path currentDir = Paths.get(currentDirectory);
             for (int i = 0; i < numOfFiles; i++) {
                 filePath = currentDir.resolve(appArgs.get(i + 1));
-                if (Files.notExists(filePath) || Files.isDirectory(filePath) || !Files.exists(filePath) || !Files.isReadable(filePath))
+                if (Files.notExists(filePath) || Files.isDirectory(filePath)) //  || !Files.exists(filePath) || !Files.isReadable(filePath)
                 {
                     throw new RuntimeException("grep: wrong file argument");
                 }
@@ -453,6 +448,8 @@ class grep implements AppCase {
                             writer.flush();
                         }
                     }
+                } catch (IOException e) {
+                    throw new RuntimeException("grep: cannot open " + appArgs.get(j + 1));
                 }
             }
         }
@@ -742,9 +739,3 @@ class wc implements AppCase {
             writer.flush();
     }
 }
-
-
-
-
-
-

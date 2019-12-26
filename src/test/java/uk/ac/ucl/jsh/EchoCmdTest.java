@@ -8,6 +8,8 @@ import java.io.PipedOutputStream;
 import java.util.Scanner;
 
 public class EchoCmdTest {
+    
+
     @Test
     public void echoCmdTest() throws Exception {
         Jsh jsh = new Jsh();
@@ -31,8 +33,7 @@ public class EchoCmdTest {
     }
 
     @Test
-    public void echoCmdMultipleArgumentIncludingQuoted() throws Exception
-    {
+    public void echoCmdMultipleArgumentIncludingQuoted() throws Exception {
         Jsh jsh = new Jsh();
         PipedInputStream in = new PipedInputStream();
         PipedOutputStream out = new PipedOutputStream(in);
