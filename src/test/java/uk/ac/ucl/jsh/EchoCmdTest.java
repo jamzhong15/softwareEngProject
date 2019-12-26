@@ -21,26 +21,25 @@ public class EchoCmdTest {
         scn.close();
     }
 
-    // @Test
-    // public void echoEmptyCmdTest() throws Exception {
-    //     Jsh jsh = new Jsh();
-    //     PipedInputStream in = new PipedInputStream();
-    //     PipedOutputStream out = new PipedOutputStream(in);
-    //     jsh.start("echo", out);
-    //     Scanner scn = new Scanner(in);
-    //     assertEquals("", scn.nextLine());
-    //     scn.close();
-    // }
+    @Test
+    public void echoEmptyCmdTest() throws Exception {
+        Jsh jsh = new Jsh();
+        PipedInputStream in = new PipedInputStream();
+        PipedOutputStream out = new PipedOutputStream(in);
+        jsh.start("echo", out);
+        Scanner scn = new Scanner(in);
+        assertEquals("", scn.nextLine());
+        scn.close();
+    }
 
-    // @Test
-    // public void echoCmdMultipleArgumentIncludingQuoted() throws Exception
-    // {
-    //     Jsh jsh = new Jsh();
-    //     PipedInputStream in = new PipedInputStream();
-    //     PipedOutputStream out = new PipedOutputStream(in);
-    //     jsh.start("echo \"hello world\" HELLO WORLD \"Hi World\"", out);
-    //     Scanner scn = new Scanner(in);
-    //     assertEquals("hello world HELLO WORLD Hi World", scn.nextLine());
-    //     scn.close();
-    // }
+    @Test
+    public void echoCmdMultipleArgumentIncludingQuoted() throws Exception {
+        Jsh jsh = new Jsh();
+        PipedInputStream in = new PipedInputStream();
+        PipedOutputStream out = new PipedOutputStream(in);
+        jsh.start("echo \"hello world\" HELLO WORLD \"Hi World\"", out);
+        Scanner scn = new Scanner(in);
+        assertEquals("hello world HELLO WORLD Hi World", scn.nextLine());
+        scn.close();
+    }
 }
