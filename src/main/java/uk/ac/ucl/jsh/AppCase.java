@@ -41,11 +41,6 @@ class cd implements AppCase {
             throw new RuntimeException("cd: " + dirString + " is not an existing directory");
         }
         currentDirectory = dir.getCanonicalPath();
-        
-        System.out.println("1::"+dir.getCanonicalPath());
-        System.out.println("2::"+dir.getAbsolutePath());
-        System.out.println("3::"+dir.getPath());
-        
 
         Jsh jsh = new Jsh();
         jsh.setcurrentDirectory(currentDirectory);
