@@ -4,12 +4,10 @@ import static org.junit.Assert.assertEquals;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
 import java.io.PrintStream;
-import java.util.ArrayList;
 import java.util.Scanner;
 
 import org.hamcrest.CoreMatchers;
@@ -71,15 +69,14 @@ public class TailTest {
 
     // tail with 3 arguments test
     @Test
-    public void HeadStdinVersionNoArgumentsTest() throws Exception {
+    public void TailThreeArgumentsTest() throws Exception {
         Jsh jsh = new Jsh();
 
         PipedInputStream in = new PipedInputStream();
         PipedOutputStream out;
         out = new PipedOutputStream(in);
-        jsh.start("cat tail_test.txt | tail", out);
+        jsh.start("tail -n 2 tail_test.txt", out);
         Scanner scn = new Scanner(in);
-        assertEquals("first line", scn.nextLine());
         assertEquals("second line", scn.nextLine());
         assertEquals("third line", scn.nextLine());
         scn.close();
@@ -87,13 +84,14 @@ public class TailTest {
 
     // tail stdin 2 arguments test
     @Test
-    public void HeadStdinVersionTwoArgumentsTest() throws Exception {
+    public void TailStdinVersionTwoArgumentsTest() throws Exception
+    {
         Jsh jsh = new Jsh();
 
         PipedInputStream in = new PipedInputStream();
         PipedOutputStream out;
         out = new PipedOutputStream(in);
-        jsh.start("tail -n 2 tail_test.txt", out);
+        jsh.start("cat tail_test.txt | tail -n 2", out);
         Scanner scn = new Scanner(in);
         assertEquals("second line", scn.nextLine());
         assertEquals("third line", scn.nextLine());

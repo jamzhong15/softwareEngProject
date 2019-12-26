@@ -28,7 +28,6 @@ public class CdTest {
         File virtualSrcFolder = folder.newFolder("src");
         File virtualMainFolder = new File(virtualSrcFolder.getAbsolutePath()+"/main");
         virtualMainFolder.mkdir();
-
     }
     
     @After
@@ -67,7 +66,6 @@ public class CdTest {
 
     @Test
     public void cdMissingArgumentThrowsException() throws RuntimeException, IOException {
-        Jsh jsh = new Jsh();
         PrintStream console = null;
         console = System.out;
         thrown.expect(RuntimeException.class);
@@ -79,8 +77,6 @@ public class CdTest {
     @Test
     public void cdTooManyArgumentsThrowsException() throws RuntimeException, IOException {
         PrintStream console = null;
-        Jsh jsh = new Jsh();
-
         console = System.out; 
         thrown.expect(RuntimeException.class);
         thrown.expectMessage(CoreMatchers.equalTo("cd: too many arguments"));
@@ -90,13 +86,10 @@ public class CdTest {
     // cd cannot find directory
     @Test
     public void cdNoExistingDirectoryThrowsException() throws RuntimeException, IOException {
-        Jsh jsh = new Jsh();
         PrintStream console = null;
-
         console = System.out;
         thrown.expect(RuntimeException.class);
         thrown.expectMessage(CoreMatchers.equalTo("cd: xxx is not an existing directory"));
-
         jsh.start("cd xxx", console);
     }
 }

@@ -2,7 +2,6 @@ package uk.ac.ucl.jsh;
 
 import static org.junit.Assert.assertEquals;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.PipedInputStream;
@@ -33,7 +32,6 @@ public class FindTest {
 
         File src_folder = folder.newFolder("main");
         File CmdGrammar_file = new File(src_folder.getAbsolutePath()+"/Hi.g4");
-        // CmdGrammar_file.createNewFile();
 
         File dot_devcontainer_folder = folder.newFolder(".devcontainer");
         File sub_dockerfile_file = new File(dot_devcontainer_folder.getAbsolutePath()+"/Dockerfile");
@@ -46,19 +44,10 @@ public class FindTest {
         jsh.setcurrentDirectory(System.getProperty("user.dir"));
         folder.delete();
     }
-
     
     // find 2 args test
     @Test
     public void findTwoArgsTest() throws Exception {
-        
-        // ByteArrayOutputStream outContent = new ByteArrayOutputStream();
-        // System.setOut(new PrintStream(outContent));
-        // // String expected = jsh.getcurrentDirectory() + "/Dockerfile\n" ;
-        // jsh.start("find -name Dockerfile", System.out);
-        // assertEquals("/Dockerfile\n/.devcontainer/Dockerfile\n", outContent.toString());
-
-
         PipedInputStream in = new PipedInputStream();
         PipedOutputStream out = new PipedOutputStream(in);
         jsh.start("find -name Dockerfile", out);
@@ -89,7 +78,6 @@ public class FindTest {
     // find without argument (or 1 argument)
     @Test
     public void findAppArgsLessThanTwo() throws RuntimeException, IOException {
-        
         PrintStream console = null;
         console = System.out;
         thrown.expect(RuntimeException.class);
@@ -100,7 +88,6 @@ public class FindTest {
     // find more than 3 arguments
     @Test
     public void findAppArgsMoreThanThree() throws RuntimeException, IOException {
-        
         PrintStream console = null;
         console = System.out;
         thrown.expect(RuntimeException.class);
@@ -111,7 +98,6 @@ public class FindTest {
     // find 2 arguments but first arg is not -name
     @Test
     public void findTwoAppArgsButFirstArgsNot_nameThrowsException() throws RuntimeException, IOException {
-        
         PrintStream console = null;
         console = System.out;
         thrown.expect(RuntimeException.class);
@@ -122,7 +108,6 @@ public class FindTest {
     // find 3 arguments but second arg is not -name
     @Test
     public void findThreeAppArgsButSecondArgsNot_nameThrowsException() throws RuntimeException, IOException {
-        
         PrintStream console = null;
         console = System.out;
         thrown.expect(RuntimeException.class);

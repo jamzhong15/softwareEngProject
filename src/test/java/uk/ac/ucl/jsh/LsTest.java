@@ -5,6 +5,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
@@ -47,17 +48,17 @@ public class LsTest {
     }
 
     // ls one argument test
-    // @Test
-    // public void lsWithOneArgument() throws Exception {
-    //     Jsh jsh = new Jsh();
-    //     PipedInputStream in = new PipedInputStream();
-    //     PipedOutputStream out;
-    //     out = new PipedOutputStream(in);        
-    //     jsh.start("ls src", out);
-    //     Scanner scn = new Scanner(in);
-    //     assertEquals("test", scn.next());
-    //     scn.close();
-    // }
+    @Test
+    public void lsWithOneArgument() throws Exception {
+        Jsh jsh = new Jsh();
+        PipedInputStream in = new PipedInputStream();
+        PipedOutputStream out;
+        out = new PipedOutputStream(in);        
+        jsh.start("ls src", out);
+        Scanner scn = new Scanner(in);
+        assertEquals("test", scn.next());
+        scn.close();
+    }
 
     // // too many arguments test
     @Rule
@@ -78,7 +79,6 @@ public class LsTest {
     public void lsNoSuchDirectoryThrowsException() throws RuntimeException, IOException {
         Jsh jsh = new Jsh();
         PrintStream console = null;
-
         console = System.out;
         thrown.expect(RuntimeException.class);
         thrown.expectMessage(CoreMatchers.equalTo("ls: no such directory"));

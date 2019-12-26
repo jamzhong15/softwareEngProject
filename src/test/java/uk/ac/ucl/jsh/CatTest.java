@@ -51,7 +51,6 @@ public class CatTest {
     // cat test with pipe (obtain args from stdin)
     @Test
     public void catStdinTest() throws Exception {
-        
         PipedInputStream in = new PipedInputStream();
         PipedOutputStream out;
         out = new PipedOutputStream(in);        
@@ -64,7 +63,6 @@ public class CatTest {
     // cat with directory test (with bugs i guess)
     @Test
     public void catDirectoryExistAndCanOpenTest() throws Exception {
-        
         PipedInputStream in = new PipedInputStream();
         PipedOutputStream out;
         out = new PipedOutputStream(in);        
@@ -81,7 +79,6 @@ public class CatTest {
     // cat with directory but cannot open bc not a file
     @Test
     public void catDirectoryExistButCannotOpenTest() throws Exception {
-        
         PrintStream console = null;
         console = System.out;
         thrown.expect(RuntimeException.class);
@@ -92,7 +89,6 @@ public class CatTest {
     // cat no argument test (no args from stdin)
     @Test
     public void CatNoArgumentThrowsException() throws RuntimeException, IOException {
-        
         PrintStream console = null;
         console = System.out;
         thrown.expect(RuntimeException.class);
@@ -103,7 +99,6 @@ public class CatTest {
     // cat file not exist test
     @Test
     public void CatFileNotExistThrowsException() throws RuntimeException, IOException {
-        
         PrintStream console = null;
         console = System.out;
         thrown.expect(RuntimeException.class);
