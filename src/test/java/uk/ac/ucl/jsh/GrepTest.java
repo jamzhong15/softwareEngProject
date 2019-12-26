@@ -7,14 +7,15 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
+import java.io.PrintStream;
 import java.util.Scanner;
 
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.hamcrest.CoreMatchers;
-import org.junit.After;
-import org.junit.Before;
 
 public class GrepTest {
 
@@ -98,14 +99,16 @@ public class GrepTest {
         jsh.start("grep", System.out);
     }
 
-    // cannot open file 
+    // // cannot open file 2
     // @Test
     // public void GrepCannotOpenFileTest() throws Exception {
     //     Jsh jsh = new Jsh();
+    //     PrintStream console = null;
+
+    //     console = System.out;
     //     thrown.expect(RuntimeException.class);
     //     thrown.expectMessage(CoreMatchers.equalTo("grep: cannot open jsh-1.0-SNAPSHOT-jar-with-dependencies.jar"));
-    //     jsh.start("cd target", System.out);
-    //     jsh.start("grep x jsh-1.0-SNAPSHOT-jar-with-dependencies.jar", System.out);
+    //     jsh.start("cd target ; grep x jsh-1.0-SNAPSHOT-jar-with-dependencies.jar", console);
     // }
 
     // @After
