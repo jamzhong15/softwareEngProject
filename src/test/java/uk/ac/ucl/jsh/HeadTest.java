@@ -131,7 +131,7 @@ public class HeadTest {
         console = System.out;
         thrown.expect(RuntimeException.class);
         thrown.expectMessage(CoreMatchers.equalTo("head: wrong arguments"));
-        jsh.start("head -n Dockerfile", console);
+        jsh.start("head -n head_test.txt", console);
     }
     
     // head 3 argument but first one is not -n
@@ -143,7 +143,7 @@ public class HeadTest {
         console = System.out;
         thrown.expect(RuntimeException.class);
         thrown.expectMessage(CoreMatchers.equalTo("head: wrong argument -s"));
-        jsh.start("head -s 3 Dockerfile", console);
+        jsh.start("head -s 3 head_test.txt", console);
     }
 
     // head 3 argument but second argument is not number
@@ -155,7 +155,7 @@ public class HeadTest {
         console = System.out;
         thrown.expect(RuntimeException.class);
         thrown.expectMessage(CoreMatchers.equalTo("head: wrong argument s"));
-        jsh.start("head -n s Dockerfile", console);
+        jsh.start("head -n s head_test.txt", console);
     }
 
     // head obtain from stdin and first arg is not -n
@@ -167,7 +167,7 @@ public class HeadTest {
         console = System.out;
         thrown.expect(RuntimeException.class);
         thrown.expectMessage(CoreMatchers.equalTo("head: wrong argument -s"));
-        jsh.start("cat dockerfile | head -s 3", console);
+        jsh.start("cat head_test.txt | head -s 3", console);
     }
 
     // head obtain from stdin and second arg is not number
@@ -179,7 +179,7 @@ public class HeadTest {
         console = System.out;
         thrown.expect(RuntimeException.class);
         thrown.expectMessage(CoreMatchers.equalTo("head: wrong argument s"));
-        jsh.start("cat dockerfile | head -n s", console);
+        jsh.start("cat head_test.txt | head -n s", console);
     }
 
     // head file does not exist

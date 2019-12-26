@@ -10,10 +10,12 @@ import org.junit.rules.TemporaryFolder;
 
 import static org.junit.Assert.assertEquals;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
 
 public class CdTest {
+
 
     @Rule
     public TemporaryFolder folder= new TemporaryFolder();
@@ -21,14 +23,17 @@ public class CdTest {
     @Before
     public void buildTestFolder() throws Exception
     {
-        
+        Jsh jsh = new Jsh();
+        File testFolder= folder.newFolder("cdTestFolder");
+        jsh.setcurrentDirectory(testFolder.getCanonicalPath());
+
     }
     
     @After
     public void resetUserDirectory()
     {
-        Jsh jsh = new Jsh();
-        jsh.setcurrentDirectory(System.getProperty("user.dir"));
+        // Jsh jsh = new Jsh();
+        // jsh.setcurrentDirectory(System.getProperty("user.dir"));
     }
 
     @Test

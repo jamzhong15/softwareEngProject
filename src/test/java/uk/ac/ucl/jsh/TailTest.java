@@ -18,19 +18,27 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
+import org.junit.rules.TemporaryFolder;
 
 
 public class TailTest {
 
+    // @Rule
+    // public TemporaryFolder folder= new TemporaryFolder();
+
+
     // tail 1 filename argument test something wrong here
     @Before
     public void createNewFile() throws IOException {
+        // File file= folder.newFile("tail_test.txt");
+
+
         String filePath = System.getProperty("user.dir") + File.separator + "tail_test.txt";
         File file = new File(filePath);
         file.createNewFile();
         FileWriter fileWriter = new FileWriter(file);
         fileWriter.write("first line\n");
-        fileWriter.write("second line");
+        fileWriter.write("second line\n");
         fileWriter.write("third line");
         fileWriter.close();
     }
@@ -89,8 +97,6 @@ public class TailTest {
         scn.close();
     }
 
-
-
     @Rule
     public ExpectedException thrown = ExpectedException.none();
 
@@ -113,7 +119,7 @@ public class TailTest {
         console = System.out;
         thrown.expect(RuntimeException.class);
         thrown.expectMessage(CoreMatchers.equalTo("tail: wrong arguments"));
-        jsh.start("tail -n Dockerfile", console);
+        jsh.start("tail -n tail_test.txt", console);
     }
     
     // tail 3 argument but first one is not -n
@@ -124,7 +130,7 @@ public class TailTest {
         console = System.out;
         thrown.expect(RuntimeException.class);
         thrown.expectMessage(CoreMatchers.equalTo("tail: wrong argument -s"));
-        jsh.start("tail -s 3 Dockerfile", console);
+        jsh.start("tail -s 3 tail_test.txt", console);
     }
 
     // tail 3 argument but second argument is not number
@@ -135,7 +141,7 @@ public class TailTest {
         console = System.out;
         thrown.expect(RuntimeException.class);
         thrown.expectMessage(CoreMatchers.equalTo("tail: wrong argument s"));
-        jsh.start("tail -n s Dockerfile", console);
+        jsh.start("tail -n s tail_test.txt", console);
     }
 
     // head obtain from stdin and first arg is not -n
@@ -146,7 +152,7 @@ public class TailTest {
         console = System.out;
         thrown.expect(RuntimeException.class);
         thrown.expectMessage(CoreMatchers.equalTo("tail: wrong argument -s"));
-        jsh.start("cat dockerfile |tail -s 3 ", console);
+        jsh.start("cat tail_test.txt |tail -s 3 ", console);
     }
 
     // tail obtain from stdin and second arg is not number
@@ -157,7 +163,7 @@ public class TailTest {
         console = System.out;
         thrown.expect(RuntimeException.class);
         thrown.expectMessage(CoreMatchers.equalTo("tail: wrong argument s"));
-        jsh.start("cat dockerfile | tail -n s", console);
+        jsh.start("cat tail_test.txt | tail -n s", console);
     }
 
 
