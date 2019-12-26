@@ -21,9 +21,6 @@ public class HeadTest {
 
     @Before
     public void buildTestFile() throws IOException {
-        File dir = new File(System.getProperty("user.dir") + File.separator + "testFolder");
-        dir.mkdir();
-
         String absoluteFilePath = System.getProperty("user.dir") + File.separator + "head_test.txt";
         File testFile = new File(absoluteFilePath);
         String testedStrings1 = "first line\n";
@@ -36,14 +33,6 @@ public class HeadTest {
         file_writer.write(testedStrings3.getBytes());
 
         file_writer.close();
-
-        String absoluteFilePath1 = System.getProperty("user.dir") + File.separator + "testFolder" + File.separator + "head_test1.txt";
-        File testFile1 = new File(absoluteFilePath1);
-        String testedStrings4 = "first line\n";
-
-        FileOutputStream file_writer1 = new FileOutputStream(testFile1);
-        file_writer1.write(testedStrings4.getBytes());
-        file_writer1.close();
     }
 
     @After
@@ -51,12 +40,6 @@ public class HeadTest {
     {
         File file = new File("head_test.txt");
         file.delete();
-
-        File file1 = new File("testFolder/head_test1.txt");
-        file1.delete();
-
-        File dir = new File("testFolder");
-        dir.delete();
     }
 
     // head 1 filename argument test  
@@ -92,20 +75,20 @@ public class HeadTest {
     }
 
     // head stdin no argument test
-    @Test
-    public void HeadStdinVersionNoArgumentsTest() throws Exception {
-        Jsh jsh = new Jsh();
+    // @Test
+    // public void HeadStdinVersionNoArgumentsTest() throws Exception {
+    //     Jsh jsh = new Jsh();
 
-        PipedInputStream in = new PipedInputStream();
-        PipedOutputStream out;
-        out = new PipedOutputStream(in);
-        jsh.start("cat head_test.txt | head", out);
-        Scanner scn = new Scanner(in);
-        assertEquals("first line", scn.nextLine());
-        assertEquals("second line", scn.nextLine());
-        assertEquals("third line", scn.nextLine());
-        scn.close();
-    }
+    //     PipedInputStream in = new PipedInputStream();
+    //     PipedOutputStream out;
+    //     out = new PipedOutputStream(in);
+    //     jsh.start("cat head_test.txt | head", out);
+    //     Scanner scn = new Scanner(in);
+    //     assertEquals("first line", scn.nextLine());
+    //     assertEquals("second line", scn.nextLine());
+    //     assertEquals("third line", scn.nextLine());
+    //     scn.close();
+    // }
 
     // head stdin 2 args test
     @Test
@@ -146,7 +129,7 @@ public class HeadTest {
         console = System.out;
         thrown.expect(RuntimeException.class);
         thrown.expectMessage(CoreMatchers.equalTo("head: wrong arguments"));
-        jsh.start("head -n Dockerfile", console);
+        jsh.start("head -n head_test.txt", console);
     }
     
     // head 3 argument but first one is not -n
@@ -158,7 +141,7 @@ public class HeadTest {
         console = System.out;
         thrown.expect(RuntimeException.class);
         thrown.expectMessage(CoreMatchers.equalTo("head: wrong argument -s"));
-        jsh.start("head -s 3 Dockerfile", console);
+        jsh.start("head -s 3 head_test.txt", console);
     }
 
     // head obtain from stdin and first arg is not -n
@@ -182,7 +165,7 @@ public class HeadTest {
         console = System.out;
         thrown.expect(RuntimeException.class);
         thrown.expectMessage(CoreMatchers.equalTo("head: wrong argument s"));
-        jsh.start("head -n s Dockerfile", console);
+        jsh.start("head -n s head_test.txt", console);
     }
 
     // head obtain from stdin and second arg is not number
