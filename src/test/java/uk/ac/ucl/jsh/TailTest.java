@@ -22,33 +22,10 @@ import org.junit.rules.ExpectedException;
 
 public class TailTest {
 
-    @Before
-    public void buildTestFile() throws IOException
-    {
-        String absoluteFilePath = System.getProperty("user.dir") + File.separator + "tail_test.txt";
-        File testFile = new File(absoluteFilePath);
-        ArrayList<String> testedStrings = new ArrayList<>();
-        testedStrings.add("first line\n");
-        testedStrings.add("second line");
-        FileOutputStream file_writer = new FileOutputStream(testFile);
-        for (String string : testedStrings)
-        {
-            file_writer.write(string.getBytes());
-        }
-        file_writer.close();
-    }
-
-    @After
-    public void deleteTestFile()
-    {
-        File file = new File("tail_test.txt");
-        file.delete();
-    }
-
     // tail 1 filename argument test something wrong here
     @Before
     public void createNewFile() throws IOException {
-        String filePath = System.getProperty("user.dir") + File.separator + "testFile.txt";
+        String filePath = System.getProperty("user.dir") + File.separator + "tail_test.txt";
         File file = new File(filePath);
         file.createNewFile();
         FileWriter fileWriter = new FileWriter(file);
@@ -61,7 +38,7 @@ public class TailTest {
  
     @After
     public void deleteFile() {
-        String filePath = System.getProperty("user.dir") + File.separator + "testFile.txt";
+        String filePath = System.getProperty("user.dir") + File.separator + "tail_test.txt";
         File file = new File(filePath);
         file.delete();
     }
@@ -79,8 +56,6 @@ public class TailTest {
         scn.close();
     }
 
-
-
     // tail with 3 arguments test something wrong also
     @Test
     public void TailThreeArgumentsTest() throws Exception {
@@ -95,6 +70,25 @@ public class TailTest {
         scn.close();
     }
 
+    @Test
+    public void TailStdinVersionWithWrongSecondArgumentThrowsException() throws RuntimeException, IOException {
+        Jsh jsh = new Jsh();
+        PrintStream console = null;
+        console = System.out;
+        thrown.expect(RuntimeException.class);
+        thrown.expectMessage(CoreMatchers.equalTo("tail: wrong arguments"));
+        jsh.start("cat dockerfile | tail -n s", console);
+    }
+
+    // @Test
+    // public void TailStdinVersionWithWrongFIrstArgumentThrowsException() throws RuntimeException, IOException {
+    //     Jsh jsh = new Jsh();
+    //     PrintStream console = null;
+    //     console = System.out;
+    //     thrown.expect(RuntimeException.class);
+    //     thrown.expectMessage(CoreMatchers.equalTo("tail: wrong argument -s"));
+    //     jsh.start("cat dockerfile | tail -s 3 ", console);
+    // }
 
     @Rule
     public ExpectedException thrown = ExpectedException.none();
