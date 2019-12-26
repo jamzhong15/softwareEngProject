@@ -3,6 +3,8 @@ package uk.ac.ucl.jsh;
 import static org.junit.Assert.assertEquals;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
@@ -10,16 +12,59 @@ import java.io.PrintStream;
 import java.util.Scanner;
 
 import org.hamcrest.CoreMatchers;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
 public class FindTest {
 
+
+        @Before
+        public void buildTestFile() throws IOException {
+            File dir = new File(System.getProperty("user.dir") + File.separator + "testFolder");
+            dir.mkdir();
+    
+            String absoluteFilePath = System.getProperty("user.dir") + File.separator + "find_test.txt";
+            File testFile = new File(absoluteFilePath);
+            String testedStrings1 = "first line\n";
+            String testedStrings2 = "second line\n";
+            String testedStrings3 = "third line\n";
+    
+            FileOutputStream file_writer = new FileOutputStream(testFile);
+            file_writer.write(testedStrings1.getBytes());
+            file_writer.write(testedStrings2.getBytes());
+            file_writer.write(testedStrings3.getBytes());
+    
+            file_writer.close();
+    
+            String absoluteFilePath1 = System.getProperty("user.dir") + File.separator + "testFolder" + File.separator + "find_test1.txt";
+            File testFile1 = new File(absoluteFilePath1);
+            String testedStrings4 = "first line\n";
+    
+            FileOutputStream file_writer1 = new FileOutputStream(testFile1);
+            file_writer1.write(testedStrings4.getBytes());
+            file_writer1.close();
+        }
+    
+        @After
+        public void deleteTestFile()
+        {
+            File file = new File("find_test.txt");
+            file.delete();
+    
+            File file1 = new File("testFolder/find_test1.txt");
+            file1.delete();
+    
+            File dir = new File("testFolder");
+            dir.delete();
+        }
+
     // find 2 args test
     @Test
     public void findTwoArgsTest() throws Exception {
-        // Jsh jsh = new Jsh();
+        Jsh jsh = new Jsh();
 
         // ByteArrayOutputStream outContent = new ByteArrayOutputStream();
         // System.setOut(new PrintStream(outContent));
@@ -27,15 +72,13 @@ public class FindTest {
         // assertEquals("/Dockerfile\n/.devcontainer/Dockerfile\n", outContent.toString());
 
 
-        // PipedInputStream in = new PipedInputStream();
-        // PipedOutputStream out = new PipedOutputStream(in);
-        // jsh.start("find -name Dockerfile", out);
-        // out.close();
-        // Scanner scn = new Scanner(in);
-        // assertEquals("/Dockerfile", scn.nextLine());
-        // assertEquals("/.devcontainer/Dockerfile", scn.nextLine());
-        // // assertEquals("/.devcontainer/Dockerfile", scn.next());
-        // scn.close();
+        PipedInputStream in = new PipedInputStream();
+        PipedOutputStream out = new PipedOutputStream(in);
+        jsh.start("find -name find_test.txt", out);
+        out.close();
+        Scanner scn = new Scanner(in);
+        assertEquals("/find_test.txt", scn.nextLine());
+        scn.close();
     }
 
     // find 3 args test
