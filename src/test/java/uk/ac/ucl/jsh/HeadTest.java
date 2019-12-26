@@ -16,19 +16,26 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
+import org.junit.rules.TemporaryFolder;
 
 public class HeadTest {
+
+    Jsh jsh = new Jsh();
+
+    @Rule
+    public TemporaryFolder folder = new TemporaryFolder();
 
     @Before
     public void buildTestFile() throws IOException
     {
-        String absoluteFilePath = System.getProperty("user.dir") + File.separator + "head_test.txt";
-        File testFile = new File(absoluteFilePath);
+        jsh.setcurrentDirectory(folder.getRoot().getAbsolutePath());
+        File target_folder = folder.newFolder("target");
+        File head_test_File = folder.newFile("head_test.txt");
         String testedStrings1 = "first line\n";
         String testedStrings2 = "second line\n";
         String testedStrings3 = "third line\n";
 
-        FileOutputStream file_writer = new FileOutputStream(testFile);
+        FileOutputStream file_writer = new FileOutputStream(head_test_File);
         file_writer.write(testedStrings1.getBytes());
         file_writer.write(testedStrings2.getBytes());
         file_writer.write(testedStrings3.getBytes());
@@ -39,8 +46,7 @@ public class HeadTest {
     @After
     public void deleteTestFile()
     {
-        File file = new File("head_test.txt");
-        file.delete();
+        folder.delete();
     }
 
     // head 1 filename argument test

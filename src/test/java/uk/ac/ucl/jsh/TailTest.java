@@ -23,31 +23,33 @@ import org.junit.rules.TemporaryFolder;
 
 public class TailTest {
 
-    // @Rule
-    // public TemporaryFolder folder= new TemporaryFolder();
+    Jsh jsh = new Jsh();
 
+    @Rule
+    public TemporaryFolder folder = new TemporaryFolder();
 
-    // tail 1 filename argument test something wrong here
     @Before
-    public void createNewFile() throws IOException {
-        // File file= folder.newFile("tail_test.txt");
+    public void buildTestFile() throws IOException
+    {
+        jsh.setcurrentDirectory(folder.getRoot().getAbsolutePath());
+        File target_folder = folder.newFolder("target");
+        File tail_test_File = folder.newFile("tail_test.txt");
+        String testedStrings1 = "first line\n";
+        String testedStrings2 = "second line\n";
+        String testedStrings3 = "third line\n";
 
+        FileOutputStream file_writer = new FileOutputStream(tail_test_File);
+        file_writer.write(testedStrings1.getBytes());
+        file_writer.write(testedStrings2.getBytes());
+        file_writer.write(testedStrings3.getBytes());
 
-        String filePath = System.getProperty("user.dir") + File.separator + "tail_test.txt";
-        File file = new File(filePath);
-        file.createNewFile();
-        FileWriter fileWriter = new FileWriter(file);
-        fileWriter.write("first line\n");
-        fileWriter.write("second line\n");
-        fileWriter.write("third line");
-        fileWriter.close();
+        file_writer.close();
     }
- 
+
     @After
-    public void deleteFile() {
-        String filePath = System.getProperty("user.dir") + File.separator + "tail_test.txt";
-        File file = new File(filePath);
-        file.delete();
+    public void deleteTestFile()
+    {
+        folder.delete();
     }
 
     // tail 1 argument test 

@@ -62,7 +62,7 @@ public class GrepTest {
         jsh.start("grep", System.out);
     }
 
-    // // cannot open file 2
+    // cannot open file 2
     // @Test
     // public void GrepCannotOpenFileTest() throws Exception {
     //     Jsh jsh = new Jsh();
