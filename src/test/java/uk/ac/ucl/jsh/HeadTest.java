@@ -59,7 +59,7 @@ public class HeadTest {
         dir.delete();
     }
 
-    // head 1 filename argument test  
+    // head 1 filename argument test
     @Test
     public void HeadOneFileNameArgumentTest() throws Exception {
         Jsh jsh = new Jsh();
@@ -76,7 +76,7 @@ public class HeadTest {
         scn.close();
     }
 
-    // head 3 arguments test
+     // head 3 arguments test
     @Test
     public void HeadThreeArgumentsTest() throws Exception {
         Jsh jsh = new Jsh();
@@ -89,7 +89,7 @@ public class HeadTest {
         assertEquals("first line", scn.nextLine());
         assertEquals("second line", scn.nextLine());
         scn.close();
-    }
+    } 
 
     // head stdin no argument test
     @Test
@@ -122,6 +122,7 @@ public class HeadTest {
         scn.close();
     }
 
+    
     @Rule
     public ExpectedException thrown = ExpectedException.none();
 
@@ -146,7 +147,7 @@ public class HeadTest {
         console = System.out;
         thrown.expect(RuntimeException.class);
         thrown.expectMessage(CoreMatchers.equalTo("head: wrong arguments"));
-        jsh.start("head -n Dockerfile", console);
+        jsh.start("head -n head_test.txt", console);
     }
     
     // head 3 argument but first one is not -n
@@ -158,7 +159,19 @@ public class HeadTest {
         console = System.out;
         thrown.expect(RuntimeException.class);
         thrown.expectMessage(CoreMatchers.equalTo("head: wrong argument -s"));
-        jsh.start("head -s 3 Dockerfile", console);
+        jsh.start("head -s 3 head_test.txt", console);
+    }
+
+    // head 3 argument but second arg is not number
+    @Test
+    public void HeadThreeArgumentsWithWrongSecondArgumentThrowsException() throws RuntimeException, IOException {
+        Jsh jsh = new Jsh();
+        PrintStream console = null;
+    
+        console = System.out;
+        thrown.expect(RuntimeException.class);
+        thrown.expectMessage(CoreMatchers.equalTo("head: wrong argument s"));
+        jsh.start("head -n s head_test.txt", console);
     }
 
     // head obtain from stdin and first arg is not -n
@@ -171,30 +184,6 @@ public class HeadTest {
         thrown.expect(RuntimeException.class);
         thrown.expectMessage(CoreMatchers.equalTo("head: wrong argument -s"));
         jsh.start("cat head_test.txt | head -s 3", console);
-    }
-
-    // head 3 argument but second arg is not number
-    @Test
-    public void HeadThreeArgumentsWithWrongSecondArgumentThrowsException() throws RuntimeException, IOException {
-        Jsh jsh = new Jsh();
-        PrintStream console = null;
-    
-        console = System.out;
-        thrown.expect(RuntimeException.class);
-        thrown.expectMessage(CoreMatchers.equalTo("head: wrong argument s"));
-        jsh.start("head -n s Dockerfile", console);
-    }
-
-    // head obtain from stdin and second arg is not number
-    @Test
-    public void HeadStdinVersionWithWrongSecondArgumentThrowsException() throws RuntimeException, IOException {
-        Jsh jsh = new Jsh();
-        PrintStream console = null;
-    
-        console = System.out;
-        thrown.expect(RuntimeException.class);
-        thrown.expectMessage(CoreMatchers.equalTo("head: wrong argument s"));
-        jsh.start("cat head_test.txt | head -n s", console);
     }
 
     // head file does not exist
