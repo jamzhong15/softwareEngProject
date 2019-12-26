@@ -34,6 +34,7 @@ public class CdTest {
     @After
     public void resetUserDirectory()
     {
+        jsh.setcurrentDirectory(System.getProperty("user.dir"));
         folder.delete();
     }
 

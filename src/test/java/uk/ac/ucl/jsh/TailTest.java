@@ -49,6 +49,7 @@ public class TailTest {
     @After
     public void deleteTestFile()
     {
+        jsh.setcurrentDirectory(System.getProperty("user.dir"));
         folder.delete();
     }
 

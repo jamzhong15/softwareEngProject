@@ -43,6 +43,7 @@ public class FindTest {
     @After
     public void resetUserDirectory()
     {
+        jsh.setcurrentDirectory(System.getProperty("user.dir"));
         folder.delete();
     }
 
