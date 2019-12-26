@@ -249,6 +249,7 @@ class tail implements AppCase {
             if (input == null) {
                 throw new RuntimeException("tail: missing arguments");
         }
+
         else {
             int tailLines = 10;
             ArrayList<String> storage = new ArrayList<>();
@@ -271,6 +272,8 @@ class tail implements AppCase {
                 }
             }
         }
+
+
         else if (appArgs.size() != 1 && appArgs.size() != 3) {
             BufferedWriter stdoutWriter = new BufferedWriter(new OutputStreamWriter(output));
             int tailLines = 10;
@@ -310,6 +313,7 @@ class tail implements AppCase {
                 throw new RuntimeException("tail: wrong arguments");
             }
         }
+        
         else {
             if (appArgs.size() == 3 && !appArgs.get(0).equals("-n")) {
                 throw new RuntimeException("tail: wrong argument " + appArgs.get(0));
