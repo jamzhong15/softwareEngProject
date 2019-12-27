@@ -599,7 +599,7 @@ class find implements AppCase {
                 throw new RuntimeException("find: invalid arguments");
             }
             File baseDir = new File(currentDirectory);
-            File currDir = new File(appArgs.get(0));
+            File currDir = new File(currentDirectory);
             String pattern = appArgs.get(2);
             printFiles(baseDir, currDir, pattern, output);
         }

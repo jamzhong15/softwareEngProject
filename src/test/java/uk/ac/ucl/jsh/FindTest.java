@@ -29,11 +29,13 @@ public class FindTest {
     {
         jsh.setcurrentDirectory(folder.getRoot().getAbsolutePath());
         File dockerfile_file = folder.newFile("Dockerfile");
+        dockerfile_file.createNewFile();
 
         File src_folder = folder.newFolder("main");
         File CmdGrammar_file = new File(src_folder.getAbsolutePath()+"/Hi.g4");
+        CmdGrammar_file.createNewFile();
 
-        File dot_devcontainer_folder = folder.newFolder(".devcontainer");
+        File dot_devcontainer_folder = folder.newFolder("devcontainer");
         File sub_dockerfile_file = new File(dot_devcontainer_folder.getAbsolutePath()+"/Dockerfile");
         sub_dockerfile_file.createNewFile();
     }
@@ -54,23 +56,23 @@ public class FindTest {
         out.close();
         Scanner scn = new Scanner(in);
         assertEquals("/Dockerfile", scn.nextLine());
-        assertEquals("/.devcontainer/Dockerfile", scn.nextLine());
+        assertEquals("/devcontainer/Dockerfile", scn.nextLine());
         scn.close();
     }
 
-    // // find 3 args test
-    // @Test
-    // public void findThreeArgsTest() throws Exception {
+    // find 3 args test
+    @Test
+    public void findThreeArgsTest() throws Exception {
         
-    //     PipedInputStream in = new PipedInputStream();
-    //     PipedOutputStream out;
-    //     out = new PipedOutputStream(in);
-    //     jsh.start("find main -name *.g4", out);
-    //     out.close();
-    //     Scanner scn = new Scanner(in);
-    //     assertEquals("/main/Hi.g4", scn.nextLine());
-    //     scn.close();
-    // }
+        PipedInputStream in = new PipedInputStream();
+        PipedOutputStream out;
+        out = new PipedOutputStream(in);
+        jsh.start("find main -name *.g4", out);
+        out.close();
+        Scanner scn = new Scanner(in);
+        assertEquals("/main/Hi.g4", scn.nextLine());
+        scn.close();
+    }
 
     @Rule
     public ExpectedException thrown = ExpectedException.none();

@@ -78,6 +78,7 @@ public class GrepTest {
         scn.close();
     }
 
+
     @Rule
     public ExpectedException thrown = ExpectedException.none();
 
@@ -109,13 +110,6 @@ public class GrepTest {
     //     thrown.expect(RuntimeException.class);
     //     thrown.expectMessage(CoreMatchers.equalTo("grep: cannot open jsh-1.0-SNAPSHOT-jar-with-dependencies.jar"));
     //     jsh.start("cd target ; grep x jsh-1.0-SNAPSHOT-jar-with-dependencies.jar", console);
-    // }
-
-    // @After
-    // public void resetDirectory()
-    // {
-    //     Jsh jsh = new Jsh();
-    //     jsh.setcurrentDirectory(System.getProperty("user.dir"));
     // }
 }
 
