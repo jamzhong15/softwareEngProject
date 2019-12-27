@@ -548,7 +548,7 @@ class wc implements AppCase {
             OutputStreamWriter writer = new OutputStreamWriter(output);
             String command = "";
 
-            try (BufferedReader reader = new BufferedReader(new InputStreamReader(input))) {
+            
                 int charCount = 0;
                 int wordCount = 0;
                 int lineCount = 0;
@@ -556,20 +556,29 @@ class wc implements AppCase {
                 if (!appArgs.isEmpty()) {
                     command = appArgs.get(0);
                 }
+                try (BufferedReader reader = new BufferedReader(new InputStreamReader(input))) 
+                {
+                    String line = null;
+                    while ((line = reader.readLine()) != null) 
+                    {
+                        lineCount ++;
+                        charCount += line.length() + 1;
+                            
+                        if(!line.trim().isEmpty())
+                        {
+                            String[] words = line.trim().split("\\s+");
+                            wordCount += words.length;
+                        }
+                    }
+                
+                     writeCount(command, charCount, wordCount, lineCount, writer, "");
 
-                String line = null;
-                while ((line = reader.readLine()) != null) {
-                    lineCount++;
-                    wordCount += line.length();
-                    charCount += line.split(" ").length;
-                }
-
-                writeCount(command, charCount, wordCount, lineCount, writer);
-
-            } catch (IOException e) {
+            } catch (NullPointerException e) {
                 throw new RuntimeException("wc: missing arguments");
             }
-        } else {
+        }
+        else 
+        {
 
             // Otherwise use the arguments
             OutputStreamWriter writer = new OutputStreamWriter(output);
@@ -587,59 +596,65 @@ class wc implements AppCase {
             for (String arg : appArgs) 
             {
                 Charset encoding = StandardCharsets.UTF_8;
-                File currFile = new File(arg);
+                File currFile = new File(currentDirectory + File.separator + arg);
                 if (currFile.exists())
                 {
-                    Path filePath = Paths.get(arg);
+                    Path filePath = Paths.get(currFile.getAbsolutePath());
 
-                    try (BufferedReader reader = Files.newBufferedReader(filePath, encoding)) 
+                    try (BufferedReader reader = Files.newBufferedReader(filePath, encoding))
                     {
                         String line = null;
                         while ((line = reader.readLine()) != null) 
                         {
-                            lineCount++;
-                            wordCount += line.length();
-                            charCount += line.split(" ").length;
-                        } 
-                    }catch (IOException e) {
-                            throw new RuntimeException("wc: cannot open " + arg);
+                            lineCount ++;
+                            charCount += line.length() + 1;
+                            
+                            if(!line.trim().isEmpty())
+                            {
+                                String[] words = line.trim().split("\\s+");
+                                wordCount += words.length;
+                            }
                         }
-                    }else {
-                        throw new RuntimeException("wc: file does not exist");
-                     }
-            }
-                    
-                writeCount(command, charCount, wordCount, lineCount, writer); 
-           
-            }
-        }
-
-        private void writeCount(String command, int charCount, int wordCount, int lineCount, OutputStreamWriter writer) throws IOException
-        {
-            switch (command) {
-                case "-m":
-                    writer.write(Integer.toString(charCount));
-                    break;
-
-                case "-w":
-                    writer.write(Integer.toString(wordCount));
-                    break;
-
-                case "-l":
-                    writer.write(Integer.toString(lineCount));
-                    break;
-                    
-                default:
-                    writer.write(Integer.toString(charCount) + "\t");
-                    writer.write(Integer.toString(wordCount) + "\t");
-                    writer.write(Integer.toString(lineCount));
-                    break;
+                    }
+                    catch (IOException e) 
+                    {
+                        throw new RuntimeException("wc: cannot open " + arg);
+                    }
                 }
-                writer.write(System.getProperty("line.separator"));
-                writer.flush();
+                else 
+                {
+                    throw new RuntimeException("wc: " + arg + " does not exist");
+                }
+                writeCount(command, charCount, wordCount, lineCount, writer, arg);
+            }
         }
-
     }
+
+    private void writeCount(String command, int charCount, int wordCount, int lineCount, OutputStreamWriter writer, String fileName) throws IOException
+    {
+        switch (command) {
+            case "-m":
+                writer.write(Integer.toString(charCount) + "\t" + fileName);
+                break;
+
+            case "-w":
+                writer.write(Integer.toString(wordCount) + "\t" + fileName);
+                break;
+
+            case "-l":
+                writer.write(Integer.toString(lineCount) + "\t" + fileName);
+                break;
+                
+            default:
+                writer.write(Integer.toString(lineCount) + "\t");
+                writer.write(Integer.toString(wordCount) + "\t");
+                writer.write(Integer.toString(charCount) + "\t" + fileName);
+                break;
+            }
+            writer.write(System.getProperty("line.separator"));
+            writer.flush();
+    }
+}
 
     
 

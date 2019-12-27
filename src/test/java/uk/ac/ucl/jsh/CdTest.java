@@ -10,18 +10,18 @@ import java.io.IOException;
 import java.io.PrintStream;
 
 public class CdTest {
-    // @Rule
-    // public ExpectedException thrown = ExpectedException.none();
+    @Rule
+    public ExpectedException thrown = ExpectedException.none();
 
-    // @Test
-    // public void cdMissingArgumentThrowsException() throws RuntimeException, IOException {
-    //     Jsh jsh = new Jsh();
-    //     PrintStream console = null;
-    //     console = System.out;
-    //     thrown.expect(RuntimeException.class);
-    //     thrown.expectMessage(CoreMatchers.equalTo("cd: missing argument"));
-    //     jsh.start("cd", console);
-    // }
+    @Test
+    public void cdMissingArgumentThrowsException() throws RuntimeException, IOException {
+        Jsh jsh = new Jsh();
+        PrintStream console = null;
+        console = System.out;
+        thrown.expect(RuntimeException.class);
+        thrown.expectMessage(CoreMatchers.equalTo("cd: missing argument"));
+        jsh.start("cd", console);
+    }
 
     // // cd too many arguments test 
     // @Test
