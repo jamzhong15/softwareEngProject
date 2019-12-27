@@ -29,7 +29,7 @@ public class HeadTest {
     public void buildTestFile() throws IOException
     {
         jsh.setcurrentDirectory(folder.getRoot().getAbsolutePath());
-        File target_folder = folder.newFolder("target");
+        File target_folder = folder.newFolder("targetFolder");
         File head_test_File = folder.newFile("head_test.txt");
         String testedStrings1 = "first line\n";
         String testedStrings2 = "second line\n";
@@ -183,7 +183,7 @@ public class HeadTest {
         PrintStream console = null;
         console = System.out;
         thrown.expect(RuntimeException.class);
-        thrown.expectMessage(CoreMatchers.equalTo("head: cannot open target"));
-        jsh.start("head target", console);
+        thrown.expectMessage(CoreMatchers.equalTo("head: cannot open targetFolder"));
+        jsh.start("head targetFolder", console);
     }
 }

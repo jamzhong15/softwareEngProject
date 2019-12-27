@@ -9,6 +9,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.FileSystems;
@@ -17,6 +18,7 @@ import java.nio.file.Path;
 import java.nio.file.PathMatcher;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -655,17 +657,20 @@ class wc implements AppCase {
 
                 String line = null;
                 while ((line = reader.readLine()) != null) {
-                    lineCount++;
-                    wordCount += line.length();
-                    charCount += line.split(" ").length;
+                    if (line.contains(System.getProperty("line.separator")));
+                        {
+                            lineCount++;
+                            charCount += 1;
+                        }
+                    charCount += line.length();
+                    wordCount += line.split("\\s+").length;
                 }
+                writeCount(command, charCount, wordCount, lineCount, writer, "");
 
-                writeCount(command, charCount, wordCount, lineCount, writer);
-
-            } catch (IOException e) {
+            } catch (NullPointerException e) {
                 throw new RuntimeException("wc: missing arguments");
             }
-        } 
+        }
         else 
         {
 
@@ -685,20 +690,25 @@ class wc implements AppCase {
             for (String arg : appArgs) 
             {
                 Charset encoding = StandardCharsets.UTF_8;
-                File currFile = new File(arg);
+                File currFile = new File(currentDirectory + File.separator + arg);
                 if (currFile.exists())
                 {
-                    Path filePath = Paths.get(arg);
+                    Path filePath = Paths.get(currFile.getAbsolutePath());
 
-                    try (BufferedReader reader = Files.newBufferedReader(filePath, encoding)) 
+                    try (BufferedReader reader = Files.newBufferedReader(filePath, encoding))
                     {
                         String line = null;
                         while ((line = reader.readLine()) != null) 
                         {
-                            lineCount++;
-                            wordCount += line.length();
-                            charCount += line.split(" ").length;
-                        } 
+                            if (line.contains(System.getProperty("line.separator")));
+                            {
+                                lineCount += 1;
+                                charCount += 1;
+                            }
+                            charCount += line.length();
+                            wordCount += line.split("\\s+").length;
+                        }
+                        
                     }
                     catch (IOException e) 
                     {
@@ -707,32 +717,32 @@ class wc implements AppCase {
                 }
                 else 
                 {
-                    throw new RuntimeException("wc: file does not exist");
+                    throw new RuntimeException("wc: " + arg + " does not exist");
                 }
+                writeCount(command, charCount, wordCount, lineCount, writer, arg);
             }
-            writeCount(command, charCount, wordCount, lineCount, writer); 
         }
     }
 
-    private void writeCount(String command, int charCount, int wordCount, int lineCount, OutputStreamWriter writer) throws IOException
+    private void writeCount(String command, int charCount, int wordCount, int lineCount, OutputStreamWriter writer, String fileName) throws IOException
     {
         switch (command) {
             case "-m":
-                writer.write(Integer.toString(charCount));
+                writer.write(Integer.toString(charCount) + "\t" + fileName);
                 break;
 
             case "-w":
-                writer.write(Integer.toString(wordCount));
+                writer.write(Integer.toString(wordCount) + "\t" + fileName);
                 break;
 
             case "-l":
-                writer.write(Integer.toString(lineCount));
+                writer.write(Integer.toString(lineCount) + "\t" + fileName);
                 break;
                 
             default:
-                writer.write(Integer.toString(charCount) + "\t");
+                writer.write(Integer.toString(lineCount) + "\t");
                 writer.write(Integer.toString(wordCount) + "\t");
-                writer.write(Integer.toString(lineCount));
+                writer.write(Integer.toString(charCount) + "\t" + fileName);
                 break;
             }
             writer.write(System.getProperty("line.separator"));
