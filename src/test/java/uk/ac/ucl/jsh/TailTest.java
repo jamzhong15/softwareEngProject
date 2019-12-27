@@ -4,12 +4,10 @@ import static org.junit.Assert.assertEquals;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
 import java.io.PrintStream;
-import java.util.ArrayList;
 import java.util.Scanner;
 
 import org.hamcrest.CoreMatchers;
@@ -23,31 +21,35 @@ import org.junit.rules.TemporaryFolder;
 
 public class TailTest {
 
-    // @Rule
-    // public TemporaryFolder folder= new TemporaryFolder();
+    Jsh jsh = new Jsh();
 
+    @Rule
+    public TemporaryFolder folder = new TemporaryFolder();
 
-    // tail 1 filename argument test something wrong here
     @Before
-    public void createNewFile() throws IOException {
-        // File file= folder.newFile("tail_test.txt");
+    public void buildTestFile() throws IOException
+    {
+        jsh.setcurrentDirectory(folder.getRoot().getAbsolutePath());
+        File target_folder = folder.newFolder("target");
+        target_folder.mkdir();
+        File tail_test_File = folder.newFile("tail_test.txt");
+        String testedStrings1 = "first line\n";
+        String testedStrings2 = "second line\n";
+        String testedStrings3 = "third line\n";
 
+        FileOutputStream file_writer = new FileOutputStream(tail_test_File);
+        file_writer.write(testedStrings1.getBytes());
+        file_writer.write(testedStrings2.getBytes());
+        file_writer.write(testedStrings3.getBytes());
 
-        String filePath = System.getProperty("user.dir") + File.separator + "tail_test.txt";
-        File file = new File(filePath);
-        file.createNewFile();
-        FileWriter fileWriter = new FileWriter(file);
-        fileWriter.write("first line\n");
-        fileWriter.write("second line\n");
-        fileWriter.write("third line");
-        fileWriter.close();
+        file_writer.close();
     }
- 
+
     @After
-    public void deleteFile() {
-        String filePath = System.getProperty("user.dir") + File.separator + "tail_test.txt";
-        File file = new File(filePath);
-        file.delete();
+    public void deleteTestFile()
+    {
+        jsh.setcurrentDirectory(System.getProperty("user.dir"));
+        folder.delete();
     }
 
     // tail 1 argument test 
@@ -68,15 +70,14 @@ public class TailTest {
 
     // tail with 3 arguments test
     @Test
-    public void HeadStdinVersionNoArgumentsTest() throws Exception {
+    public void TailThreeArgumentsTest() throws Exception {
         Jsh jsh = new Jsh();
 
         PipedInputStream in = new PipedInputStream();
         PipedOutputStream out;
         out = new PipedOutputStream(in);
-        jsh.start("cat tail_test.txt | tail", out);
+        jsh.start("tail -n 2 tail_test.txt", out);
         Scanner scn = new Scanner(in);
-        assertEquals("first line", scn.nextLine());
         assertEquals("second line", scn.nextLine());
         assertEquals("third line", scn.nextLine());
         scn.close();
@@ -84,13 +85,14 @@ public class TailTest {
 
     // tail stdin 2 arguments test
     @Test
-    public void HeadStdinVersionTwoArgumentsTest() throws Exception {
+    public void TailStdinVersionTwoArgumentsTest() throws Exception
+    {
         Jsh jsh = new Jsh();
 
         PipedInputStream in = new PipedInputStream();
         PipedOutputStream out;
         out = new PipedOutputStream(in);
-        jsh.start("tail -n 2 tail_test.txt", out);
+        jsh.start("cat tail_test.txt | tail -n 2", out);
         Scanner scn = new Scanner(in);
         assertEquals("second line", scn.nextLine());
         assertEquals("third line", scn.nextLine());

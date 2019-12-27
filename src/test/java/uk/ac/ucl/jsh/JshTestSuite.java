@@ -17,7 +17,8 @@ import org.junit.runners.Suite.SuiteClasses;
     GrepTest.class,
     SedTest.class,
     SeqTest.class,
-    FindTest.class
+    FindTest.class,
+    WcTest.class
 })
 public class JshTestSuite {
     

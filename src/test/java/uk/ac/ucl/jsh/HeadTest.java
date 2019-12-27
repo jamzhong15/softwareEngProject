@@ -16,37 +16,43 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
+import org.junit.rules.TemporaryFolder;
 
 public class HeadTest {
 
+    Jsh jsh = new Jsh();
+
+    @Rule
+    public TemporaryFolder folder = new TemporaryFolder();
+
     @Before
-    public void buildTestFile() throws IOException {
-        String absoluteFilePath = System.getProperty("user.dir") + File.separator + "head_test.txt";
-        File testFile = new File(absoluteFilePath);
+    public void buildTestFile() throws IOException
+    {
+        jsh.setcurrentDirectory(folder.getRoot().getAbsolutePath());
+        File target_folder = folder.newFolder("targetFolder");
+        target_folder.mkdir();
+        File head_test_File = folder.newFile("head_test.txt");
         String testedStrings1 = "first line\n";
         String testedStrings2 = "second line\n";
         String testedStrings3 = "third line\n";
 
-        FileOutputStream file_writer = new FileOutputStream(testFile);
+        FileOutputStream file_writer = new FileOutputStream(head_test_File);
         file_writer.write(testedStrings1.getBytes());
         file_writer.write(testedStrings2.getBytes());
         file_writer.write(testedStrings3.getBytes());
-
         file_writer.close();
     }
 
     @After
     public void deleteTestFile()
     {
-        File file = new File("head_test.txt");
-        file.delete();
+        jsh.setcurrentDirectory(System.getProperty("user.dir"));
+        folder.delete();
     }
 
     // head 1 filename argument test
     @Test
     public void HeadOneFileNameArgumentTest() throws Exception {
-        Jsh jsh = new Jsh();
-
         PipedInputStream in = new PipedInputStream();
         PipedOutputStream out;
         out = new PipedOutputStream(in);
@@ -55,15 +61,12 @@ public class HeadTest {
         assertEquals("first line", scn.nextLine());
         assertEquals("second line", scn.nextLine());
         assertEquals("third line", scn.nextLine());
-
         scn.close();
     }
 
      // head 3 arguments test
     @Test
     public void HeadThreeArgumentsTest() throws Exception {
-        Jsh jsh = new Jsh();
-
         PipedInputStream in = new PipedInputStream();
         PipedOutputStream out;
         out = new PipedOutputStream(in);
@@ -75,26 +78,22 @@ public class HeadTest {
     } 
 
     // head stdin no argument test
-    // @Test
-    // public void HeadStdinVersionNoArgumentsTest() throws Exception {
-    //     Jsh jsh = new Jsh();
-
-    //     PipedInputStream in = new PipedInputStream();
-    //     PipedOutputStream out;
-    //     out = new PipedOutputStream(in);
-    //     jsh.start("cat head_test.txt | head", out);
-    //     Scanner scn = new Scanner(in);
-    //     assertEquals("first line", scn.nextLine());
-    //     assertEquals("second line", scn.nextLine());
-    //     assertEquals("third line", scn.nextLine());
-    //     scn.close();
-    // }
+    @Test
+    public void HeadStdinVersionNoArgumentsTest() throws Exception {
+        PipedInputStream in = new PipedInputStream();
+        PipedOutputStream out;
+        out = new PipedOutputStream(in);
+        jsh.start("cat head_test.txt | head", out);
+        Scanner scn = new Scanner(in);
+        assertEquals("first line", scn.nextLine());
+        assertEquals("second line", scn.nextLine());
+        assertEquals("third line", scn.nextLine());
+        scn.close();
+    }
 
     // head stdin 2 args test
     @Test
     public void HeadStdinVersionTwoArgumentsTest() throws Exception {
-        Jsh jsh = new Jsh();
-
         PipedInputStream in = new PipedInputStream();
         PipedOutputStream out;
         out = new PipedOutputStream(in);
@@ -112,9 +111,7 @@ public class HeadTest {
     // head no argument test
     @Test
     public void HeadMissingArgumentThrowsException() throws RuntimeException, IOException {
-        Jsh jsh = new Jsh();
         PrintStream console = null;
-
         console = System.out;
         thrown.expect(RuntimeException.class);
         thrown.expectMessage(CoreMatchers.equalTo("head: missing arguments"));
@@ -124,9 +121,7 @@ public class HeadTest {
     // Head wrong no. of arguments
     @Test
     public void HeadWrongArgumentNumberThrowsException() throws RuntimeException, IOException {
-        Jsh jsh = new Jsh();
         PrintStream console = null;
-    
         console = System.out;
         thrown.expect(RuntimeException.class);
         thrown.expectMessage(CoreMatchers.equalTo("head: wrong arguments"));
@@ -136,21 +131,17 @@ public class HeadTest {
     // head 3 argument but first one is not -n
     @Test
     public void HeadThreeArgumentsWithWrongFirstArgumentThrowsException() throws RuntimeException, IOException {
-        Jsh jsh = new Jsh();
         PrintStream console = null;
-    
         console = System.out;
         thrown.expect(RuntimeException.class);
         thrown.expectMessage(CoreMatchers.equalTo("head: wrong argument -s"));
         jsh.start("head -s 3 head_test.txt", console);
     }
 
-    // head obtain from stdin and first arg is not -n
+    // head 3 argument but second argument is not number
     @Test
-    public void HeadStdinVersionWithWrongFirstArgumentThrowsException() throws RuntimeException, IOException {
-        Jsh jsh = new Jsh();
+    public void HeadThreeArgumentsWithWrongSecondArgumentThrowsException() throws RuntimeException, IOException {
         PrintStream console = null;
-    
         console = System.out;
         thrown.expect(RuntimeException.class);
         thrown.expectMessage(CoreMatchers.equalTo("head: wrong argument -s"));
@@ -159,22 +150,28 @@ public class HeadTest {
 
     // head 3 argument but second arg is not number
     @Test
-    public void HeadThreeArgumentsWithWrongSecondArgumentThrowsException() throws RuntimeException, IOException {
-        Jsh jsh = new Jsh();
+    public void HeadStdinVersionWithWrongFirstArgumentThrowsException() throws RuntimeException, IOException {
         PrintStream console = null;
-    
         console = System.out;
         thrown.expect(RuntimeException.class);
         thrown.expectMessage(CoreMatchers.equalTo("head: wrong argument s"));
         jsh.start("head -n s head_test.txt", console);
     }
 
+    // head obtain from stdin and second arg is not number
+    @Test
+    public void HeadStdinVersionWithWrongSecondArgumentThrowsException() throws RuntimeException, IOException {
+        PrintStream console = null;
+        console = System.out;
+        thrown.expect(RuntimeException.class);
+        thrown.expectMessage(CoreMatchers.equalTo("head: wrong argument s"));
+        jsh.start("cat head_test.txt | head -n s", console);
+    }
+
     // head file does not exist
     @Test
     public void HeadFileDoesNotExistThrowsException() throws RuntimeException, IOException {
-        Jsh jsh = new Jsh();
         PrintStream console = null;
-    
         console = System.out;
         thrown.expect(RuntimeException.class);
         thrown.expectMessage(CoreMatchers.equalTo("head: xxx does not exist"));
@@ -184,12 +181,10 @@ public class HeadTest {
     // head cannot open file
     @Test
     public void HeadCannotOpenFileThrowsException() throws RuntimeException, IOException {
-        Jsh jsh = new Jsh();
         PrintStream console = null;
-    
         console = System.out;
         thrown.expect(RuntimeException.class);
-        thrown.expectMessage(CoreMatchers.equalTo("head: cannot open target"));
-        jsh.start("head target", console);
+        thrown.expectMessage(CoreMatchers.equalTo("head: cannot open targetFolder"));
+        jsh.start("head targetFolder", console);
     }
 }

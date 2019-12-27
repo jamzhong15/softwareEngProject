@@ -16,32 +16,42 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
+import org.junit.rules.TemporaryFolder;
 
 public class CatTest {
     
+    Jsh jsh = new Jsh();
+    
+    @Rule
+    public TemporaryFolder folder = new TemporaryFolder();
+
     @Before
-    public void buildTestFile() throws IOException {
-        String absoluteFilePath = System.getProperty("user.dir") + File.separator + "cat_test.txt";
-        File testFile = new File(absoluteFilePath);
+    public void buildTestFile() throws IOException
+    {
+        jsh.setcurrentDirectory(folder.getRoot().getAbsolutePath());
+        File src_folder = folder.newFolder("src");
+        src_folder.mkdir();
+        File cat_test_file = folder.newFile("cat_test.txt");
         String testedStrings1 = "first line\n";
         String testedStrings2 = "second line\n";
-
-        FileOutputStream file_writer = new FileOutputStream(testFile);
+        FileOutputStream file_writer = new FileOutputStream(cat_test_file);
         file_writer.write(testedStrings1.getBytes());
         file_writer.write(testedStrings2.getBytes());
+
         file_writer.close();
     }
 
     @After
     public void deleteTestFile()
     {
-        File file = new File("cat_test.txt");
-        file.delete();
+        jsh.setcurrentDirectory(System.getProperty("user.dir"));
+        folder.delete();
     }
+    
+    
     // cat test with pipe (obtain args from stdin)
     @Test
     public void catStdinTest() throws Exception {
-        Jsh jsh = new Jsh();
         PipedInputStream in = new PipedInputStream();
         PipedOutputStream out;
         out = new PipedOutputStream(in);        
@@ -51,38 +61,35 @@ public class CatTest {
         scn.close();
     }
 
-    // cat with directory test
-    // @Test
-    // public void catDirectoryExistAndCanOpenTest() throws Exception {
-    //     Jsh jsh = new Jsh();
-    //     PipedInputStream in = new PipedInputStream();
-    //     PipedOutputStream out;
-    //     out = new PipedOutputStream(in);        
-    //     jsh.start("cat cat_test.txt", out);
-    //     Scanner scn = new Scanner(in);
-    //     assertEquals("first line", scn.nextLine());
-    //     assertEquals("second line", scn.nextLine());
-    //     scn.close();
-    // }
+    // cat with directory test (with bugs i guess)
+    @Test
+    public void catDirectoryExistAndCanOpenTest() throws Exception {
+        PipedInputStream in = new PipedInputStream();
+        PipedOutputStream out;
+        out = new PipedOutputStream(in);        
+        jsh.start("cat cat_test.txt", out);
+        Scanner scn = new Scanner(in);
+        assertEquals("first line", scn.nextLine());
+        assertEquals("second line", scn.nextLine());
+        scn.close();
+    }
 
     @Rule
     public ExpectedException thrown = ExpectedException.none();
 
     // cat with directory but cannot open bc not a file
-    // @Test
-    // public void catDirectoryExistButCannotOpenTest() throws Exception {
-    //     Jsh jsh = new Jsh();
-    //     PrintStream console = null;
-    //     console = System.out;
-    //     thrown.expect(RuntimeException.class);
-    //     thrown.expectMessage(CoreMatchers.equalTo("cat: cannot open src"));
-    //     jsh.start("cat src", console);
-    // }
+    @Test
+    public void catDirectoryExistButCannotOpenTest() throws Exception {
+        PrintStream console = null;
+        console = System.out;
+        thrown.expect(RuntimeException.class);
+        thrown.expectMessage(CoreMatchers.equalTo("cat: cannot open src"));
+        jsh.start("cat src", console);
+    }
 
     // cat no argument test (no args from stdin)
     @Test
     public void CatNoArgumentThrowsException() throws RuntimeException, IOException {
-        Jsh jsh = new Jsh();
         PrintStream console = null;
         console = System.out;
         thrown.expect(RuntimeException.class);
@@ -93,7 +100,6 @@ public class CatTest {
     // cat file not exist test
     @Test
     public void CatFileNotExistThrowsException() throws RuntimeException, IOException {
-        Jsh jsh = new Jsh();
         PrintStream console = null;
         console = System.out;
         thrown.expect(RuntimeException.class);

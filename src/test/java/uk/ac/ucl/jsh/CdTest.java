@@ -16,56 +16,56 @@ import java.io.PrintStream;
 
 public class CdTest {
 
+    Jsh jsh = new Jsh();
 
     @Rule
-    public TemporaryFolder folder= new TemporaryFolder();
+    public TemporaryFolder folder = new TemporaryFolder();
 
     @Before
     public void buildTestFolder() throws Exception
     {
-        Jsh jsh = new Jsh();
-        File testFolder= folder.newFolder("cdTestFolder");
-        jsh.setcurrentDirectory(testFolder.getCanonicalPath());
-
+        jsh.setcurrentDirectory(folder.getRoot().getAbsolutePath());
+        File virtualSrcFolder = folder.newFolder("src");
+        File virtualMainFolder = new File(virtualSrcFolder.getAbsolutePath()+"/main");
+        virtualMainFolder.mkdir();
     }
     
     @After
     public void resetUserDirectory()
     {
-        // Jsh jsh = new Jsh();
-        // jsh.setcurrentDirectory(System.getProperty("user.dir"));
+        jsh.setcurrentDirectory(System.getProperty("user.dir"));
+        folder.delete();
     }
 
-    // @Test
-    // public void cdCmdOneDirectory() throws Exception
-    // {
-    //     Jsh jsh = new Jsh();
-    //     jsh.start("cd src", System.out);
-    //     assertEquals("/workspaces/jsh-team-6/src", jsh.getcurrentDirectory());
-    // }
+    @Test
+    public void cdCmdOneDirectory() throws Exception
+    {
+        String expected = jsh.getcurrentDirectory() + "/src";
+        jsh.start("cd src", System.out);
+        assertEquals(expected, jsh.getcurrentDirectory());
+    }
 
-    // @Test
-    // public void cdCmdConsecutiveDirectories() throws Exception
-    // {
-    //     Jsh jsh = new Jsh();
-    //     jsh.start("cd src/main", System.out);
-    //     assertEquals("/workspaces/jsh-team-6/src/main", jsh.getcurrentDirectory());
-    // }
+    @Test
+    public void cdCmdConsecutiveDirectories() throws Exception
+    {
+        String expected = jsh.getcurrentDirectory() + "/src/main";
+        jsh.start("cd src/main", System.out);
+        assertEquals(expected, jsh.getcurrentDirectory());
+    }
 
-    // @Test
-    // public void cdCmdBacktracking() throws Exception
-    // {
-    //     Jsh jsh = new Jsh();
-    //     jsh.start("cd src ; cd ..", System.out);
-    //     assertEquals("/workspaces/jsh-team-6", jsh.getcurrentDirectory());
-    // }
+    @Test
+    public void cdCmdBacktracking() throws Exception
+    {
+        String expected = jsh.getcurrentDirectory();
+        jsh.start("cd src ; cd ..", System.out);
+        assertEquals(expected, jsh.getcurrentDirectory());
+    }
 
     @Rule
     public ExpectedException thrown = ExpectedException.none();
 
     @Test
     public void cdMissingArgumentThrowsException() throws RuntimeException, IOException {
-        Jsh jsh = new Jsh();
         PrintStream console = null;
         console = System.out;
         thrown.expect(RuntimeException.class);
@@ -77,8 +77,6 @@ public class CdTest {
     @Test
     public void cdTooManyArgumentsThrowsException() throws RuntimeException, IOException {
         PrintStream console = null;
-        Jsh jsh = new Jsh();
-
         console = System.out; 
         thrown.expect(RuntimeException.class);
         thrown.expectMessage(CoreMatchers.equalTo("cd: too many arguments"));
@@ -88,13 +86,10 @@ public class CdTest {
     // cd cannot find directory
     @Test
     public void cdNoExistingDirectoryThrowsException() throws RuntimeException, IOException {
-        Jsh jsh = new Jsh();
         PrintStream console = null;
-
         console = System.out;
         thrown.expect(RuntimeException.class);
         thrown.expectMessage(CoreMatchers.equalTo("cd: xxx is not an existing directory"));
-
         jsh.start("cd xxx", console);
     }
 }
