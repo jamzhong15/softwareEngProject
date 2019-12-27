@@ -2,6 +2,7 @@ package uk.ac.ucl.jsh;
 
 import static org.junit.Assert.assertEquals;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -118,6 +119,16 @@ public class HeadTest {
         jsh.start("head", console);
     }
 
+    // head arguments more than 3
+    @Test
+    public void HeadMoreThanThreeArgsThrowsException() throws RuntimeException, IOException {
+        PrintStream console = null;
+        console = System.out;
+        thrown.expect(RuntimeException.class);
+        thrown.expectMessage(CoreMatchers.equalTo("head: wrong arguments"));
+        jsh.start("head x x x x", console);
+    }
+
     // Head wrong no. of arguments
     @Test
     public void HeadWrongArgumentNumberThrowsException() throws RuntimeException, IOException {
@@ -144,18 +155,18 @@ public class HeadTest {
         PrintStream console = null;
         console = System.out;
         thrown.expect(RuntimeException.class);
-        thrown.expectMessage(CoreMatchers.equalTo("head: wrong argument s"));
-        jsh.start("head -n s head_test.txt", console);
+        thrown.expectMessage(CoreMatchers.equalTo("head: wrong argument -s"));
+        jsh.start("cat head_test.txt | head -s 3", console);
     }
 
-    // head obtain from stdin and first arg is not -n
+    // head 3 argument but second arg is not number
     @Test
     public void HeadStdinVersionWithWrongFirstArgumentThrowsException() throws RuntimeException, IOException {
         PrintStream console = null;
         console = System.out;
         thrown.expect(RuntimeException.class);
-        thrown.expectMessage(CoreMatchers.equalTo("head: wrong argument -s"));
-        jsh.start("cat head_test.txt | head -s 3", console);
+        thrown.expectMessage(CoreMatchers.equalTo("head: wrong argument s"));
+        jsh.start("head -n s head_test.txt", console);
     }
 
     // head obtain from stdin and second arg is not number
@@ -186,5 +197,15 @@ public class HeadTest {
         thrown.expect(RuntimeException.class);
         thrown.expectMessage(CoreMatchers.equalTo("head: cannot open targetFolder"));
         jsh.start("head targetFolder", console);
+    }
+    
+    // head unsafe command test
+    @Test
+    public void HeadUnsafeCommandTest() throws Exception {
+        Jsh jsh = new Jsh();
+        ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(outContent));
+        jsh.start("_head", System.out);
+        assertEquals("head: missing arguments\n", outContent.toString());
     }
 }

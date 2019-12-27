@@ -284,20 +284,25 @@ class tail implements AppCase {
             throws IOException {
         OutputStreamWriter writer = new OutputStreamWriter(output);
 
-        if (appArgs.isEmpty()) {
+        if (appArgs.isEmpty()) 
+        {
             BufferedWriter stdoutWriter = new BufferedWriter(new OutputStreamWriter(output));
-            if (input == null) {
+            if (input == null) 
+            {
                 throw new RuntimeException("tail: missing arguments");
-        }
-        else {
-            int tailLines = 10;
-            ArrayList<String> storage = new ArrayList<>();
-            BufferedReader stdinReader = new BufferedReader(new InputStreamReader(input));
-            for (int i = 0; i < tailLines; i++) {
-                String stringInStdin = null;
-                        while ((stringInStdin = stdinReader.readLine()) != null) {
-                            storage.add(stringInStdin);
-                        }
+            }
+            else 
+            {
+                int tailLines = 10;
+                ArrayList<String> storage = new ArrayList<>();
+                BufferedReader stdinReader = new BufferedReader(new InputStreamReader(input));
+                for (int i = 0; i < tailLines; i++) 
+                {
+                    String stringInStdin = null;
+                    while ((stringInStdin = stdinReader.readLine()) != null) 
+                    {
+                        storage.add(stringInStdin);
+                    }
                     int index = 0;
                     if (tailLines > storage.size()) {
                         index = 0;
@@ -350,7 +355,8 @@ class tail implements AppCase {
                 throw new RuntimeException("tail: wrong arguments");
             }
         }
-        else {
+        else 
+        {
             if (appArgs.size() == 3 && !appArgs.get(0).equals("-n")) {
                 throw new RuntimeException("tail: wrong argument " + appArgs.get(0));
             }
