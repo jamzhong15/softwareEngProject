@@ -1,12 +1,14 @@
 package uk.ac.ucl.jsh;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
 import java.io.PrintStream;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 import org.hamcrest.CoreMatchers;
@@ -50,13 +52,20 @@ public class FindTest {
     // find 2 args test
     @Test
     public void findTwoArgsTest() throws Exception {
+        ArrayList<String> paths = new ArrayList<>();
+        paths.add("/Dockerfile");
+        paths.add("/devcontainer/Dockerfile");
+
         PipedInputStream in = new PipedInputStream();
         PipedOutputStream out = new PipedOutputStream(in);
         jsh.start("find -name Dockerfile", out);
         out.close();
         Scanner scn = new Scanner(in);
-        assertEquals("/Dockerfile", scn.nextLine());
-        assertEquals("/devcontainer/Dockerfile", scn.nextLine());
+        String[] fileNames = scn.nextLine().split(System.getProperty("line.separator"));
+        for (String file : fileNames)
+        {
+            assertTrue("correct file path displayed", paths.contains(file));
+        }
         scn.close();
     }
 

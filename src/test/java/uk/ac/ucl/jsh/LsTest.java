@@ -1,11 +1,12 @@
 package uk.ac.ucl.jsh;
 
 import org.hamcrest.CoreMatchers;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
-
-import static org.junit.Assert.assertEquals;
+import org.junit.rules.TemporaryFolder;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
@@ -17,10 +18,40 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 public class LsTest {
+    Jsh jsh = new Jsh();
+
+    @Rule
+    public TemporaryFolder folder = new TemporaryFolder();
+
+    @Before
+    public void buildTestFile() throws IOException
+    {
+        jsh.setcurrentDirectory(folder.getRoot().getAbsolutePath());
+        File src_folder = folder.newFolder("src");
+        File test_folder = folder.newFolder("src", "test");
+        File main_folder = folder.newFolder("src", "main");
+        src_folder.mkdirs();
+        test_folder.mkdirs();
+        main_folder.mkdirs();
+    }
+
+    @After
+    public void deleteTestFile()
+    {
+        jsh.setcurrentDirectory(System.getProperty("user.dir"));
+        folder.delete();
+    }
+
+    @Test
+    public void hi() throws Exception
+    {
+        jsh.start("ls", System.out);
+        jsh.start("cd src ; ls", System.out);
+    }
+    
     // ls no argument test
     @Test
     public void lsWithoutArgument() throws Exception {
-        Jsh jsh = new Jsh();
         String currentDirectory = jsh.getcurrentDirectory();
         File currDir = new File(currentDirectory);
         ArrayList<String> listFiles = new ArrayList<>();
@@ -51,12 +82,19 @@ public class LsTest {
     @Test
     public void lsWithOneArgument() throws Exception {
         Jsh jsh = new Jsh();
+        ArrayList<String> folders = new ArrayList<>();
+        folders.add("test");
+        folders.add("main");
+
         PipedInputStream in = new PipedInputStream();
-        PipedOutputStream out;
-        out = new PipedOutputStream(in);        
+        PipedOutputStream out = new PipedOutputStream(in);
         jsh.start("ls src", out);
         Scanner scn = new Scanner(in);
-        assertEquals("test", scn.next());
+        String[] files = scn.nextLine().split("\t");
+        for (String fileName : files)
+        {
+            assertTrue(fileName, folders.contains(fileName));
+        }
         scn.close();
     }
 
