@@ -644,7 +644,7 @@ class wc implements AppCase {
             OutputStreamWriter writer = new OutputStreamWriter(output);
             String command = "";
 
-            try (BufferedReader reader = new BufferedReader(new InputStreamReader(input))) {
+            
                 int charCount = 0;
                 int wordCount = 0;
                 int lineCount = 0;
@@ -652,18 +652,22 @@ class wc implements AppCase {
                 if (!appArgs.isEmpty()) {
                     command = appArgs.get(0);
                 }
-
-                String line = null;
-                while ((line = reader.readLine()) != null) {
-                    if (line.contains(System.getProperty("line.separator")));
+                try (BufferedReader reader = new BufferedReader(new InputStreamReader(input))) 
+                {
+                    String line = null;
+                    while ((line = reader.readLine()) != null) 
+                    {
+                        lineCount ++;
+                        charCount += line.length() + 1;
+                            
+                        if(!line.trim().isEmpty())
                         {
-                            lineCount++;
-                            charCount += 1;
+                            String[] words = line.trim().split("\\s+");
+                            wordCount += words.length;
                         }
-                    charCount += line.length();
-                    wordCount += line.split("\\s+").length;
-                }
-                writeCount(command, charCount, wordCount, lineCount, writer, "");
+                    }
+                
+                     writeCount(command, charCount, wordCount, lineCount, writer, "");
 
             } catch (NullPointerException e) {
                 throw new RuntimeException("wc: missing arguments");
@@ -698,15 +702,15 @@ class wc implements AppCase {
                         String line = null;
                         while ((line = reader.readLine()) != null) 
                         {
-                            if (line.contains(System.getProperty("line.separator")));
+                            lineCount ++;
+                            charCount += line.length() + 1;
+                            
+                            if(!line.trim().isEmpty())
                             {
-                                lineCount += 1;
-                                charCount += 1;
+                                String[] words = line.trim().split("\\s+");
+                                wordCount += words.length;
                             }
-                            charCount += line.length();
-                            wordCount += line.split("\\s+").length;
                         }
-                        
                     }
                     catch (IOException e) 
                     {
