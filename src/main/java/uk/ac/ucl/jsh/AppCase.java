@@ -432,7 +432,7 @@ class grep implements AppCase {
             Path currentDir = Paths.get(currentDirectory);
             for (int i = 0; i < numOfFiles; i++) {
                 filePath = currentDir.resolve(appArgs.get(i + 1));
-                if (Files.notExists(filePath) || Files.isDirectory(filePath)) //  || !Files.exists(filePath) || !Files.isReadable(filePath)
+                if (Files.notExists(filePath) || !Files.exists(filePath)) // || Files.isDirectory(filePath)  || !Files.isReadable(filePath)
                 {
                     throw new RuntimeException("grep: wrong file argument");
                 }

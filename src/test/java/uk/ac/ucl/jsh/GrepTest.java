@@ -50,6 +50,8 @@ public class GrepTest {
         File file1 = new File("grep_test.jar");
         file.delete();
         file1.delete();
+        Jsh jsh = new Jsh();
+        jsh.setcurrentDirectory(System.getProperty("user.dir"));
     }
 
     // grep with 2 arguments
@@ -78,7 +80,6 @@ public class GrepTest {
         scn.close();
     }
 
-
     @Rule
     public ExpectedException thrown = ExpectedException.none();
 
@@ -101,16 +102,16 @@ public class GrepTest {
     }
 
     // cannot open file 2
-    // @Test
-    // public void GrepCannotOpenFileTest() throws Exception {
-    //     Jsh jsh = new Jsh();
-    //     PrintStream console = null;
+    @Test
+    public void GrepCannotOpenFileTest() throws Exception {
+        Jsh jsh = new Jsh();
+        PrintStream console = null;
 
-    //     console = System.out;
-    //     thrown.expect(RuntimeException.class);
-    //     thrown.expectMessage(CoreMatchers.equalTo("grep: cannot open jsh-1.0-SNAPSHOT-jar-with-dependencies.jar"));
-    //     jsh.start("cd target ; grep x jsh-1.0-SNAPSHOT-jar-with-dependencies.jar", console);
-    // }
+        console = System.out;
+        thrown.expect(RuntimeException.class);
+        thrown.expectMessage(CoreMatchers.equalTo("grep: cannot open src"));
+        jsh.start("grep x src", console);
+    }
 }
 
 
