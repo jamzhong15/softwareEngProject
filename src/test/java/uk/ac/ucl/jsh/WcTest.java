@@ -30,7 +30,7 @@ public class WcTest
     {
         jsh.setcurrentDirectory(folder.getRoot().getAbsolutePath());
         File test_folder = folder.newFolder("testFolder");
-
+        test_folder.mkdir();
         File wc_test_file = folder.newFile("wcTest.txt");
         String testedStrings1 = "first line\n";
         String testedStrings2 = "second line\n";

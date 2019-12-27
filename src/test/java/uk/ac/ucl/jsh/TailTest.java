@@ -31,6 +31,7 @@ public class TailTest {
     {
         jsh.setcurrentDirectory(folder.getRoot().getAbsolutePath());
         File target_folder = folder.newFolder("target");
+        target_folder.mkdir();
         File tail_test_File = folder.newFile("tail_test.txt");
         String testedStrings1 = "first line\n";
         String testedStrings2 = "second line\n";

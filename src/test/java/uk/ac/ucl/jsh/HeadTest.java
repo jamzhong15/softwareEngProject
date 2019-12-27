@@ -30,6 +30,7 @@ public class HeadTest {
     {
         jsh.setcurrentDirectory(folder.getRoot().getAbsolutePath());
         File target_folder = folder.newFolder("targetFolder");
+        target_folder.mkdir();
         File head_test_File = folder.newFile("head_test.txt");
         String testedStrings1 = "first line\n";
         String testedStrings2 = "second line\n";

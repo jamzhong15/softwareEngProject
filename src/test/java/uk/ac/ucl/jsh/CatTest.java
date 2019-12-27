@@ -30,6 +30,7 @@ public class CatTest {
     {
         jsh.setcurrentDirectory(folder.getRoot().getAbsolutePath());
         File src_folder = folder.newFolder("src");
+        src_folder.mkdir();
         File cat_test_file = folder.newFile("cat_test.txt");
         String testedStrings1 = "first line\n";
         String testedStrings2 = "second line\n";
