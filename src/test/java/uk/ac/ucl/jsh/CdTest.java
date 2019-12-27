@@ -11,6 +11,7 @@ import org.junit.rules.TemporaryFolder;
 import static org.junit.Assert.assertEquals;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 
@@ -28,11 +29,22 @@ public class CdTest {
         File virtualSrcFolder = folder.newFolder("src");
         File virtualMainFolder = new File(virtualSrcFolder.getAbsolutePath()+"/main");
         virtualMainFolder.mkdir();
+
+        String absoluteFilePath = System.getProperty("user.dir") + File.separator + "cd_test.txt";
+        File testFile = new File(absoluteFilePath);
+        String testedStrings1 = "first line\n";
+
+        FileOutputStream file_writer = new FileOutputStream(testFile);
+        file_writer.write(testedStrings1.getBytes());
+        file_writer.close();
     }
     
     @After
     public void resetUserDirectory()
     {
+        File file = new File("cd_test.txt");
+        file.delete();
+        
         jsh.setcurrentDirectory(System.getProperty("user.dir"));
         folder.delete();
     }
@@ -83,7 +95,7 @@ public class CdTest {
         jsh.start("cd arg1 arg2", console);
     }
 
-    // cd cannot find directory
+    // cd cannot find directory test
     @Test
     public void cdNoExistingDirectoryThrowsException() throws RuntimeException, IOException {
         PrintStream console = null;
@@ -91,5 +103,15 @@ public class CdTest {
         thrown.expect(RuntimeException.class);
         thrown.expectMessage(CoreMatchers.equalTo("cd: xxx is not an existing directory"));
         jsh.start("cd xxx", console);
+    }
+
+    // cd not a directory test
+    @Test
+    public void cdNoADirectoryThrowsException() throws RuntimeException, IOException {
+        PrintStream console = null;
+        console = System.out;
+        thrown.expect(RuntimeException.class);
+        thrown.expectMessage(CoreMatchers.equalTo("cd: cd_test.txt is not an existing directory"));
+        jsh.start("cd cd_test.txt", console);
     }
 }

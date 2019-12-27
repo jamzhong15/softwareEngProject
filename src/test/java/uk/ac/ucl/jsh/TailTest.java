@@ -67,7 +67,7 @@ public class TailTest {
         assertEquals("third line", scn.nextLine());
         scn.close();
     }
-
+    
     // tail with 3 arguments test
     @Test
     public void TailThreeArgumentsTest() throws Exception {
@@ -76,8 +76,25 @@ public class TailTest {
         PipedInputStream in = new PipedInputStream();
         PipedOutputStream out;
         out = new PipedOutputStream(in);
-        jsh.start("tail -n 2 tail_test.txt", out);
+        jsh.start("tail -n 5 tail_test.txt", out);
         Scanner scn = new Scanner(in);
+        assertEquals("first line", scn.nextLine());
+        assertEquals("second line", scn.nextLine());
+        assertEquals("third line", scn.nextLine());
+        scn.close();
+    }
+
+    // tail stidn version with 3 arguments test
+    @Test
+    public void TailStdinVersionThreeArgumentsTest() throws Exception {
+        Jsh jsh = new Jsh();
+
+        PipedInputStream in = new PipedInputStream();
+        PipedOutputStream out;
+        out = new PipedOutputStream(in);
+        jsh.start("cat tail_test.txt | tail -n 5 tail_test.txt", out);
+        Scanner scn = new Scanner(in);
+        assertEquals("first line", scn.nextLine());
         assertEquals("second line", scn.nextLine());
         assertEquals("third line", scn.nextLine());
         scn.close();
@@ -115,6 +132,9 @@ public class TailTest {
         scn.close();
     }
 
+    // tail tailline > storage.size test
+    
+
     @Rule
     public ExpectedException thrown = ExpectedException.none();
 
@@ -127,6 +147,16 @@ public class TailTest {
         thrown.expect(RuntimeException.class);
         thrown.expectMessage(CoreMatchers.equalTo("tail: missing arguments"));
         jsh.start("tail", console);
+    }
+
+    // tail arguments more than 3
+    @Test
+    public void TailMoreThanThreeArgsThrowsException() throws RuntimeException, IOException {
+        PrintStream console = null;
+        console = System.out;
+        thrown.expect(RuntimeException.class);
+        thrown.expectMessage(CoreMatchers.equalTo("tail: wrong arguments"));
+        jsh.start("tail x x x x", console);
     }
 
     // tail wrong no. of arguments
