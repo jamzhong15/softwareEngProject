@@ -55,8 +55,8 @@ public class FindTest {
         jsh.start("find -name Dockerfile", out);
         out.close();
         Scanner scn = new Scanner(in);
-        assertEquals("/Dockerfile", scn.nextLine());
         assertEquals("/devcontainer/Dockerfile", scn.nextLine());
+        assertEquals("/Dockerfile", scn.nextLine());
         scn.close();
     }
 
