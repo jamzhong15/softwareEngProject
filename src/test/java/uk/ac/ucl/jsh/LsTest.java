@@ -73,7 +73,7 @@ public class LsTest {
         }
         for (String fileName : files)
         {
-            assertTrue(fileName, listFiles.contains(fileName));
+            assertTrue("wrong files displayed", listFiles.contains(fileName));
         }
         scn.close();
     }
@@ -93,7 +93,7 @@ public class LsTest {
         String[] files = scn.nextLine().split("\t");
         for (String fileName : files)
         {
-            assertTrue(fileName, folders.contains(fileName));
+            assertTrue("wrong files displayed", folders.contains(fileName));
         }
         scn.close();
     }

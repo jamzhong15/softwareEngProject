@@ -64,7 +64,7 @@ public class FindTest {
         String[] fileNames = scn.nextLine().split(System.getProperty("line.separator"));
         for (String file : fileNames)
         {
-            assertTrue("correct file path displayed", paths.contains(file));
+            assertTrue("wrong file path displayed", paths.contains(file));
         }
         scn.close();
     }
