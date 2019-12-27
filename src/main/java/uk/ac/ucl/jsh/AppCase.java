@@ -40,11 +40,8 @@ class cd implements AppCase {
         if (!dir.exists() || !dir.isDirectory()) {
             throw new RuntimeException("cd: " + dirString + " is not an existing directory");
         }
-        try {
-            currentDirectory = dir.getCanonicalPath();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        currentDirectory = dir.getCanonicalPath();
+
         Jsh jsh = new Jsh();
         jsh.setcurrentDirectory(currentDirectory);
     }
@@ -439,7 +436,7 @@ class grep implements AppCase {
             Path currentDir = Paths.get(currentDirectory);
             for (int i = 0; i < numOfFiles; i++) {
                 filePath = currentDir.resolve(appArgs.get(i + 1));
-                if (Files.notExists(filePath) || Files.isDirectory(filePath)) //  || !Files.exists(filePath) || !Files.isReadable(filePath)
+                if (Files.notExists(filePath) || !Files.exists(filePath)) // || Files.isDirectory(filePath)  || !Files.isReadable(filePath)
                 {
                     throw new RuntimeException("grep: wrong file argument");
                 }
@@ -606,7 +603,7 @@ class find implements AppCase {
                 throw new RuntimeException("find: invalid arguments");
             }
             File baseDir = new File(currentDirectory);
-            File currDir = new File(appArgs.get(0));
+            File currDir = new File(currentDirectory);
             String pattern = appArgs.get(2);
             printFiles(baseDir, currDir, pattern, output);
         }
@@ -653,7 +650,7 @@ class wc implements AppCase {
             OutputStreamWriter writer = new OutputStreamWriter(output);
             String command = "";
 
-            try (BufferedReader reader = new BufferedReader(new InputStreamReader(input))) {
+            
                 int charCount = 0;
                 int wordCount = 0;
                 int lineCount = 0;
@@ -661,20 +658,27 @@ class wc implements AppCase {
                 if (!appArgs.isEmpty()) {
                     command = appArgs.get(0);
                 }
+                try (BufferedReader reader = new BufferedReader(new InputStreamReader(input))) 
+                {
+                    String line = null;
+                    while ((line = reader.readLine()) != null) 
+                    {
+                        lineCount ++;
+                        charCount += line.length() + 1;
+                            
+                        if(!line.trim().isEmpty())
+                        {
+                            String[] words = line.trim().split("\\s+");
+                            wordCount += words.length;
+                        }
+                    }
+                
+                     writeCount(command, charCount, wordCount, lineCount, writer, "");
 
-                String line = null;
-                while ((line = reader.readLine()) != null) {
-                    lineCount++;
-                    wordCount += line.length();
-                    charCount += line.split(" ").length;
-                }
-
-                writeCount(command, charCount, wordCount, lineCount, writer);
-
-            } catch (IOException e) {
+            } catch (NullPointerException e) {
                 throw new RuntimeException("wc: missing arguments");
             }
-        } 
+        }
         else 
         {
 
@@ -694,20 +698,25 @@ class wc implements AppCase {
             for (String arg : appArgs) 
             {
                 Charset encoding = StandardCharsets.UTF_8;
-                File currFile = new File(arg);
+                File currFile = new File(currentDirectory + File.separator + arg);
                 if (currFile.exists())
                 {
-                    Path filePath = Paths.get(arg);
+                    Path filePath = Paths.get(currFile.getAbsolutePath());
 
-                    try (BufferedReader reader = Files.newBufferedReader(filePath, encoding)) 
+                    try (BufferedReader reader = Files.newBufferedReader(filePath, encoding))
                     {
                         String line = null;
                         while ((line = reader.readLine()) != null) 
                         {
-                            lineCount++;
-                            wordCount += line.length();
-                            charCount += line.split(" ").length;
-                        } 
+                            lineCount ++;
+                            charCount += line.length() + 1;
+                            
+                            if(!line.trim().isEmpty())
+                            {
+                                String[] words = line.trim().split("\\s+");
+                                wordCount += words.length;
+                            }
+                        }
                     }
                     catch (IOException e) 
                     {
@@ -716,41 +725,35 @@ class wc implements AppCase {
                 }
                 else 
                 {
-                    throw new RuntimeException("wc: file does not exist");
+                    throw new RuntimeException("wc: " + arg + " does not exist");
                 }
+                writeCount(command, charCount, wordCount, lineCount, writer, arg);
             }
-            writeCount(command, charCount, wordCount, lineCount, writer); 
         }
     }
 
-    private void writeCount(String command, int charCount, int wordCount, int lineCount, OutputStreamWriter writer) throws IOException
+    private void writeCount(String command, int charCount, int wordCount, int lineCount, OutputStreamWriter writer, String fileName) throws IOException
     {
         switch (command) {
             case "-m":
-                writer.write(Integer.toString(charCount));
+                writer.write(Integer.toString(charCount) + "\t" + fileName);
                 break;
 
             case "-w":
-                writer.write(Integer.toString(wordCount));
+                writer.write(Integer.toString(wordCount) + "\t" + fileName);
                 break;
 
             case "-l":
-                writer.write(Integer.toString(lineCount));
+                writer.write(Integer.toString(lineCount) + "\t" + fileName);
                 break;
                 
             default:
-                writer.write(Integer.toString(charCount) + "\t");
+                writer.write(Integer.toString(lineCount) + "\t");
                 writer.write(Integer.toString(wordCount) + "\t");
-                writer.write(Integer.toString(lineCount));
+                writer.write(Integer.toString(charCount) + "\t" + fileName);
                 break;
             }
             writer.write(System.getProperty("line.separator"));
             writer.flush();
     }
 }
-
-
-
-
-
-

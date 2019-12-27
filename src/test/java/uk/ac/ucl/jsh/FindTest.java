@@ -2,9 +2,7 @@ package uk.ac.ucl.jsh;
 
 import static org.junit.Assert.assertEquals;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
@@ -17,71 +15,62 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
+import org.junit.rules.TemporaryFolder;
 
 public class FindTest {
 
+    Jsh jsh = new Jsh();
+
+    @Rule
+    public TemporaryFolder folder = new TemporaryFolder();
+
     @Before
-    public void buildTestFile() throws IOException {
-        File dir = new File(System.getProperty("user.dir") + File.separator + "testFolder");
-        dir.mkdir();
-
-        String absoluteFilePath = System.getProperty("user.dir") + File.separator + "find_test.txt";
-        File testFile = new File(absoluteFilePath);
-        String testedStrings1 = "first line\n";
-        String testedStrings2 = "second line\n";
-        String testedStrings3 = "third line\n";
-
-        FileOutputStream file_writer = new FileOutputStream(testFile);
-        file_writer.write(testedStrings1.getBytes());
-        file_writer.write(testedStrings2.getBytes());
-        file_writer.write(testedStrings3.getBytes());
-
-        file_writer.close();
-
-        String absoluteFilePath1 = System.getProperty("user.dir") + File.separator + "testFolder" + File.separator + "find_test1.txt";
-        File testFile1 = new File(absoluteFilePath1);
-        String testedStrings4 = "first line\n";
-
-        FileOutputStream file_writer1 = new FileOutputStream(testFile1);
-        file_writer1.write(testedStrings4.getBytes());
-        file_writer1.close();
-    }
-
-    @After
-    public void deleteTestFile()
+    public void buildTestFolder() throws Exception
     {
-        File file = new File("find_test.txt");
-        file.delete();
+        jsh.setcurrentDirectory(folder.getRoot().getAbsolutePath());
+        File dockerfile_file = folder.newFile("Dockerfile");
+        dockerfile_file.createNewFile();
 
-        File file1 = new File("testFolder/find_test1.txt");
-        file1.delete();
+        File src_folder = folder.newFolder("main");
+        File CmdGrammar_file = new File(src_folder.getAbsolutePath()+"/Hi.g4");
+        CmdGrammar_file.createNewFile();
 
-        File dir = new File("testFolder");
-        dir.delete();
+        File dot_devcontainer_folder = folder.newFolder("devcontainer");
+        File sub_dockerfile_file = new File(dot_devcontainer_folder.getAbsolutePath()+"/Dockerfile");
+        sub_dockerfile_file.createNewFile();
     }
-
+    
+    @After
+    public void resetUserDirectory()
+    {
+        jsh.setcurrentDirectory(System.getProperty("user.dir"));
+        folder.delete();
+    }
+    
     // find 2 args test
-    // @Test
-    // public void findTwoArgsTest() throws Exception {
-    //     Jsh jsh = new Jsh();
-    //     PipedInputStream in = new PipedInputStream();
-    //     PipedOutputStream out = new PipedOutputStream(in);
-    //     jsh.start("find -name find_test.txt", out);
-    //     Scanner scn = new Scanner(in);
-    //     assertEquals("/find_test.txt", scn.nextLine());
-    //     scn.close();
-    // }
+    @Test
+    public void findTwoArgsTest() throws Exception {
+        PipedInputStream in = new PipedInputStream();
+        PipedOutputStream out = new PipedOutputStream(in);
+        jsh.start("find -name Dockerfile", out);
+        out.close();
+        Scanner scn = new Scanner(in);
+        assertEquals("/devcontainer/Dockerfile", scn.nextLine());
+        assertEquals("/Dockerfile", scn.nextLine());
+        scn.close();
+    }
 
     // find 3 args test
     @Test
     public void findThreeArgsTest() throws Exception {
-        Jsh jsh = new Jsh();
+        
         PipedInputStream in = new PipedInputStream();
         PipedOutputStream out;
         out = new PipedOutputStream(in);
-        jsh.start("find src -name *.g4", out);
+        jsh.start("find main -name *.g4", out);
+        out.close();
         Scanner scn = new Scanner(in);
-        assertEquals("/src/main/antlr4/uk/ac/ucl/jsh/CmdGrammar.g4", scn.nextLine());
+        assertEquals("/main/Hi.g4", scn.nextLine());
         scn.close();
     }
 
@@ -91,7 +80,6 @@ public class FindTest {
     // find without argument (or 1 argument)
     @Test
     public void findAppArgsLessThanTwo() throws RuntimeException, IOException {
-        Jsh jsh = new Jsh();
         PrintStream console = null;
         console = System.out;
         thrown.expect(RuntimeException.class);
@@ -102,7 +90,6 @@ public class FindTest {
     // find more than 3 arguments
     @Test
     public void findAppArgsMoreThanThree() throws RuntimeException, IOException {
-        Jsh jsh = new Jsh();
         PrintStream console = null;
         console = System.out;
         thrown.expect(RuntimeException.class);
@@ -113,7 +100,6 @@ public class FindTest {
     // find 2 arguments but first arg is not -name
     @Test
     public void findTwoAppArgsButFirstArgsNot_nameThrowsException() throws RuntimeException, IOException {
-        Jsh jsh = new Jsh();
         PrintStream console = null;
         console = System.out;
         thrown.expect(RuntimeException.class);
@@ -124,7 +110,6 @@ public class FindTest {
     // find 3 arguments but second arg is not -name
     @Test
     public void findThreeAppArgsButSecondArgsNot_nameThrowsException() throws RuntimeException, IOException {
-        Jsh jsh = new Jsh();
         PrintStream console = null;
         console = System.out;
         thrown.expect(RuntimeException.class);
