@@ -56,8 +56,11 @@ public class LsTest {
         jsh.setcurrentDirectory(System.getProperty("user.dir"));
         folder.delete();
 
-        File file = new File(".cd_test");
+        File file = new File("cd_test.txt");
         file.delete();
+
+        File file1 = new File(".cd_test");
+        file1.delete();
     }
 
     @Test
