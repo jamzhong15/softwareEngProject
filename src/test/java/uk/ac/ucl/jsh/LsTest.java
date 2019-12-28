@@ -14,6 +14,7 @@ import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
 import java.io.PrintStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Scanner;
 
 public class LsTest {
@@ -47,7 +48,7 @@ public class LsTest {
         scn.close();
     }
 
-    // ls one argument test
+    //ls one argument test
     @Test
     public void lsWithOneArgument() throws Exception {
         Jsh jsh = new Jsh();
@@ -56,7 +57,9 @@ public class LsTest {
         out = new PipedOutputStream(in);        
         jsh.start("ls src", out);
         Scanner scn = new Scanner(in);
-        assertEquals("test", scn.next());
+        String[] test = scn.nextLine().split("\t");
+        String[] hello = {"main","test"};
+        assertEquals(Arrays.toString(hello) , Arrays.toString(test));
         scn.close();
     }
 
