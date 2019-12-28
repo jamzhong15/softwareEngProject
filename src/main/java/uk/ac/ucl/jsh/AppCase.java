@@ -11,10 +11,8 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.PathMatcher;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.regex.Matcher;
@@ -37,7 +35,7 @@ class cd implements AppCase {
         }
         String dirString = appArgs.get(0);
         File dir = new File(currentDirectory, dirString);
-        if (!dir.exists() || !dir.isDirectory()) {
+        if (!dir.isDirectory()) {
             throw new RuntimeException("cd: " + dirString + " is not an existing directory");
         }
         currentDirectory = dir.getCanonicalPath();
