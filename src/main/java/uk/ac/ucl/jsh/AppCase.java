@@ -24,7 +24,6 @@ public interface AppCase {
 }
 
 class cd implements AppCase {
-
     @Override
     public void runCommand(ArrayList<String> appArgs, String currentDirectory, InputStream input, OutputStream output)
             throws IOException {
@@ -582,7 +581,6 @@ class find implements AppCase {
 
             File currDir = new File(currentDirectory);
             String pattern = appArgs.get(1);
-            
             Globbing glob = new Globbing();
             glob.printFiles(currDir, currDir, pattern, output);
 
@@ -591,7 +589,7 @@ class find implements AppCase {
                 throw new RuntimeException("find: invalid arguments");
             }
             File baseDir = new File(currentDirectory);
-            File currDir = new File(appArgs.get(0));
+            File currDir = new File(currentDirectory + "/" + appArgs.get(0));
             String pattern = appArgs.get(2);
 
             Globbing glob = new Globbing();
