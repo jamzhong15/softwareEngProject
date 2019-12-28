@@ -204,8 +204,11 @@ public class TailTest {
         PipedInputStream in = new PipedInputStream();
         PipedOutputStream out;
         out = new PipedOutputStream(in);
-        jsh.start("cat tail_test1.txt | tail -n 8", out);
+        jsh.start("cat tail_test1.txt | tail -n 11", out);
         Scanner scn = new Scanner(in);
+        assertEquals("1 line", scn.nextLine());
+        assertEquals("2 line", scn.nextLine());
+        assertEquals("3 line", scn.nextLine());
         assertEquals("4 line", scn.nextLine());
         assertEquals("5 line", scn.nextLine());
         assertEquals("6 line", scn.nextLine());

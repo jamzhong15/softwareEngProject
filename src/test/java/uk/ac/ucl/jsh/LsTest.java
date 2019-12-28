@@ -10,6 +10,7 @@ import org.junit.rules.TemporaryFolder;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
@@ -33,6 +34,20 @@ public class LsTest {
         src_folder.mkdirs();
         test_folder.mkdirs();
         main_folder.mkdirs();
+
+        String absoluteFilePath = System.getProperty("user.dir") + File.separator + "cd_test.txt";
+        File testFile = new File(absoluteFilePath);
+        String testedStrings1 = "first line\n";
+
+        FileOutputStream file_writer = new FileOutputStream(testFile);
+        file_writer.write(testedStrings1.getBytes());
+        file_writer.close();
+
+        String absoluteFilePath1 = System.getProperty("user.dir") + File.separator + ".cd_test";
+        File testFile1 = new File(absoluteFilePath1);
+
+        FileOutputStream file_writer1 = new FileOutputStream(testFile1);
+        file_writer1.close();
     }
 
     @After
@@ -40,11 +55,13 @@ public class LsTest {
     {
         jsh.setcurrentDirectory(System.getProperty("user.dir"));
         folder.delete();
+
+        File file = new File(".cd_test");
+        file.delete();
     }
 
     @Test
-    public void hi() throws Exception
-    {
+    public void hi() throws Exception {
         jsh.start("ls", System.out);
         jsh.start("cd src ; ls", System.out);
     }
