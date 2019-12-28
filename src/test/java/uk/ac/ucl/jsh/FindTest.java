@@ -49,7 +49,8 @@ public class FindTest {
         folder.delete();
     }
     
-    // find 2 args test
+    //find 2 args test
+    
     @Test
     public void findTwoArgsTest() throws Exception {
         ArrayList<String> paths = new ArrayList<>();
@@ -69,7 +70,7 @@ public class FindTest {
         scn.close();
     }
 
-    // find 3 args test
+    //find 3 args test
     @Test
     public void findThreeArgsTest() throws Exception {
         
