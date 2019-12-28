@@ -37,7 +37,7 @@ class cd implements AppCase {
         }
         String dirString = appArgs.get(0);
         File dir = new File(currentDirectory, dirString);
-        if (!dir.exists()) {
+        if (!dir.isDirectory()) {
             throw new RuntimeException("cd: " + dirString + " is not an existing directory");
         }
         currentDirectory = dir.getCanonicalPath();
