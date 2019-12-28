@@ -586,7 +586,8 @@ class find implements AppCase {
 
         if (appArgs.size() < 2) {
             throw new RuntimeException("find: missing arguments");
-        } else if (appArgs.size() > 3) {
+        } 
+        else if (appArgs.size() > 3) {
             throw new RuntimeException("find: too many arguments");
         }
 
@@ -598,7 +599,8 @@ class find implements AppCase {
             File currDir = new File(currentDirectory);
             String pattern = appArgs.get(1);
             printFiles(currDir, currDir, pattern, output);
-        } else if (appArgs.size() == 3) {
+        }
+        else if (appArgs.size() == 3) {
             if (!appArgs.get(1).equals("-name")) {
                 throw new RuntimeException("find: invalid arguments");
             }

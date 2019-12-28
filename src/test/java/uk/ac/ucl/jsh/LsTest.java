@@ -27,13 +27,14 @@ public class LsTest {
     @Before
     public void buildTestFile() throws IOException
     {
-        jsh.setcurrentDirectory(folder.getRoot().getAbsolutePath());
-        File src_folder = folder.newFolder("src");
-        File test_folder = folder.newFolder("src", "test");
-        File main_folder = folder.newFolder("src", "main");
-        src_folder.mkdirs();
-        test_folder.mkdirs();
-        main_folder.mkdirs();
+        // jsh.setcurrentDirectory(folder.getRoot().getAbsolutePath());
+        // File src_folder = folder.newFolder("hi");
+        // File test_folder = folder.newFolder("src", "test");
+        // File main_folder = folder.newFolder("src", "main");
+        // src_folder.mkdirs();
+        // test_folder.mkdirs();
+        // main_folder.mkdirs();
+
 
         String absoluteFilePath = System.getProperty("user.dir") + File.separator + "cd_test.txt";
         File testFile = new File(absoluteFilePath);
@@ -47,14 +48,15 @@ public class LsTest {
         File testFile1 = new File(absoluteFilePath1);
 
         FileOutputStream file_writer1 = new FileOutputStream(testFile1);
+        file_writer1.write(testedStrings1.getBytes());
         file_writer1.close();
     }
 
     @After
     public void deleteTestFile()
     {
-        jsh.setcurrentDirectory(System.getProperty("user.dir"));
-        folder.delete();
+        // jsh.setcurrentDirectory(System.getProperty("user.dir"));
+        // folder.delete();
 
         File file = new File("cd_test.txt");
         file.delete();
@@ -63,11 +65,11 @@ public class LsTest {
         file1.delete();
     }
 
-    @Test
-    public void hi() throws Exception {
-        jsh.start("ls", System.out);
-        jsh.start("cd src ; ls", System.out);
-    }
+    // @Test
+    // public void hi() throws Exception {
+    //     jsh.start("ls", System.out);
+    //     jsh.start("cd src ; ls", System.out);
+    // }
     
     // ls no argument test
     @Test
@@ -86,19 +88,15 @@ public class LsTest {
         
         // obtaining expected files names
         for (File file : listOfFiles) {
-            if (!file.getName().startsWith(".")) 
-            {
                 listFiles.add(file.getName().toString());
-            }
         }
-        for (String fileName : files)
-        {
+        for (String fileName : files) {
             assertTrue("wrong files displayed", listFiles.contains(fileName));
         }
         scn.close();
     }
 
-    // ls one argument test
+    // ls one argument test (1)
     @Test
     public void lsWithOneArgument() throws Exception {
         Jsh jsh = new Jsh();
@@ -111,8 +109,7 @@ public class LsTest {
         jsh.start("ls src", out);
         Scanner scn = new Scanner(in);
         String[] files = scn.nextLine().split("\t");
-        for (String fileName : files)
-        {
+        for (String fileName : files) {
             assertTrue("wrong files displayed", folders.contains(fileName));
         }
         scn.close();
