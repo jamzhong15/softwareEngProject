@@ -2,24 +2,25 @@ package uk.ac.ucl.jsh;
 
 import static org.junit.Assert.assertEquals;
 
+<<<<<<< HEAD
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
+=======
+>>>>>>> f4b3b170a0085c31fe86f446a247b23def254c2b
 import java.io.IOException;
 import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
 import java.io.PrintStream;
 import java.util.Scanner;
 
-import org.hamcrest.CoreMatchers;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.rules.TemporaryFolder;
 
 public class HeadTest {
+<<<<<<< HEAD
 
     Jsh jsh = new Jsh();
 
@@ -208,4 +209,86 @@ public class HeadTest {
         jsh.start("_head", System.out);
         assertEquals("head: missing arguments\n", outContent.toString());
     }
+=======
+    // head 1 filename argument test  (something wrong here)
+    // @Test
+    // public void HeadOneFileNameArgumentTest() throws Exception {
+    //     PipedInputStream in = new PipedInputStream();
+    //     PipedOutputStream out;
+    //     out = new PipedOutputStream(in);
+    //     Jsh.start("head p.txt", out);
+    //     Scanner scn = new Scanner(in);
+    //     assertEquals("hello there", scn.nextLine());
+    //     scn.close();
+    // }
+
+    // @Rule
+    // public ExpectedException thrown = ExpectedException.none();
+
+    // // head no argument test
+    // @Test
+    // public void HeadMissingArgumentThrowsException() throws RuntimeException, IOException {
+    // PrintStream console = null;
+
+    // console = System.out;
+    // thrown.expect(RuntimeException.class);
+    // thrown.expectMessage("head: missing argument");
+    // Jsh.start("head", console);
+    // }
+
+    // // Head wrong no. of arguments
+    // @Test
+    // public void HeadWrongArgumentNumberThrowsException() throws RuntimeException, IOException {
+    //     PrintStream console = null;
+    
+    //     console = System.out;
+    //     thrown.expect(RuntimeException.class);
+    //     thrown.expectMessage("head: wrong arguments");
+    //     Jsh.start("head -n Dockerfile", console);
+    //     }
+    
+    // // head 3 argument but first one is not -n
+    // @Test
+    // public void HeadThreeArgumentsWithWrongFirstArgumentThrowsException() throws RuntimeException, IOException {
+    //     PrintStream console = null;
+    
+    //     console = System.out;
+    //     thrown.expect(RuntimeException.class);
+    //     thrown.expectMessage("head: wrong argument -s");
+    //     Jsh.start("head -s 3 Dockerfile", console);
+    //     }
+
+    // // head 3 argument but second argument is not number
+    // @Test
+    // public void HeadThreeArgumentsWithWrongSecondArgumentThrowsException() throws RuntimeException, IOException {
+    //     PrintStream console = null;
+    
+    //     console = System.out;
+    //     thrown.expect(RuntimeException.class);
+    //     thrown.expectMessage("head: wrong argument s");
+    //     Jsh.start("head -n s Dockerfile", console);
+    //     }
+
+    // // head file does not exist
+    // @Test
+    // public void HeadFileDoesNotExistThrowsException() throws RuntimeException, IOException {
+    //     PrintStream console = null;
+    
+    //     console = System.out;
+    //     thrown.expect(RuntimeException.class);
+    //     thrown.expectMessage("head: xxx does not exist");
+    //     Jsh.start("head -n 3 xxx", console);
+    //     }
+    
+    // // head cannot open file
+    // @Test
+    // public void HeadCannotOpenFileThrowsException() throws RuntimeException, IOException {
+    //     PrintStream console = null;
+    
+    //     console = System.out;
+    //     thrown.expect(RuntimeException.class);
+    //     thrown.expectMessage("head: cannot open target");
+    //     Jsh.start("head target", console);
+    //     }
+>>>>>>> f4b3b170a0085c31fe86f446a247b23def254c2b
 }
