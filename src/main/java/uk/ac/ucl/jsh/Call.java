@@ -27,7 +27,29 @@ public class Call implements Command {
         String appName = inputs.get(0);
         ArrayList<String> appArgs = new ArrayList<String>(inputs.subList(1, inputs.size()));
         
-        // Check for globbing
+        
+        for(int i = 0; i < appArgs.size(); i++)
+        {
+            String arg = appArgs.get(i);
+
+            // Check for globbing
+            if(arg.contains("*") && !appName.equals("find"))
+            {
+                Globbing glob = new Globbing();
+                ArrayList<String> expandedFiles = glob.expand(currentDirectory, arg);
+                appArgs.addAll(i, expandedFiles);
+                appArgs.remove(arg);
+                // Skip past the expanded files
+                i += expandedFiles.size();
+            }
+
+            // Check for double and single quotes
+            else if (arg.startsWith("\"") || arg.startsWith("\'")) 
+            {
+                appArgs.set(i, arg.substring(1, arg.length() - 1));
+            }
+        }
+
         for(int i = 0; i < appArgs.size(); i++)
         {
             String arg = appArgs.get(i);

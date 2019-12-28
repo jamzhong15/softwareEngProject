@@ -160,18 +160,12 @@ class echo implements AppCase {
         } else {
             for (int i = 0; i < appArgs.size() - 1; i++) {
                 String arg = appArgs.get(i);
-                if (arg.startsWith("\"")) {
-                    arg = arg.substring(1, arg.length() - 1);
-                }
                 writer.write(arg);
                 writer.write(" ");
                 writer.flush();
             }
 
             String lastArg = appArgs.get(appArgs.size() - 1);
-            if (lastArg.startsWith("\"")) {
-                lastArg = lastArg.substring(1, lastArg.length() - 1);
-            }
             writer.write(lastArg);
             writer.flush();
             writer.write(System.getProperty("line.separator"));
@@ -281,23 +275,17 @@ class tail implements AppCase {
             throws IOException {
         OutputStreamWriter writer = new OutputStreamWriter(output);
 
-        if (appArgs.isEmpty()) 
-        {
+        if (appArgs.isEmpty()) {
             BufferedWriter stdoutWriter = new BufferedWriter(new OutputStreamWriter(output));
-            if (input == null) 
-            {
+            if (input == null) {
                 throw new RuntimeException("tail: missing arguments");
-            }
-            else 
-            {
+            } else {
                 int tailLines = 10;
                 ArrayList<String> storage = new ArrayList<>();
                 BufferedReader stdinReader = new BufferedReader(new InputStreamReader(input));
-                for (int i = 0; i < tailLines; i++) 
-                {
+                for (int i = 0; i < tailLines; i++) {
                     String stringInStdin = null;
-                    while ((stringInStdin = stdinReader.readLine()) != null) 
-                    {
+                    while ((stringInStdin = stdinReader.readLine()) != null) {
                         storage.add(stringInStdin);
                     }
                     int index = 0;
@@ -348,9 +336,7 @@ class tail implements AppCase {
             } else {
                 throw new RuntimeException("tail: wrong arguments");
             }
-        }
-        else 
-        {
+        } else {
             if (appArgs.size() == 3 && !appArgs.get(0).equals("-n")) {
                 throw new RuntimeException("tail: wrong argument " + appArgs.get(0));
             }
@@ -596,7 +582,7 @@ class find implements AppCase {
 
             File currDir = new File(currentDirectory);
             String pattern = appArgs.get(1);
-
+            
             Globbing glob = new Globbing();
             glob.printFiles(currDir, currDir, pattern, output);
 
