@@ -59,6 +59,7 @@ public class Globbing
         }
     }
 
+    // Used for find command
     public void printFiles(File baseDirectory, File currDirectory, String pattern, OutputStream output) {
         // Create a matcher for glob patterns
         PathMatcher matcher = FileSystems.getDefault().getPathMatcher("glob:" + pattern);

@@ -54,45 +54,44 @@ public class GrepTest {
         jsh.setcurrentDirectory(System.getProperty("user.dir"));
     }
 
-    // grep with 2 arguments
-//     @Test
-//     public void GrepWIthTwoArgumentsTest() throws Exception {
-//         Jsh jsh = new Jsh();
-//         PipedInputStream in = new PipedInputStream();
-//         PipedOutputStream out;
-//         out = new PipedOutputStream(in);
-//         jsh.start("grep pwd test", out);
-//         Scanner scn = new Scanner(in);
-//         assertEquals("JSH_ROOT=\"$( cd \"$( dirname \"${BASH_SOURCE[0]}\" )\" >/dev/null 2>&1 && pwd )\"", scn.nextLine());
-//         scn.close();
-//     }
+    //grep with 2 arguments
+    @Test
+    public void GrepWIthTwoArgumentsTest() throws Exception {
+        Jsh jsh = new Jsh();
+        PipedInputStream in = new PipedInputStream();
+        PipedOutputStream out;
+        out = new PipedOutputStream(in);
+        jsh.start("grep pwd test", out);
+        Scanner scn = new Scanner(in);
+        assertEquals("JSH_ROOT=\"$( cd \"$( dirname \"${BASH_SOURCE[0]}\" )\" >/dev/null 2>&1 && pwd )\"", scn.nextLine());
+        scn.close();
+    }
 
-//     // grep with 1 argument (match argument with standin)
-//     @Test
-//     public void GrepWithOneArgumentTest() throws Exception {
-//         Jsh jsh = new Jsh();
-//         PipedInputStream in = new PipedInputStream();
-//         PipedOutputStream out;
-//         out = new PipedOutputStream(in);
-//         jsh.start("cat test | grep JSH_ROOT", out);
-//         Scanner scn = new Scanner(in);
-//         assertEquals("JSH_ROOT=\"$( cd \"$( dirname \"${BASH_SOURCE[0]}\" )\" >/dev/null 2>&1 && pwd )\"", scn.nextLine());
-//         scn.close();
-//     }
+    // grep with 1 argument (match argument with standin)
+    @Test
+    public void GrepWithOneArgumentTest() throws Exception {
+        Jsh jsh = new Jsh();
+        PipedInputStream in = new PipedInputStream();
+        PipedOutputStream out;
+        out = new PipedOutputStream(in);
+        jsh.start("cat test | grep JSH_ROOT", out);
+        Scanner scn = new Scanner(in);
+        assertEquals("JSH_ROOT=\"$( cd \"$( dirname \"${BASH_SOURCE[0]}\" )\" >/dev/null 2>&1 && pwd )\"", scn.nextLine());
+        scn.close();
+    }
 
-//     @Rule
-//     public ExpectedException thrown = ExpectedException.none();
+    @Rule
+    public ExpectedException thrown = ExpectedException.none();
 
-//     // wrong file argument
-//     @Test
-//     public void GrepWrongFileArgumentTest() throws Exception {
-//         Jsh jsh = new Jsh();
-//         thrown.expect(RuntimeException.class);
-//         thrown.expectMessage(CoreMatchers.equalTo("grep: wrong file argument"));
-//         jsh.start("grep xx xx", System.out);
-//     }
+    // wrong file argument
+    @Test
+    public void GrepWrongFileArgumentTest() throws Exception {
+        Jsh jsh = new Jsh();
+        thrown.expect(RuntimeException.class);
+        thrown.expectMessage(CoreMatchers.equalTo("grep: wrong file argument"));
+        jsh.start("grep xx xx", System.out);
+    }
 
-<<<<<<< HEAD
     // missing arguments
     @Test
     public void GrepMissingArgumentTest() throws Exception {
@@ -101,16 +100,6 @@ public class GrepTest {
         thrown.expectMessage(CoreMatchers.equalTo("grep: missing arguments"));
         jsh.start("grep", System.out);
     }
-=======
-//    // missing arguments
-//     @Test
-//     public void GrepMissingArgumentTest() throws Exception {
-//         Jsh jsh = new Jsh();
-//         thrown.expect(RuntimeException.class);
-//         thrown.expectMessage(CoreMatchers.equalTo("grep: missing arguments"));
-//         jsh.start("grep", System.out);
-//     }
->>>>>>> f4b3b170a0085c31fe86f446a247b23def254c2b
 
     // cannot open file 2
     @Test
