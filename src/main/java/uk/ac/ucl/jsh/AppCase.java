@@ -160,18 +160,12 @@ class echo implements AppCase {
         } else {
             for (int i = 0; i < appArgs.size() - 1; i++) {
                 String arg = appArgs.get(i);
-                if (arg.startsWith("\"") || arg.startsWith("\'")) {
-                    arg = arg.substring(1, arg.length() - 1);
-                }
                 writer.write(arg);
                 writer.write(" ");
                 writer.flush();
             }
 
             String lastArg = appArgs.get(appArgs.size() - 1);
-            if (lastArg.startsWith("\"") || lastArg.startsWith("\'")) {
-                lastArg = lastArg.substring(1, lastArg.length() - 1);
-            }
             writer.write(lastArg);
             writer.flush();
             writer.write(System.getProperty("line.separator"));
@@ -589,10 +583,6 @@ class find implements AppCase {
             File currDir = new File(currentDirectory);
             String pattern = appArgs.get(1);
             
-            if (pattern.startsWith("\"") || pattern.startsWith("\'")) {
-                pattern = pattern.substring(1, pattern.length() - 1);
-            }
-            
             Globbing glob = new Globbing();
             glob.printFiles(currDir, currDir, pattern, output);
 
@@ -603,10 +593,6 @@ class find implements AppCase {
             File baseDir = new File(currentDirectory);
             File currDir = new File(appArgs.get(0));
             String pattern = appArgs.get(2);
-
-            if (pattern.startsWith("\"") || pattern.startsWith("\'")) {
-                pattern = pattern.substring(1, pattern.length() - 1);
-            }
 
             Globbing glob = new Globbing();
             glob.printFiles(baseDir, currDir, pattern, output);

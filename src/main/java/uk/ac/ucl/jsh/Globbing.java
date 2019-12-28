@@ -14,12 +14,18 @@ public class Globbing
 {
     ArrayList<String> matchedFiles = new ArrayList<>();
 
-    public ArrayList<String> expand(String directory, String pattern)
+    public ArrayList<String> expand(String directory, String argument)
     {
-        pattern = directory + "/" + pattern;
+        String pattern = directory + "/" + argument;
         File dir = new File(directory);
 
         findFiles(dir, dir, pattern);
+
+        //Add the original argument if none matched
+        if(matchedFiles.size() == 0)
+        {
+            matchedFiles.add(argument);
+        }
 
         return matchedFiles;
     }
@@ -53,6 +59,7 @@ public class Globbing
         }
     }
 
+    // Used for find command
     public void printFiles(File baseDirectory, File currDirectory, String pattern, OutputStream output) {
         // Create a matcher for glob patterns
         PathMatcher matcher = FileSystems.getDefault().getPathMatcher("glob:" + pattern);
@@ -65,9 +72,9 @@ public class Globbing
             }
         } else if (matcher.matches(currDirectory.toPath().getFileName())) {
             // Write the relative pathname of the file if it matches the pattern
-            OutputStreamWriter writer = new OutputStreamWriter(output);
-
             try {
+                OutputStreamWriter writer = new OutputStreamWriter(output);
+
                 String base = baseDirectory.getCanonicalPath();
                 String current = currDirectory.getCanonicalPath();
                 String relative = current.substring(base.length());
