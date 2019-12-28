@@ -287,7 +287,6 @@ class tail implements AppCase {
             if (input == null) 
             {
                 throw new RuntimeException("tail: missing arguments");
-<<<<<<< HEAD
             }
             else 
             {
@@ -299,15 +298,6 @@ class tail implements AppCase {
                     String stringInStdin = null;
                     while ((stringInStdin = stdinReader.readLine()) != null) 
                     {
-=======
-            } else {
-                int tailLines = 10;
-                ArrayList<String> storage = new ArrayList<>();
-                BufferedReader stdinReader = new BufferedReader(new InputStreamReader(input));
-                for (int i = 0; i < tailLines; i++) {
-                    String stringInStdin = null;
-                    while ((stringInStdin = stdinReader.readLine()) != null) {
->>>>>>> james
                         storage.add(stringInStdin);
                     }
                     int index = 0;
@@ -358,13 +348,9 @@ class tail implements AppCase {
             } else {
                 throw new RuntimeException("tail: wrong arguments");
             }
-<<<<<<< HEAD
         }
         else 
         {
-=======
-        } else {
->>>>>>> james
             if (appArgs.size() == 3 && !appArgs.get(0).equals("-n")) {
                 throw new RuntimeException("tail: wrong argument " + appArgs.get(0));
             }
