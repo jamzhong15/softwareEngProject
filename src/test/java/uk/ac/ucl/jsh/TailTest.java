@@ -56,6 +56,8 @@ public class TailTest {
         String testedStrings12 = "9 line\n";
         String testedStrings13 = "10 line\n";
         String testedStrings14 = "11 line\n";
+        String testedStrings15 = "12 line\n";
+
 
         FileOutputStream file_writer1 = new FileOutputStream(tail_test_File1);
         file_writer1.write(testedStrings4.getBytes());
@@ -69,6 +71,8 @@ public class TailTest {
         file_writer1.write(testedStrings12.getBytes());
         file_writer1.write(testedStrings13.getBytes());
         file_writer1.write(testedStrings14.getBytes());
+        file_writer1.write(testedStrings15.getBytes());
+
 
         file_writer1.close();
     }
@@ -125,7 +129,7 @@ public class TailTest {
             out = new PipedOutputStream(in);
             jsh.start("tail -n 11 tail_test1.txt", out);
             Scanner scn = new Scanner(in);
-            assertEquals("1 line", scn.nextLine());
+            // assertEquals("1 line", scn.nextLine());
             assertEquals("2 line", scn.nextLine());
             assertEquals("3 line", scn.nextLine());
             scn.close();
@@ -147,9 +151,26 @@ public class TailTest {
         scn.close();
     }
 
-    // tail stdin 2 arguments test
+    // tail stdin 2 arguments test (tailline > storage.size)
     @Test
-    public void TailStdinVersionTwoArgumentsTest() throws Exception
+    public void TailStdinVersionTwoArgumentsTest1() throws Exception
+    {
+        Jsh jsh = new Jsh();
+
+        PipedInputStream in = new PipedInputStream();
+        PipedOutputStream out;
+        out = new PipedOutputStream(in);
+        jsh.start("cat tail_test.txt | tail -n 10", out);
+        Scanner scn = new Scanner(in);
+        assertEquals("first line", scn.nextLine());
+        assertEquals("second line", scn.nextLine());
+        assertEquals("third line", scn.nextLine());
+        scn.close();
+        }
+
+    // tail stdin 2 arguments test (tailline < storage.size)
+    @Test
+    public void TailStdinVersionTwoArgumentsTest2() throws Exception
     {
         Jsh jsh = new Jsh();
 
@@ -163,7 +184,7 @@ public class TailTest {
         scn.close();
     }
 
-    // tail stdin no argument test
+    // tail stdin no argument test (tailline > storage.size)
     @Test
     public void TailStdinVersionNoArgumentsTest() throws Exception {
         Jsh jsh = new Jsh();
@@ -179,7 +200,7 @@ public class TailTest {
         scn.close();
     }
 
-    // tail tailline < storage.size test
+    // tail stdin no argument test (tailline < storage.size)
     @Test
     public void TailStdinVersionTaillineLessThanStorageSizeTest() throws Exception {
         Jsh jsh = new Jsh();
@@ -187,11 +208,19 @@ public class TailTest {
         PipedInputStream in = new PipedInputStream();
         PipedOutputStream out;
         out = new PipedOutputStream(in);
-        jsh.start("cat tail_test1.txt | tail -n 11", out);
+        jsh.start("cat tail_test1.txt | tail", out);
         Scanner scn = new Scanner(in);
-        assertEquals("1 line", scn.nextLine());
-        assertEquals("2 line", scn.nextLine());
         assertEquals("3 line", scn.nextLine());
+        assertEquals("4 line", scn.nextLine());
+        assertEquals("5 line", scn.nextLine());
+        assertEquals("6 line", scn.nextLine());
+        assertEquals("7 line", scn.nextLine());
+        assertEquals("8 line", scn.nextLine());
+        assertEquals("9 line", scn.nextLine());
+        assertEquals("10 line", scn.nextLine());
+        assertEquals("11 line", scn.nextLine());
+        assertEquals("12 line", scn.nextLine());
+
         scn.close();
     }
 
