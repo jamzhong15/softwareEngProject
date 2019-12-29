@@ -1,6 +1,8 @@
 package uk.ac.ucl.jsh;
 
 import java.util.ArrayList;
+import java.util.List;
+
 import org.antlr.v4.runtime.tree.ParseTree;
 
 public class CmdVisitor extends CmdGrammarBaseVisitor<Command> 
@@ -9,11 +11,35 @@ public class CmdVisitor extends CmdGrammarBaseVisitor<Command>
     public Command visitCall(final CmdGrammarParser.CallContext ctx)
     {
         ArrayList<String> tokens = new ArrayList<>();
-        ParseTree argumentTree = ctx.getChild(0);
-        
-        for (int i = 0; i < argumentTree.getChildCount(); i++) {
-            tokens.add(argumentTree.getChild(i).getText());
+
+        List<ParseTree> allChildrenTree = ctx.children;
+
+        for (ParseTree childTree : allChildrenTree)
+        {
+            for (int i = 0 ; i < childTree.getChildCount(); i++)
+            {
+                ParseTree deeperChildTree = childTree.getChild(i);
+                if (deeperChildTree.getChildCount() > 1)
+                {
+                    for (int n = 0 ; n < deeperChildTree.getChildCount() ; n++)
+                    {
+                        ParseTree evenDeeperChildTree = deeperChildTree.getChild(n);
+                        tokens.add(evenDeeperChildTree.getText());
+                    }
+                }
+                else
+                {
+                    tokens.add(deeperChildTree.getText());
+                }
+            }
         }
+
+        // ParseTree argumentTree = ctx.getChild(0);
+        // for (int i = 0; i < argumentTree.getChildCount(); i++) 
+        // {
+        //     tokens.add(argumentTree.getChild(i).getText());
+        // }
+
         Call call = new Call(tokens);
         return call;
     }
