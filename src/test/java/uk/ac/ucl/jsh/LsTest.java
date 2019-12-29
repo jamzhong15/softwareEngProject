@@ -27,13 +27,13 @@ public class LsTest {
     @Before
     public void buildTestFile() throws IOException
     {
-        // jsh.setcurrentDirectory(folder.getRoot().getAbsolutePath());
-        // File src_folder = folder.newFolder("hi");
-        // File test_folder = folder.newFolder("src", "test");
-        // File main_folder = folder.newFolder("src", "main");
-        // src_folder.mkdirs();
-        // test_folder.mkdirs();
-        // main_folder.mkdirs();
+        jsh.setcurrentDirectory(folder.getRoot().getAbsolutePath());
+        File src_folder = folder.newFolder("src");
+        File test_folder = folder.newFolder("src", "test");
+        File main_folder = folder.newFolder("src", "main");
+        src_folder.mkdirs();
+        test_folder.mkdirs();
+        main_folder.mkdirs();
 
 
         String absoluteFilePath = System.getProperty("user.dir") + File.separator + "cd_test.txt";
@@ -55,8 +55,8 @@ public class LsTest {
     @After
     public void deleteTestFile()
     {
-        // jsh.setcurrentDirectory(System.getProperty("user.dir"));
-        // folder.delete();
+        jsh.setcurrentDirectory(System.getProperty("user.dir"));
+        folder.delete();
 
         File file = new File("cd_test.txt");
         file.delete();
