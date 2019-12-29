@@ -14,7 +14,7 @@ import org.junit.rules.ExpectedException;
 public class SeqTest {
     // sequence normal work test
     @Test
-    public void SeqNormalTest() throws Exception {
+    public void SeqNmvnormalTest() throws Exception {
         Jsh jsh = new Jsh();
         ByteArrayOutputStream outContent = new ByteArrayOutputStream();
         System.setOut(new PrintStream(outContent));

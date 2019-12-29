@@ -96,7 +96,7 @@ public class LsTest {
         scn.close();
     }
 
-    // ls one argument test (1)
+    //ls one argument test
     @Test
     public void lsWithOneArgument() throws Exception {
         Jsh jsh = new Jsh();
