@@ -14,22 +14,33 @@ public class CmdVisitor extends CmdGrammarBaseVisitor<Command>
 
         List<ParseTree> allChildrenTree = ctx.children;
 
-        for (ParseTree childTree : allChildrenTree)
+        for (ParseTree argument_atom_tree : allChildrenTree)
         {
-            for (int i = 0 ; i < childTree.getChildCount(); i++)
+            for (int i = 0 ; i < argument_atom_tree.getChildCount(); i++)
             {
-                ParseTree deeperChildTree = childTree.getChild(i);
-                if (deeperChildTree.getChildCount() > 1)
+                ParseTree unquoted_redirection_tree = argument_atom_tree.getChild(i);
+                if (unquoted_redirection_tree.getChildCount() > 1)
                 {
-                    for (int n = 0 ; n < deeperChildTree.getChildCount() ; n++)
+                    for (int n = 0 ; n < unquoted_redirection_tree.getChildCount() ; n++)
                     {
-                        ParseTree evenDeeperChildTree = deeperChildTree.getChild(n);
-                        tokens.add(evenDeeperChildTree.getText());
+                        ParseTree redirection_argument_tree = unquoted_redirection_tree.getChild(n);
+                        if (redirection_argument_tree.getChildCount() > 1)
+                        {
+                            for (int q = 0 ; q < redirection_argument_tree.getChildCount() ; q++)
+                            {
+                                ParseTree quoted_unquoted_argument_tree = redirection_argument_tree.getChild(q);
+                                tokens.add(quoted_unquoted_argument_tree.getText());
+                            }
+                        }
+                        else
+                        {
+                            tokens.add(redirection_argument_tree.getText());
+                        }
                     }
                 }
                 else
                 {
-                    tokens.add(deeperChildTree.getText());
+                    tokens.add(unquoted_redirection_tree.getText());
                 }
             }
         }

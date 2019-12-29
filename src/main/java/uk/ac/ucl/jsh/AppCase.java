@@ -91,7 +91,6 @@ class ls implements AppCase {
             throw new RuntimeException("ls: no such directory");
         }
     }
-
 }
 
 class cat implements AppCase {
@@ -112,7 +111,7 @@ class cat implements AppCase {
             if (input == null) {
                 throw new RuntimeException("cat: missing arguments");
             } else {
-                BufferedReader stdinReader = new BufferedReader(new InputStreamReader(input));
+                BufferedReader stdinReader = new BufferedReader(new InputStreamReader(input, StandardCharsets.UTF_8));
                 String stringInStdin = null;
                 while ((stringInStdin = stdinReader.readLine()) != null) {
                     stdoutWriter.write(String.valueOf(stringInStdin));
@@ -141,9 +140,7 @@ class cat implements AppCase {
                     throw new RuntimeException("cat: file does not exist");
                 }
             }
-
         }
-
     }
 }
 
@@ -185,7 +182,7 @@ class head implements AppCase {
                 throw new RuntimeException("head: missing arguments");
             } else {
                 int headLines = 10;
-                BufferedReader stdinReader = new BufferedReader(new InputStreamReader(input));
+                BufferedReader stdinReader = new BufferedReader(new InputStreamReader(input, StandardCharsets.UTF_8));
                 String stringInStdin = null;
                 for (int i = 0; i < headLines; i++) {
                     if ((stringInStdin = stdinReader.readLine()) != null) {
@@ -212,7 +209,7 @@ class head implements AppCase {
                     } catch (Exception e) {
                         throw new RuntimeException("head: wrong argument " + appArgs.get(1));
                     }
-                    BufferedReader stdinReader = new BufferedReader(new InputStreamReader(input));
+                    BufferedReader stdinReader = new BufferedReader(new InputStreamReader(input, StandardCharsets.UTF_8));
                     for (int i = 0; i < headLines; i++) {
                         String stringInStdin = null;
                         if ((stringInStdin = stdinReader.readLine()) != null) {
@@ -281,7 +278,7 @@ class tail implements AppCase {
             } else {
                 int tailLines = 10;
                 ArrayList<String> storage = new ArrayList<>();
-                BufferedReader stdinReader = new BufferedReader(new InputStreamReader(input));
+                BufferedReader stdinReader = new BufferedReader(new InputStreamReader(input, StandardCharsets.UTF_8));
                 for (int i = 0; i < tailLines; i++) {
                     String stringInStdin = null;
                     while ((stringInStdin = stdinReader.readLine()) != null) {
@@ -316,7 +313,7 @@ class tail implements AppCase {
                     }
 
                     ArrayList<String> storage = new ArrayList<>();
-                    BufferedReader stdinReader = new BufferedReader(new InputStreamReader(input));
+                    BufferedReader stdinReader = new BufferedReader(new InputStreamReader(input, StandardCharsets.UTF_8));
                     String stringInStdin = null;
                     while ((stringInStdin = stdinReader.readLine()) != null) {
                         storage.add(stringInStdin);
@@ -396,7 +393,7 @@ class grep implements AppCase {
         // Reading from stdin
         if (appArgs.size() == 1) {
             Pattern grepPattern = Pattern.compile(appArgs.get(0));
-            try (BufferedReader reader = new BufferedReader(new InputStreamReader(input))) {
+            try (BufferedReader reader = new BufferedReader(new InputStreamReader(input, StandardCharsets.UTF_8))) {
                 String line = null;
                 while ((line = reader.readLine()) != null) {
                     Matcher matcher = grepPattern.matcher(line);
@@ -619,7 +616,7 @@ class wc implements AppCase {
             if (!appArgs.isEmpty()) {
                 command = appArgs.get(0);
             }
-            try (BufferedReader reader = new BufferedReader(new InputStreamReader(input))) {
+            try (BufferedReader reader = new BufferedReader(new InputStreamReader(input, StandardCharsets.UTF_8))) {
                 String line = null;
                 while ((line = reader.readLine()) != null) {
                     lineCount++;

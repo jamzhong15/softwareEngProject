@@ -1,6 +1,7 @@
 package uk.ac.ucl.jsh;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -25,7 +26,6 @@ public class Call implements Command {
         Stack <InputStream> stdin = jsh.getStackInputStream();
         Stack <OutputStream> stdout = jsh.getStackOutputStream();
 
-
         String appName = inputs.get(0);
         ArrayList<String> appArgs = new ArrayList<String>(inputs.subList(1, inputs.size()));
         
@@ -36,20 +36,14 @@ public class Call implements Command {
         */
         if (appArgs.contains(">"))
         {
-            for (String str : appArgs)
-            {
-                System.out.print(str + "\t");
-            }
-            System.out.println();
-            System.out.println("outputStream redirection");
-            String fileName = appArgs.get(appArgs.indexOf(">") + 1);
-            FileOutputStream fileWriter = new FileOutputStream(currentDirectory + File.separator + fileName);
-
-            ArrayList<String> cmdArgs = new ArrayList<String>(appArgs.subList(0, appArgs.indexOf(">")));
-            executeCmd(appName, cmdArgs, currentDirectory, stdin.pop(), fileWriter);
-
+            outputstreamRedirection(appName, appArgs, currentDirectory);            
+        }
+        else if (appArgs.contains("<"))
+        {
+            inputStreamRedirection(appName, appArgs, currentDirectory);
         }
         else
+        //normal execution of commands
         {
             for(int i = 0; i < appArgs.size(); i++)
             {
@@ -72,18 +66,6 @@ public class Call implements Command {
                     appArgs.set(i, arg.substring(1, arg.length() - 1));
                 }
             }
-
-            for(int i = 0; i < appArgs.size(); i++)
-            {
-                String arg = appArgs.get(i);
-                if(arg.contains("*") && !appName.equals("find"))
-                {
-                    Globbing glob = new Globbing();
-                    appArgs.addAll(i, glob.expand(currentDirectory, arg));
-                    appArgs.remove(arg);
-                }
-            }
-
             executeCmd(appName, appArgs, currentDirectory, stdin.pop(), stdout.pop());
         }
         
@@ -101,6 +83,69 @@ public class Call implements Command {
         {
             AppCase app = AppFactory.createApp(appName);
             app.runCommand(appArgs, currentDirectory, stdin, stdout);
+        }
+    }
+
+    public void outputstreamRedirection(String appName, ArrayList<String> appArgs, String currentDirectory) throws IOException
+    {
+        int outRedirIndex = appArgs.indexOf(">");
+        ArrayList<String> fileNames = new ArrayList<String>(appArgs.subList(outRedirIndex + 1, appArgs.size()));
+
+        for (int i = 0; i < fileNames.size(); i++)
+        {
+            String fileName = fileNames.get(i);
+            if(fileName.contains("*"))
+            {
+                Globbing glob = new Globbing();
+                ArrayList<String> expandedFiles = glob.expand(currentDirectory, fileName);
+                fileNames.addAll(i, expandedFiles);
+                fileNames.remove(fileName);
+                // Skip past the expanded files
+                i += expandedFiles.size();
+            }                
+        }
+        
+        ArrayList<String> cmdArgs = new ArrayList<String>(appArgs.subList(0, outRedirIndex));
+        // open file output stream for each file directed
+        for (String fileName : fileNames)
+        {
+            FileOutputStream fileWriter = new FileOutputStream(currentDirectory + File.separator + fileName);
+            executeCmd(appName, cmdArgs, currentDirectory, null, fileWriter);
+        }
+    }
+
+    public void inputStreamRedirection(String appName, ArrayList<String> appArgs, String currentDirectory) throws IOException
+    {
+        System.out.println("appArgs number = "+appArgs.size());
+        for (String str : appArgs)
+        {
+            System.out.print(str + "\t");
+        }
+        System.out.println();
+        System.out.println("inputStream redirection");
+
+        int outRedirIndex = appArgs.indexOf("<");
+        ArrayList<String> fileNames = new ArrayList<String>(appArgs.subList(outRedirIndex + 1, appArgs.size()));
+
+        for (int i = 0; i < fileNames.size(); i++)
+        {
+            String fileName = fileNames.get(i);
+            if(fileName.contains("*"))
+            {
+                Globbing glob = new Globbing();
+                ArrayList<String> expandedFiles = glob.expand(currentDirectory, fileName);
+                fileNames.addAll(i, expandedFiles);
+                fileNames.remove(fileName);
+                // Skip past the expanded files
+                i += expandedFiles.size();
+            }                
+        }
+
+        ArrayList<String> cmdArgs = new ArrayList<String>(appArgs.subList(0, outRedirIndex));
+        for (String fileName : fileNames)
+        {
+            FileInputStream fileReader = new FileInputStream(currentDirectory + File.separator + fileName);
+            executeCmd(appName, cmdArgs, currentDirectory, fileReader, System.out);
         }
     }
 }
