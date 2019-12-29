@@ -16,7 +16,6 @@ import java.io.IOException;
 import java.io.PrintStream;
 
 public class CdTest {
-<<<<<<< HEAD
 
     Jsh jsh = new Jsh();
 
@@ -74,8 +73,6 @@ public class CdTest {
         assertEquals(expected, jsh.getcurrentDirectory());
     }
 
-=======
->>>>>>> f4b3b170a0085c31fe86f446a247b23def254c2b
     @Rule
     public ExpectedException thrown = ExpectedException.none();
 
@@ -88,7 +85,6 @@ public class CdTest {
         jsh.start("cd", console);
     }
 
-<<<<<<< HEAD
     // cd too many arguments test 
     @Test
     public void cdTooManyArgumentsThrowsException() throws RuntimeException, IOException {
@@ -118,30 +114,4 @@ public class CdTest {
         thrown.expectMessage(CoreMatchers.equalTo("cd: cd_test.txt is not an existing directory"));
         jsh.start("cd cd_test.txt", console);
     }
-=======
-    // // cd too many arguments test 
-    // @Test
-    // public void cdTooManyArgumentsThrowsException() throws RuntimeException, IOException {
-    //     PrintStream console = null;
-    //     Jsh jsh = new Jsh();
-
-    //     console = System.out; 
-    //     thrown.expect(RuntimeException.class);
-    //     thrown.expectMessage(CoreMatchers.equalTo("cd: too many arguments"));
-    //     jsh.start("cd arg1 arg2", console);
-    // }
-
-    // // cd cannot find directory
-    // @Test
-    // public void cdNoExistingDirectoryThrowsException() throws RuntimeException, IOException {
-    //     Jsh jsh = new Jsh();
-    //     PrintStream console = null;
-
-    //     console = System.out;
-    //     thrown.expect(RuntimeException.class);
-    //     thrown.expectMessage(CoreMatchers.equalTo("cd: xxx is not an existing directory"));
-
-    //     jsh.start("cd xxx", console);
-    // }
->>>>>>> f4b3b170a0085c31fe86f446a247b23def254c2b
 }

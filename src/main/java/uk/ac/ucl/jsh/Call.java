@@ -39,11 +39,9 @@ public class Call implements Command {
                 ArrayList<String> expandedFiles = glob.expand(currentDirectory, arg);
                 appArgs.addAll(i, expandedFiles);
                 appArgs.remove(arg);
-                System.out.println(i);
 
                 // Skip past the expanded files
                 i += expandedFiles.size();
-                System.out.println(i);
             }
 
             // Check for double and single quotes
@@ -52,18 +50,6 @@ public class Call implements Command {
                 appArgs.set(i, arg.substring(1, arg.length() - 1));
             }
         }
-
-        for(int i = 0; i < appArgs.size(); i++)
-        {
-            String arg = appArgs.get(i);
-            if(arg.contains("*") && !appName.equals("find"))
-            {
-                Globbing glob = new Globbing();
-                appArgs.addAll(i, glob.expand(currentDirectory, arg));
-                appArgs.remove(arg);
-            }
-        }
-
         
 
         if (appName.charAt(0) == '_') 

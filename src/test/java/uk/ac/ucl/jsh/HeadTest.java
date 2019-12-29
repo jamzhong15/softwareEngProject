@@ -12,8 +12,8 @@ import java.io.PrintStream;
 import java.util.Scanner;
 
 import org.hamcrest.CoreMatchers;
-import org.junit.BeforeClass;
 import org.junit.After;
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -26,7 +26,7 @@ public class HeadTest {
     @Rule
     public TemporaryFolder folder = new TemporaryFolder();
 
-    @BeforeClass
+    @Before
     public void buildTestFile() throws IOException
     {
         jsh.setcurrentDirectory(folder.getRoot().getAbsolutePath());
