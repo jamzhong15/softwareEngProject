@@ -119,16 +119,6 @@ public class HeadTest {
         jsh.start("head", console);
     }
 
-    // head arguments more than 3
-    @Test
-    public void HeadMoreThanThreeArgsThrowsException() throws RuntimeException, IOException {
-        PrintStream console = null;
-        console = System.out;
-        thrown.expect(RuntimeException.class);
-        thrown.expectMessage(CoreMatchers.equalTo("head: wrong arguments"));
-        jsh.start("head x x x x", console);
-    }
-
     // Head wrong no. of arguments
     @Test
     public void HeadWrongArgumentNumberThrowsException() throws RuntimeException, IOException {
