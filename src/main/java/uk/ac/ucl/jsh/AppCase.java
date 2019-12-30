@@ -241,18 +241,18 @@ class head implements AppCase {
 
         else {
             int headLines = 10;
-            int argIndex = 0;
+            int fileIndex = 0;
             if (appArgs.get(0).equals("-n")) {
                 try {
                     headLines = Integer.parseInt(appArgs.get(1));
                 } catch (Exception e) {
                     throw new RuntimeException("head: wrong argument " + appArgs.get(1));
                 }
-                argIndex = 2;
+                fileIndex = 2;
             }
 
-            for (; argIndex < appArgs.size(); argIndex++) {
-                String headArg = appArgs.get(argIndex);
+            for (; fileIndex < appArgs.size(); fileIndex++) {
+                String headArg = appArgs.get(fileIndex);
                 File headFile = new File(currentDirectory + File.separator + headArg);
                 if (headFile.exists()) {
                     Charset encoding = StandardCharsets.UTF_8;
