@@ -24,6 +24,7 @@ public interface AppCase {
 }
 
 class cd implements AppCase {
+
     @Override
     public void runCommand(ArrayList<String> appArgs, String currentDirectory, InputStream input, OutputStream output)
             throws IOException {
@@ -62,18 +63,33 @@ class ls implements AppCase {
     public void runCommand(ArrayList<String> appArgs, String currentDirectory, InputStream input, OutputStream output)
             throws IOException {
 
-        OutputStreamWriter writer = new OutputStreamWriter(output);
-
         File currDir;
+
         if (appArgs.isEmpty()) {
             currDir = new File(currentDirectory);
+            listFiles(currDir, output);
         } else if (appArgs.size() == 1) {
-            currDir = new File(appArgs.get(0));
+            currDir = new File(currentDirectory + "/" + appArgs.get(0));
+            listFiles(currDir, output);
         } else {
-            throw new RuntimeException("ls: too many arguments");
+            for (String arg : appArgs) {
+                OutputStreamWriter writer = new OutputStreamWriter(output);
+                currDir = new File(currentDirectory + "/" + arg);
+                if (currDir.isDirectory()) {
+                    writer.write(arg + ":\n");
+                    writer.flush();
+                    listFiles(currDir, output);
+                }
+            }
         }
+
+    }
+
+    private void listFiles(File dir, OutputStream output) throws IOException {
+        OutputStreamWriter writer = new OutputStreamWriter(output);
+
         try {
-            File[] listOfFiles = currDir.listFiles();
+            File[] listOfFiles = dir.listFiles();
             boolean atLeastOnePrinted = false;
             for (File file : listOfFiles) {
                 if (!file.getName().startsWith(".")) {
@@ -88,7 +104,7 @@ class ls implements AppCase {
                 writer.flush();
             }
         } catch (NullPointerException e) {
-            throw new RuntimeException("ls: no such directory");
+            throw new RuntimeException("ls: not an existing directory");
         }
     }
 
@@ -178,7 +194,9 @@ class head implements AppCase {
     @Override
     public void runCommand(ArrayList<String> appArgs, String currentDirectory, InputStream input, OutputStream output)
             throws IOException {
+
         OutputStreamWriter writer = new OutputStreamWriter(output);
+
         if (appArgs.isEmpty()) {
             BufferedWriter stdoutWriter = new BufferedWriter(new OutputStreamWriter(output));
             if (input == null) {
@@ -197,74 +215,68 @@ class head implements AppCase {
             }
         }
 
-        else if (appArgs.size() != 1 && appArgs.size() != 3) {
+        else if (appArgs.size() == 2 && appArgs.get(0).equals("-n")) {
+            int headLines = 10;
             BufferedWriter stdoutWriter = new BufferedWriter(new OutputStreamWriter(output));
-            int headLines = 10;
-            if (appArgs.size() == 2) {
-                if (input == null) {
-                    throw new RuntimeException("head: wrong arguments");
-                } else {
-                    if (!appArgs.get(0).equals("-n")) {
-                        throw new RuntimeException("head: wrong argument " + appArgs.get(0));
-                    }
-                    try {
-                        headLines = Integer.parseInt(appArgs.get(1));
-                    } catch (Exception e) {
-                        throw new RuntimeException("head: wrong argument " + appArgs.get(1));
-                    }
-                    BufferedReader stdinReader = new BufferedReader(new InputStreamReader(input));
-                    for (int i = 0; i < headLines; i++) {
-                        String stringInStdin = null;
-                        if ((stringInStdin = stdinReader.readLine()) != null) {
-                            stdoutWriter.write(stringInStdin);
-                            stdoutWriter.write(System.getProperty("line.separator"));
-                            stdoutWriter.flush();
-                        }
-                    }
-                }
-            } else {
-                throw new RuntimeException("head: wrong arguments");
-            }
-        }
 
-        else {
-            if (appArgs.size() == 3 && !appArgs.get(0).equals("-n")) {
-                throw new RuntimeException("head: wrong argument " + appArgs.get(0));
-            }
-            int headLines = 10;
-            String headArg;
-            if (appArgs.size() == 3) {
+            if (input == null) {
+                throw new RuntimeException("head: wrong arguments");
+            } else {
                 try {
                     headLines = Integer.parseInt(appArgs.get(1));
                 } catch (Exception e) {
                     throw new RuntimeException("head: wrong argument " + appArgs.get(1));
                 }
-                headArg = appArgs.get(2);
-            } else {
-                headArg = appArgs.get(0);
-            }
-            File headFile = new File(currentDirectory + File.separator + headArg);
-            if (headFile.exists()) {
-                Charset encoding = StandardCharsets.UTF_8;
-                Path filePath = Paths.get((String) currentDirectory + File.separator + headArg);
-                try (BufferedReader reader = Files.newBufferedReader(filePath, encoding)) {
-                    for (int i = 0; i < headLines; i++) {
-                        String line = null;
-                        if ((line = reader.readLine()) != null) {
-                            writer.write(line);
-                            writer.write(System.getProperty("line.separator"));
-                            writer.flush();
-                        }
+                BufferedReader stdinReader = new BufferedReader(new InputStreamReader(input));
+                for (int i = 0; i < headLines; i++) {
+                    String stringInStdin = null;
+                    if ((stringInStdin = stdinReader.readLine()) != null) {
+                        stdoutWriter.write(stringInStdin);
+                        stdoutWriter.write(System.getProperty("line.separator"));
+                        stdoutWriter.flush();
                     }
-                } catch (IOException e) {
-                    throw new RuntimeException("head: cannot open " + headArg);
                 }
-            } else {
-                throw new RuntimeException("head: " + headArg + " does not exist");
             }
         }
-    }
 
+        else {
+            int headLines = 10;
+            int argIndex = 0;
+            if (appArgs.get(0).equals("-n")) {
+                try {
+                    headLines = Integer.parseInt(appArgs.get(1));
+                } catch (Exception e) {
+                    throw new RuntimeException("head: wrong argument " + appArgs.get(1));
+                }
+                argIndex = 2;
+            }
+
+            for (; argIndex < appArgs.size(); argIndex++) {
+                String headArg = appArgs.get(argIndex);
+                File headFile = new File(currentDirectory + File.separator + headArg);
+                if (headFile.exists()) {
+                    Charset encoding = StandardCharsets.UTF_8;
+                    Path filePath = Paths.get((String) currentDirectory + File.separator + headArg);
+                    try (BufferedReader reader = Files.newBufferedReader(filePath, encoding)) {
+                        for (int i = 0; i < headLines; i++) {
+                            String line = null;
+                            if ((line = reader.readLine()) != null) {
+                                writer.write(line);
+                                writer.write(System.getProperty("line.separator"));
+                                writer.flush();
+                            }
+                        }
+                    } catch (IOException e) {
+                        throw new RuntimeException("head: cannot open " + headArg);
+                    }
+                } else {
+                    throw new RuntimeException("head: " + headArg + " does not exist");
+                }
+
+            }
+        }
+
+    }
 }
 
 class tail implements AppCase {
@@ -299,84 +311,82 @@ class tail implements AppCase {
                     }
                 }
             }
-        } else if (appArgs.size() != 1 && appArgs.size() != 3) {
-            BufferedWriter stdoutWriter = new BufferedWriter(new OutputStreamWriter(output));
-            int tailLines = 10;
-            if (appArgs.size() == 2) {
-                if (input == null) {
-                    throw new RuntimeException("tail: wrong arguments");
-                } else {
-                    if (!appArgs.get(0).equals("-n")) {
-                        throw new RuntimeException("tail: wrong argument " + appArgs.get(0));
-                    }
-                    try {
-                        tailLines = Integer.parseInt(appArgs.get(1));
-                    } catch (Exception e) {
-                        throw new RuntimeException("tail: wrong argument " + appArgs.get(1));
-                    }
+        }
 
-                    ArrayList<String> storage = new ArrayList<>();
-                    BufferedReader stdinReader = new BufferedReader(new InputStreamReader(input));
-                    String stringInStdin = null;
-                    while ((stringInStdin = stdinReader.readLine()) != null) {
-                        storage.add(stringInStdin);
-                    }
-                    int index = 0;
-                    if (tailLines > storage.size()) {
-                        index = 0;
-                    } else {
-                        index = storage.size() - tailLines;
-                    }
-                    for (int p = index; p < storage.size(); p++) {
-                        stdoutWriter.write(storage.get(p) + System.getProperty("line.separator"));
-                        stdoutWriter.flush();
-                    }
-                }
-            } else {
-                throw new RuntimeException("tail: wrong arguments");
-            }
-        } else {
-            if (appArgs.size() == 3 && !appArgs.get(0).equals("-n")) {
-                throw new RuntimeException("tail: wrong argument " + appArgs.get(0));
-            }
+        else if (appArgs.size() == 2 && appArgs.get(0).equals("-n")) {
             int tailLines = 10;
-            String tailArg;
-            if (appArgs.size() == 3) {
+            BufferedWriter stdoutWriter = new BufferedWriter(new OutputStreamWriter(output));
+            if (input == null) {
+                throw new RuntimeException("tail: wrong arguments");
+            } else {
                 try {
                     tailLines = Integer.parseInt(appArgs.get(1));
                 } catch (Exception e) {
                     throw new RuntimeException("tail: wrong argument " + appArgs.get(1));
                 }
-                tailArg = appArgs.get(2);
-            } else {
-                tailArg = appArgs.get(0);
-            }
-            File tailFile = new File(currentDirectory + File.separator + tailArg);
-            if (tailFile.exists()) {
-                Charset encoding = StandardCharsets.UTF_8;
-                Path filePath = Paths.get((String) currentDirectory + File.separator + tailArg);
+
                 ArrayList<String> storage = new ArrayList<>();
-                try (BufferedReader reader = Files.newBufferedReader(filePath, encoding)) {
-                    String line = null;
-                    while ((line = reader.readLine()) != null) {
-                        storage.add(line);
-                    }
-                    int index = 0;
-                    if (tailLines > storage.size()) {
-                        index = 0;
-                    } else {
-                        index = storage.size() - tailLines;
-                    }
-                    for (int i = index; i < storage.size(); i++) {
-                        writer.write(storage.get(i) + System.getProperty("line.separator"));
-                        writer.flush();
-                    }
-                } catch (IOException e) {
-                    throw new RuntimeException("tail: cannot open " + tailArg);
+                BufferedReader stdinReader = new BufferedReader(new InputStreamReader(input));
+                String stringInStdin = null;
+                while ((stringInStdin = stdinReader.readLine()) != null) {
+                    storage.add(stringInStdin);
                 }
-            } else {
-                throw new RuntimeException("tail: " + tailArg + " does not exist");
+                int index = 0;
+                if (tailLines > storage.size()) {
+                    index = 0;
+                } else {
+                    index = storage.size() - tailLines;
+                }
+                for (int p = index; p < storage.size(); p++) {
+                    stdoutWriter.write(storage.get(p) + System.getProperty("line.separator"));
+                    stdoutWriter.flush();
+                }
             }
+        }
+
+        else {
+            int tailLines = 10;
+            int fileIndex = 0;
+            if (appArgs.get(0).equals("-n")) {
+                try {
+                    tailLines = Integer.parseInt(appArgs.get(1));
+                } catch (Exception e) {
+                    throw new RuntimeException("head: wrong argument " + appArgs.get(1));
+                }
+                fileIndex = 2;
+            }
+
+            for (; fileIndex < appArgs.size(); fileIndex++) {
+                String tailArg = appArgs.get(fileIndex);
+                File tailFile = new File(currentDirectory + File.separator + tailArg);
+                if (tailFile.exists()) {
+                    Charset encoding = StandardCharsets.UTF_8;
+                    Path filePath = Paths.get((String) currentDirectory + File.separator + tailArg);
+                    ArrayList<String> storage = new ArrayList<>();
+                    try (BufferedReader reader = Files.newBufferedReader(filePath, encoding)) {
+                        String line = null;
+                        while ((line = reader.readLine()) != null) {
+                            storage.add(line);
+                        }
+                        int index = 0;
+                        if (tailLines > storage.size()) {
+                            index = 0;
+                        } else {
+                            index = storage.size() - tailLines;
+                        }
+                        for (int i = index; i < storage.size(); i++) {
+                            writer.write(storage.get(i) + System.getProperty("line.separator"));
+                            writer.flush();
+                        }
+                    } catch (IOException e) {
+                        throw new RuntimeException("tail: cannot open " + tailArg);
+                    }
+                } else {
+                    throw new RuntimeException("tail: " + tailArg + " does not exist");
+                }
+
+            }
+
         }
 
     }
@@ -581,6 +591,7 @@ class find implements AppCase {
 
             File currDir = new File(currentDirectory);
             String pattern = appArgs.get(1);
+
             Globbing glob = new Globbing();
             glob.printFiles(currDir, currDir, pattern, output);
 
