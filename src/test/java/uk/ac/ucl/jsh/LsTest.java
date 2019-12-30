@@ -7,6 +7,8 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.rules.TemporaryFolder;
+
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
@@ -30,9 +32,13 @@ public class LsTest {
         File src_folder = folder.newFolder("src");
         File test_folder = folder.newFolder("src", "test");
         File main_folder = folder.newFolder("src", "main");
+        File target_folder = folder.newFolder("target");
+        File hello_folder = folder.newFolder("target", "hello");
         src_folder.mkdirs();
         test_folder.mkdirs();
         main_folder.mkdirs();
+        target_folder.mkdirs();
+        hello_folder.mkdirs();
     }
 
     @After
@@ -98,19 +104,39 @@ public class LsTest {
         scn.close();
     }
 
-    // // too many arguments test
+    //multiple arguments test
+    @Test
+    public void lsMultipleArgument() throws Exception {
+        Jsh jsh = new Jsh();
+        ArrayList<String> folders = new ArrayList<>();
+        folders.add("main");
+        folders.add("test");
+        folders.add("hello");
+
+        PipedInputStream in = new PipedInputStream();
+        PipedOutputStream out = new PipedOutputStream(in);
+        jsh.start("ls src target", out);
+        Scanner scn = new Scanner(in);
+        
+        assertEquals("src:", scn.nextLine());
+        String[] files = scn.nextLine().split("\t");
+        for (String fileName : files)
+        {
+            assertTrue("wrong files displayed", folders.contains(fileName));
+        }
+        
+        assertEquals("target:", scn.nextLine());
+        files = scn.nextLine().split("\t");
+        for (String fileName : files)
+        {
+            assertTrue("wrong files displayed", folders.contains(fileName));
+        }
+
+        scn.close();
+    }
+
     @Rule
     public ExpectedException thrown = ExpectedException.none();
-
-    @Test
-    public void lsTooManyArgumentsThrowsException() throws RuntimeException, IOException {
-        Jsh jsh = new Jsh();
-        PrintStream console = null;
-        console = System.out;
-        thrown.expect(RuntimeException.class);
-        thrown.expectMessage(CoreMatchers.equalTo("ls: too many arguments"));
-        jsh.start("ls arg1 arg2", console);
-    }
 
     // no such directory test
     @Test
@@ -119,7 +145,7 @@ public class LsTest {
         PrintStream console = null;
         console = System.out;
         thrown.expect(RuntimeException.class);
-        thrown.expectMessage(CoreMatchers.equalTo("ls: no such directory"));
+        thrown.expectMessage(CoreMatchers.equalTo("ls: not an existing directory"));
         jsh.start("ls xxx", console);
     }
 }

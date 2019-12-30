@@ -41,7 +41,20 @@ public class HeadTest {
         file_writer.write(testedStrings1.getBytes());
         file_writer.write(testedStrings2.getBytes());
         file_writer.write(testedStrings3.getBytes());
+
         file_writer.close();
+
+        File head_test_File1 = folder.newFile("head_test1.txt");
+        String testedStrings4 = "1 line\n";
+        String testedStrings5 = "2 line\n";
+        String testedStrings6 = "3 line\n";
+
+        FileOutputStream file_writer1 = new FileOutputStream(head_test_File1);
+        file_writer1.write(testedStrings4.getBytes());
+        file_writer1.write(testedStrings5.getBytes());
+        file_writer1.write(testedStrings6.getBytes());
+        
+        file_writer1.close();
     }
 
     @After
@@ -77,6 +90,38 @@ public class HeadTest {
         assertEquals("second line", scn.nextLine());
         scn.close();
     } 
+
+     // head multiple files with number test
+     @Test
+     public void HeadMultipleFilesTest() throws Exception {
+         PipedInputStream in = new PipedInputStream();
+         PipedOutputStream out;
+         out = new PipedOutputStream(in);
+         jsh.start("head -n 2 head_test.txt head_test1.txt", out);
+         Scanner scn = new Scanner(in);
+         assertEquals("first line", scn.nextLine());
+         assertEquals("second line", scn.nextLine());
+         assertEquals("1 line", scn.nextLine());
+         assertEquals("2 line", scn.nextLine());
+         scn.close();
+     } 
+
+     // head multiple files without number test
+     @Test
+     public void HeadMultipleFilesWithoutNumberTest() throws Exception {
+         PipedInputStream in = new PipedInputStream();
+         PipedOutputStream out;
+         out = new PipedOutputStream(in);
+         jsh.start("head head_test.txt head_test1.txt", out);
+         Scanner scn = new Scanner(in);
+         assertEquals("first line", scn.nextLine());
+         assertEquals("second line", scn.nextLine());
+         assertEquals("third line", scn.nextLine());
+         assertEquals("1 line", scn.nextLine());
+         assertEquals("2 line", scn.nextLine());
+         assertEquals("3 line", scn.nextLine());
+         scn.close();
+     } 
 
     // head stdin no argument test
     @Test
@@ -119,15 +164,6 @@ public class HeadTest {
         jsh.start("head", console);
     }
 
-    // head arguments more than 3
-    @Test
-    public void HeadMoreThanThreeArgsThrowsException() throws RuntimeException, IOException {
-        PrintStream console = null;
-        console = System.out;
-        thrown.expect(RuntimeException.class);
-        thrown.expectMessage(CoreMatchers.equalTo("head: wrong arguments"));
-        jsh.start("head x x x x", console);
-    }
 
     // Head wrong no. of arguments
     @Test
@@ -137,26 +173,6 @@ public class HeadTest {
         thrown.expect(RuntimeException.class);
         thrown.expectMessage(CoreMatchers.equalTo("head: wrong arguments"));
         jsh.start("head -n head_test.txt", console);
-    }
-    
-    // head 3 argument but first one is not -n
-    @Test
-    public void HeadThreeArgumentsWithWrongFirstArgumentThrowsException() throws RuntimeException, IOException {
-        PrintStream console = null;
-        console = System.out;
-        thrown.expect(RuntimeException.class);
-        thrown.expectMessage(CoreMatchers.equalTo("head: wrong argument -s"));
-        jsh.start("head -s 3 head_test.txt", console);
-    }
-
-    // head 3 argument but second argument is not number
-    @Test
-    public void HeadThreeArgumentsWithWrongSecondArgumentThrowsException() throws RuntimeException, IOException {
-        PrintStream console = null;
-        console = System.out;
-        thrown.expect(RuntimeException.class);
-        thrown.expectMessage(CoreMatchers.equalTo("head: wrong argument -s"));
-        jsh.start("cat head_test.txt | head -s 3", console);
     }
 
     // head 3 argument but second arg is not number
