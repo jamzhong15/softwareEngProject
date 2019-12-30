@@ -50,19 +50,6 @@ public class Call implements Command {
             }
         }
 
-        for(int i = 0; i < appArgs.size(); i++)
-        {
-            String arg = appArgs.get(i);
-            if(arg.contains("*") && !appName.equals("find"))
-            {
-                Globbing glob = new Globbing();
-                appArgs.addAll(i, glob.expand(currentDirectory, arg));
-                appArgs.remove(arg);
-            }
-        }
-
-        
-
         if (appName.charAt(0) == '_') 
         {
             appName = appName.substring(1, appName.length());
