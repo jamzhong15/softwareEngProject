@@ -62,19 +62,38 @@ class ls implements AppCase {
     @Override
     public void runCommand(ArrayList<String> appArgs, String currentDirectory, InputStream input, OutputStream output)
             throws IOException {
-
-        OutputStreamWriter writer = new OutputStreamWriter(output);
+        
 
         File currDir;
+
         if (appArgs.isEmpty()) {
             currDir = new File(currentDirectory);
+            listFiles(currDir, output);
         } else if (appArgs.size() == 1) {
-            currDir = new File(appArgs.get(0));
-        } else {
-            throw new RuntimeException("ls: too many arguments");
+            currDir = new File(currentDirectory + "/" + appArgs.get(0));
+            listFiles(currDir, output);
         }
+        else
+        {
+            for (String arg : appArgs) {
+                OutputStreamWriter writer = new OutputStreamWriter(output);
+                currDir = new File(currentDirectory + "/" + arg);
+                if(currDir.isDirectory())
+                {
+                    writer.write(arg + ":\n");
+                    writer.flush();
+                    listFiles(currDir, output);
+                }
+            }
+        }
+        
+    }
+
+    private void listFiles(File dir, OutputStream output) throws IOException{
+        OutputStreamWriter writer = new OutputStreamWriter(output);
+
         try {
-            File[] listOfFiles = currDir.listFiles();
+            File[] listOfFiles = dir.listFiles();
             boolean atLeastOnePrinted = false;
             for (File file : listOfFiles) {
                 if (!file.getName().startsWith(".")) {
@@ -89,7 +108,7 @@ class ls implements AppCase {
                 writer.flush();
             }
         } catch (NullPointerException e) {
-            throw new RuntimeException("ls: no such directory");
+            throw new RuntimeException("ls: not an existing directory");
         }
     }
 
@@ -582,7 +601,7 @@ class find implements AppCase {
 
             File currDir = new File(currentDirectory);
             String pattern = appArgs.get(1);
-            
+
             Globbing glob = new Globbing();
             glob.printFiles(currDir, currDir, pattern, output);
 
