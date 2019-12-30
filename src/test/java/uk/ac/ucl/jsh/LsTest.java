@@ -64,12 +64,6 @@ public class LsTest {
         File file1 = new File(".cd_test");
         file1.delete();
     }
-
-    // @Test
-    // public void hi() throws Exception {
-    //     jsh.start("ls", System.out);
-    //     jsh.start("cd src ; ls", System.out);
-    // }
     
     // ls no argument test
     @Test
