@@ -14,7 +14,6 @@ public class Jsh
 {
     //get current directory
     private static String currentDirectory = System.getProperty("user.dir");
-    private static Boolean isPiped = false;
     private static Stack<InputStream> stdin = new Stack<>();
     private static Stack<OutputStream> stdout = new Stack<>();
     
@@ -36,16 +35,6 @@ public class Jsh
     public Stack<OutputStream> getStackOutputStream()
     {
         return stdout;
-    }
-
-    public void setisPipedBool(Boolean bool)
-    {
-        isPiped = bool;
-    }
-
-    public Boolean getisPipedBool()
-    {
-        return isPiped;
     }
 
     public void start(String cmdline, OutputStream output) throws IOException 

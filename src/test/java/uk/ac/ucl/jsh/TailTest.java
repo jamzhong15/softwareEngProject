@@ -165,9 +165,9 @@ public class TailTest {
         scn.close();
     }
 
-    // tail tailline < storage.size test
+    // tail tailline > storage.size test
     @Test
-    public void TailStdinVersionTaillineLessThanStorageSizeTest() throws Exception {
+    public void TailStdinVersionTailLineLessThanStorageSizeTest() throws Exception {
         Jsh jsh = new Jsh();
 
         PipedInputStream in = new PipedInputStream();
@@ -178,6 +178,21 @@ public class TailTest {
         assertEquals("1 line", scn.nextLine());
         assertEquals("2 line", scn.nextLine());
         assertEquals("3 line", scn.nextLine());
+        scn.close();
+    }
+
+    // tail tailline < storage.size test
+    @Test
+    public void TailStdinVersionTailLineMoreThanStorageSizeTest() throws Exception {
+        Jsh jsh = new Jsh();
+
+        PipedInputStream in = new PipedInputStream();
+        PipedOutputStream out;
+        out = new PipedOutputStream(in);
+        jsh.start("cat tail_test1.txt | tail -n 2", out);
+        Scanner scn = new Scanner(in);
+        assertEquals("3 line", scn.nextLine());
+        assertEquals("4 line", scn.nextLine());
         scn.close();
     }
 
@@ -238,6 +253,16 @@ public class TailTest {
         thrown.expect(RuntimeException.class);
         thrown.expectMessage(CoreMatchers.equalTo("tail: wrong arguments"));
         jsh.start("tail -n tail_test.txt", console);
+    }
+
+    // tail 3 argument but second arg is not number
+    @Test
+    public void HeadStdinVersionWithWrongFirstArgumentThrowsException() throws RuntimeException, IOException {
+        PrintStream console = null;
+        console = System.out;
+        thrown.expect(RuntimeException.class);
+        thrown.expectMessage(CoreMatchers.equalTo("head: wrong argument s"));
+        jsh.start("tail -n s head_test.txt", console);
     }
     
 

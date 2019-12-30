@@ -215,13 +215,26 @@ public class HeadTest {
         jsh.start("head targetFolder", console);
     }
     
-    // head unsafe command test
+    // head unsafe command error test
     @Test
-    public void HeadUnsafeCommandTest() throws Exception {
+    public void HeadUnsafeCommandErrorTest() throws Exception {
         Jsh jsh = new Jsh();
         ByteArrayOutputStream outContent = new ByteArrayOutputStream();
         System.setOut(new PrintStream(outContent));
         jsh.start("_head", System.out);
         assertEquals("head: missing arguments\n", outContent.toString());
+    }
+
+    // head unsafe command successful test
+    @Test
+    public void HeadUnsafeCommandTest() throws Exception {
+        PipedInputStream in = new PipedInputStream();
+        PipedOutputStream out;
+        out = new PipedOutputStream(in);
+        jsh.start("_head -n 2 head_test.txt", out);
+        Scanner scn = new Scanner(in);
+        assertEquals("first line", scn.nextLine());
+        assertEquals("second line", scn.nextLine());
+        scn.close();
     }
 }

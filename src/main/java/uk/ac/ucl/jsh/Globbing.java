@@ -43,13 +43,7 @@ public class Globbing
 
         if (dir.isDirectory()) {
             //Don't include hidden files
-            File[] files = dir.listFiles(
-                new FileFilter() {
-                @Override
-                public boolean accept(File file) {
-                    return !file.isHidden();
-                }
-            });
+            File[] files = dir.listFiles();
 
             // Recursively search through the subdirectories
             for (File file : files) {
@@ -60,7 +54,7 @@ public class Globbing
     }
 
     // Used for find command
-    public void printFiles(File baseDirectory, File currDirectory, String pattern, OutputStream output) {
+    public void printFiles(File baseDirectory, File currDirectory, String pattern, OutputStream output) throws IOException{
         // Create a matcher for glob patterns
         PathMatcher matcher = FileSystems.getDefault().getPathMatcher("glob:" + pattern);
         if (currDirectory.isDirectory()) {
@@ -72,7 +66,7 @@ public class Globbing
             }
         } else if (matcher.matches(currDirectory.toPath().getFileName())) {
             // Write the relative pathname of the file if it matches the pattern
-            try {
+            
                 OutputStreamWriter writer = new OutputStreamWriter(output);
 
                 String base = baseDirectory.getCanonicalPath();
@@ -81,9 +75,6 @@ public class Globbing
 
                 writer.write(relative + "\n");
                 writer.flush();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
         }
     }
 }
