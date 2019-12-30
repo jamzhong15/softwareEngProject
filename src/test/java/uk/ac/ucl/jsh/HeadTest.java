@@ -119,15 +119,6 @@ public class HeadTest {
         jsh.start("head", console);
     }
 
-    // head arguments more than 3
-    @Test
-    public void HeadMoreThanThreeArgsThrowsException() throws RuntimeException, IOException {
-        PrintStream console = null;
-        console = System.out;
-        thrown.expect(RuntimeException.class);
-        thrown.expectMessage(CoreMatchers.equalTo("head: wrong arguments"));
-        jsh.start("head x x x x", console);
-    }
 
     // Head wrong no. of arguments
     @Test
@@ -137,26 +128,6 @@ public class HeadTest {
         thrown.expect(RuntimeException.class);
         thrown.expectMessage(CoreMatchers.equalTo("head: wrong arguments"));
         jsh.start("head -n head_test.txt", console);
-    }
-    
-    // head 3 argument but first one is not -n
-    @Test
-    public void HeadThreeArgumentsWithWrongFirstArgumentThrowsException() throws RuntimeException, IOException {
-        PrintStream console = null;
-        console = System.out;
-        thrown.expect(RuntimeException.class);
-        thrown.expectMessage(CoreMatchers.equalTo("head: wrong argument -s"));
-        jsh.start("head -s 3 head_test.txt", console);
-    }
-
-    // head 3 argument but second argument is not number
-    @Test
-    public void HeadThreeArgumentsWithWrongSecondArgumentThrowsException() throws RuntimeException, IOException {
-        PrintStream console = null;
-        console = System.out;
-        thrown.expect(RuntimeException.class);
-        thrown.expectMessage(CoreMatchers.equalTo("head: wrong argument -s"));
-        jsh.start("cat head_test.txt | head -s 3", console);
     }
 
     // head 3 argument but second arg is not number
