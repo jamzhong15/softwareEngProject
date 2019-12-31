@@ -66,7 +66,7 @@ public class Call implements Command {
                 {
                     String fileName = appArgs.get(indexOfOutputRedir + 1);
                     FileOutputStream fileWriter = new FileOutputStream(currentDirectory + File.separator + fileName);
-                    inputStreamRedirection(appName, appArgs, currentDirectory, fileWriter);
+                    inputStreamRedirection(appName, appArgs, currentDirectory, fileWriter, indexOfOutputRedir);
                 }
                 else if (appArgs.contains(">")) // outputstream redirection only
                 {
@@ -75,14 +75,13 @@ public class Call implements Command {
                         throw new RuntimeException("Outputstream redirection: too many files given as outputstream");
                     }
                     String fileName = appArgs.get(indexOfOutputRedir + 1);
-                    outputstreamRedirection(appName, appArgs, fileName, currentDirectory);            
+                    outputstreamRedirection(appName, appArgs, currentDirectory, fileName);            
                 }
                 else if (appArgs.contains("<")) // inputstream redirection only
                 {
-                    inputStreamRedirection(appName, appArgs, currentDirectory, System.out);
+                    inputStreamRedirection(appName, appArgs, currentDirectory, System.out, indexOfOutputRedir);
                 }
             }
-
         }
         else
         //normal execution of commands without IO-redirection
@@ -130,7 +129,7 @@ public class Call implements Command {
 
 
 
-    public void outputstreamRedirection(String appName, ArrayList<String> appArgs, String fileName, String currentDirectory) throws IOException
+    public void outputstreamRedirection(String appName, ArrayList<String> appArgs, String currentDirectory, String fileName) throws IOException
     {
         // only one file is permitted to be redirected as outputstream 
         int outRedirIndex = appArgs.indexOf(">");        
@@ -139,12 +138,11 @@ public class Call implements Command {
         executeCmd(appName, cmdArgs, currentDirectory, null, fileWriter);
     }
 
-    public void inputStreamRedirection(String appName, ArrayList<String> appArgs, String currentDirectory, OutputStream stdout) throws IOException
+    public void inputStreamRedirection(String appName, ArrayList<String> appArgs, String currentDirectory, OutputStream stdout, int indexOfOutputRedir) throws IOException
     {   
         // multiple files may be used as standard inputstream
         int inRedirIndex = appArgs.indexOf("<");
         ArrayList<String> cmdArgs = new ArrayList<String>(appArgs.subList(0, inRedirIndex));
-
         ArrayList<String> fileNames = new ArrayList<String>(appArgs.subList(inRedirIndex + 1, appArgs.size()));
 
         for (int i = 0; i < fileNames.size(); i++)
@@ -158,11 +156,26 @@ public class Call implements Command {
                 fileNames.remove(fileName);
                 // Skip past the expanded files
                 i += expandedFiles.size();
-            }                
+            }
         }
-
+        if (fileNames.contains(">"))
+        {
+            System.out.println("YES");
+            fileNames.remove(fileNames.indexOf(">"));
+        }
         for (String fileName : fileNames)
         {
+            System.out.println("fileNames = "+ fileNames);
+            // try(FileInputStream fileReader = new FileInputStream(currentDirectory + File.separator + fileName))
+            // {
+            //     executeCmd(appName, cmdArgs, currentDirectory, fileReader, stdout);
+            //     fileReader.close();
+            // }
+            // catch (IOException e)
+            // {
+            //     throw new RuntimeException(fileName+": no such file or directory");
+            // }
+
             FileInputStream fileReader = new FileInputStream(currentDirectory + File.separator + fileName);
             executeCmd(appName, cmdArgs, currentDirectory, fileReader, stdout);
         }

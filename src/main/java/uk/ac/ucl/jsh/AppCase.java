@@ -70,12 +70,15 @@ class ls implements AppCase {
             listFiles(currDir, output);
         } else if (appArgs.size() == 1) {
             currDir = new File(currentDirectory + "/" + appArgs.get(0));
+            if (!currDir.isDirectory()) { throw new RuntimeException("ls: cannot access '"+appArgs.get(0)+"': No such file or directory");}
             listFiles(currDir, output);
         } else {
             for (String arg : appArgs) {
-                OutputStreamWriter writer = new OutputStreamWriter(output);
                 currDir = new File(currentDirectory + "/" + arg);
-                if (currDir.isDirectory()) {
+                if (!currDir.isDirectory()) {throw new RuntimeException("ls: cannot access '"+arg+"': No such file or directory");}
+                else 
+                {
+                    OutputStreamWriter writer = new OutputStreamWriter(output);
                     writer.write(arg + ":\n");
                     writer.flush();
                     listFiles(currDir, output);
@@ -123,16 +126,18 @@ class cat implements AppCase {
          * throw exception.
          */
         if (appArgs.isEmpty()) { // try to read from stdin
-            BufferedWriter stdoutWriter = new BufferedWriter(new OutputStreamWriter(output));
             if (input == null) {
                 throw new RuntimeException("cat: missing arguments");
-            } else {
+            }
+            else
+            {
                 BufferedReader stdinReader = new BufferedReader(new InputStreamReader(input, StandardCharsets.UTF_8));
                 String stringInStdin = null;
-                while ((stringInStdin = stdinReader.readLine()) != null) {
-                    stdoutWriter.write(String.valueOf(stringInStdin));
-                    stdoutWriter.write(System.getProperty("line.separator"));
-                    stdoutWriter.flush();
+                while ((stringInStdin = stdinReader.readLine()) != null) 
+                {
+                    writer.write(String.valueOf(stringInStdin));
+                    writer.write(System.getProperty("line.separator"));
+                    writer.flush();
                 }
             }
         } else { // get from user input
@@ -193,7 +198,8 @@ class head implements AppCase {
             throws IOException {
 
         OutputStreamWriter writer = new OutputStreamWriter(output);
-
+        
+        // read first 10 lines in stdin
         if (appArgs.isEmpty()) {
             BufferedWriter stdoutWriter = new BufferedWriter(new OutputStreamWriter(output));
             if (input == null) {
@@ -211,8 +217,9 @@ class head implements AppCase {
                 }
             }
         }
-
-        else if (appArgs.size() == 2 && appArgs.get(0).equals("-n")) {
+        // read chosen number of lines in stdin
+        else if (appArgs.size() == 2 && appArgs.get(0).equals("-n"))
+        {
             int headLines = 10;
             BufferedWriter stdoutWriter = new BufferedWriter(new OutputStreamWriter(output));
 
@@ -235,7 +242,7 @@ class head implements AppCase {
                 }
             }
         }
-
+        // read from files
         else {
             int headLines = 10;
             int fileIndex = 0;
