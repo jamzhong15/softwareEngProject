@@ -29,13 +29,12 @@ public class Pipe implements Command
 
         stdin.push(piped_input);
         stdout.push(piped_output);
-        jsh.setisPipedBool(true);
+        
         l.eval();
         piped_output.close();
 
         stdin.push(piped_input);
         r.eval();
-        jsh.setisPipedBool(false);
     }
 
 }
