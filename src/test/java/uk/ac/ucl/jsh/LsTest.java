@@ -15,7 +15,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
-import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -32,16 +31,13 @@ public class LsTest {
         File src_folder = folder.newFolder("src");
         File test_folder = folder.newFolder("src", "test");
         File main_folder = folder.newFolder("src", "main");
+        File target_folder = folder.newFolder("target");
+        File hello_folder = folder.newFolder("target", "hello");
         src_folder.mkdirs();
         test_folder.mkdirs();
         main_folder.mkdirs();
-
-        File file1 = new File(main_folder.getAbsolutePath()+"/file1.txt");
-
-        File file2 = new File(test_folder.getAbsolutePath()+"/file2.txt");
-        file1.mkdir();
-        file2.mkdir();
-
+        target_folder.mkdirs();
+        hello_folder.mkdirs();
     }
 
     @After
@@ -95,42 +91,46 @@ public class LsTest {
         scn.close();
     }
 
-    // ls multiple arguments test
+    //multiple arguments test
     @Test
-    public void lsWithMultipleArguments() throws Exception
-    {
+    public void lsMultipleArgument() throws Exception {
+        Jsh jsh = new Jsh();
+        ArrayList<String> folders = new ArrayList<>();
+        folders.add("main");
+        folders.add("test");
+        folders.add("hello");
+
         PipedInputStream in = new PipedInputStream();
         PipedOutputStream out = new PipedOutputStream(in);
-        jsh.start("cd src ; ls main test", out);
+        jsh.start("ls src target", out);
         Scanner scn = new Scanner(in);
-        assertEquals("main:", scn.nextLine());
-        assertEquals("file1.txt\t", scn.nextLine());
-        assertEquals("test:", scn.nextLine());
-        assertEquals("file2.txt\t", scn.nextLine());
-        scn.close();
+        
+        assertEquals("src:", scn.nextLine());
+        String[] files = scn.nextLine().split("\t");
+        for (String fileName : files)
+        {
+            assertTrue("wrong files displayed", folders.contains(fileName));
+        }
+        
+        assertEquals("target:", scn.nextLine());
+        files = scn.nextLine().split("\t");
+        for (String fileName : files)
+        {
+            assertTrue("wrong files displayed", folders.contains(fileName));
+        }
 
+        scn.close();
     }
 
-    // too many arguments test
     @Rule
     public ExpectedException thrown = ExpectedException.none();
 
     // no such directory test
     @Test
-    public void lsNoSuchDirectoryThrowsException() throws RuntimeException, IOException {
-        Jsh jsh = new Jsh();
-        PrintStream console = null;
-        console = System.out;
-        thrown.expect(RuntimeException.class);
-        thrown.expectMessage(CoreMatchers.equalTo("ls: cannot access 'xxx': No such file or directory"));
-        jsh.start("ls xxx", console);
-    }
-
-    @Test
     public void lsInvalidArgumentMultipleThrowsException() throws RuntimeException, IOException
     {
         thrown.expect(RuntimeException.class);
-        thrown.expectMessage(CoreMatchers.equalTo("ls: cannot access 'imaginary': No such file or directory"));
-        jsh.start("ls src imaginary", System.out);
+        thrown.expectMessage(CoreMatchers.equalTo("ls: cannot access 'xxx': No such file or directory"));
+        jsh.start("ls xxx", System.out);
     }
 }

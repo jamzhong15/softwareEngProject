@@ -429,8 +429,8 @@ class grep implements AppCase {
             Path currentDir = Paths.get(currentDirectory);
             for (int i = 0; i < numOfFiles; i++) {
                 filePath = currentDir.resolve(appArgs.get(i + 1));
-                if (Files.notExists(filePath) || !Files.exists(filePath)) // || Files.isDirectory(filePath) ||
-                                                                          // !Files.isReadable(filePath)
+                if (!Files.exists(filePath)) // || Files.isDirectory(filePath) ||
+                                             // !Files.isReadable(filePath)
                 {
                     throw new RuntimeException("grep: wrong file argument");
                 }
@@ -584,11 +584,8 @@ class find implements AppCase {
 
         if (appArgs.size() < 2) {
             throw new RuntimeException("find: missing arguments");
-        } 
-        else if (appArgs.size() > 3) {
-            throw new RuntimeException("find: too many arguments");
         }
-
+    
         if (appArgs.size() == 2) {
             if (!appArgs.get(0).equals("-name")) {
                 throw new RuntimeException("find: invalid arguments");
@@ -611,7 +608,12 @@ class find implements AppCase {
             Globbing glob = new Globbing();
             glob.printFiles(baseDir, currDir, pattern, output);
         }
+        else{
+            throw new RuntimeException("find: too many arguments");
+        }
     }
+
+
 
 }
 
