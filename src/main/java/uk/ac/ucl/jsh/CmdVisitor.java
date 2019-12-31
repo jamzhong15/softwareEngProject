@@ -7,6 +7,8 @@ import org.antlr.v4.runtime.tree.ParseTree;
 
 public class CmdVisitor extends CmdGrammarBaseVisitor<Command> 
 {
+    Jsh jsh = new Jsh();
+
     @Override
     public Command visitCall(final CmdGrammarParser.CallContext ctx)
     {
@@ -45,6 +47,33 @@ public class CmdVisitor extends CmdGrammarBaseVisitor<Command>
             }
         }
 
+        if (tokens.contains("`"))
+        {
+            System.out.println("contain `");
+            System.out.println("index = " + tokens.indexOf("`"));
+
+            boolean inBackquote = false;
+            int openBackquote = 0;
+            int closeBackquote = 0;
+            for (int i = 0; i<tokens.size(); i++)
+            {
+                if (tokens.get(i).equals("`") && inBackquote == false)
+                {
+                    openBackquote = i;
+                    inBackquote = true;
+                }
+                if (tokens.get(i).equals("`") && inBackquote == true)
+                {
+                    closeBackquote = i;
+                    inBackquote = false;
+
+                    ArrayList<String> subCommand = new ArrayList<String>(tokens.subList(openBackquote+1, closeBackquote));
+                    System.out.println(subCommand.toString());
+                    // jsh.start(subCommand.toString())
+                }
+
+            }
+        }
         Call call = new Call(tokens);
         return call;
     }
@@ -76,4 +105,6 @@ public class CmdVisitor extends CmdGrammarBaseVisitor<Command>
         Pipe pipe = new Pipe(l, r);
         return pipe;
     }
+
+
 }

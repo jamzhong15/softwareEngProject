@@ -29,7 +29,7 @@ argument : (quoted | unquoted)+;
 
 quoted : SINGLEQUOTED
        | DOUBLEQUOTED
-       | BACKQUOTED
+       | BACKQUOTED unquoted BACKQUOTED
        ;
 
 // commandtoken : COMMANDT;
@@ -46,9 +46,11 @@ LT : '<';
 
 GT : '>';
 
+BACKQUOTED: '`';
+
 SINGLEQUOTED : '\'' ~('\n'|'\'')* '\'';
 
-BACKQUOTED: '`' ~('\n' | '`')* '`';
+//BACKQUOTED: '`' ~('\n' | '`')* '`';
 
 DOUBLEQUOTED : '"' (BACKQUOTED | ~('\n' | '`' | '"'))* '"';
 
