@@ -126,18 +126,16 @@ class cat implements AppCase {
          * throw exception.
          */
         if (appArgs.isEmpty()) { // try to read from stdin
+            BufferedWriter stdoutWriter = new BufferedWriter(new OutputStreamWriter(output));
             if (input == null) {
                 throw new RuntimeException("cat: missing arguments");
-            }
-            else
-            {
-                BufferedReader stdinReader = new BufferedReader(new InputStreamReader(input, StandardCharsets.UTF_8));
+            } else {
+                BufferedReader stdinReader = new BufferedReader(new InputStreamReader(input));
                 String stringInStdin = null;
-                while ((stringInStdin = stdinReader.readLine()) != null) 
-                {
-                    writer.write(String.valueOf(stringInStdin));
-                    writer.write(System.getProperty("line.separator"));
-                    writer.flush();
+                while ((stringInStdin = stdinReader.readLine()) != null) {
+                    stdoutWriter.write(String.valueOf(stringInStdin));
+                    stdoutWriter.write(System.getProperty("line.separator"));
+                    stdoutWriter.flush();
                 }
             }
         } else { // get from user input
@@ -161,7 +159,9 @@ class cat implements AppCase {
                     throw new RuntimeException("cat: file does not exist");
                 }
             }
+
         }
+
     }
 }
 
