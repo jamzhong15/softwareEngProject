@@ -10,6 +10,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
@@ -22,48 +23,41 @@ public class Call implements Command {
     }
 
     @Override
-    public void eval() throws IOException 
-    {        
+    public void eval() throws IOException {
         Jsh jsh = new Jsh();
         String currentDirectory = jsh.getcurrentDirectory();
-        Stack <InputStream> stdin = jsh.getStackInputStream();
-        Stack <OutputStream> stdout = jsh.getStackOutputStream();
+        Stack<InputStream> stdin = jsh.getStackInputStream();
+        Stack<OutputStream> stdout = jsh.getStackOutputStream();
 
         String appName = inputs.get(0);
         ArrayList<String> appArgs = new ArrayList<String>(inputs.subList(1, inputs.size()));
-        
+
         // checking for backquotes
-        for (int i = 0 ; i <appArgs.size() ; i++)
-        {
+        for (int i = 0; i < appArgs.size(); i++) {
             String arg = appArgs.get(i);
-            if (arg.startsWith("`"))
-            {
-                System.out.println("arg = "+arg);
-                String result_of_subcommand = command_substitution(arg);
-                System.out.println("result = "+ result_of_subcommand);
-                appArgs.set(i, result_of_subcommand);
+            if (arg.startsWith("`")) {
+                appArgs.addAll(i, command_substitution(arg));
+                appArgs.remove(arg);
+                System.out.println(appArgs.toString());
+
             }
+
         }
 
-
-        /*   IO-redirection -- works only on files
-             > open outputstream for output redirection
-             < open inputstream for input redirection
-        */
-        if (appArgs.contains("<") || appArgs.contains(">"))
-        {
+        /*
+         * IO-redirection -- works only on files > open outputstream for output
+         * redirection < open inputstream for input redirection
+         */
+        if (appArgs.contains("<") || appArgs.contains(">")) {
             io_redirection(appName, appArgs, currentDirectory);
-        }
-        else
-        //normal execution of commands without IO-redirection
+        } else
+        // normal execution of commands without IO-redirection
         {
-            for(int i = 0; i < appArgs.size(); i++)
-            {
+            for (int i = 0; i < appArgs.size(); i++) {
                 String arg = appArgs.get(i);
 
                 // Check for globbing
-                if(arg.contains("*") && !appName.equals("find"))
-                {
+                if (arg.contains("*") && !appName.equals("find")) {
                     Globbing glob = new Globbing();
                     ArrayList<String> expandedFiles = glob.expand(currentDirectory, arg);
                     appArgs.addAll(i, expandedFiles);
@@ -73,124 +67,117 @@ public class Call implements Command {
                 }
 
                 // Check for double and single quotes
-                else if (arg.startsWith("\"") || arg.startsWith("\'")) 
-                {
+                else if (arg.startsWith("\"") || arg.startsWith("\'")) {
                     appArgs.set(i, arg.substring(1, arg.length() - 1));
                 }
             }
             executeCmd(appName, appArgs, currentDirectory, stdin.pop(), stdout.pop());
         }
-        
+
     }
 
-    public String command_substitution(String backquoted) throws IOException
-    {
+    public ArrayList<String> command_substitution(String backquoted) throws IOException {
         Jsh jsh = new Jsh();
-        String result_of_subcommand = "";
-        String subcommand = backquoted.substring(1, backquoted.length()-1);
+        ArrayList<String> result = new ArrayList<>();
+        String subcommand = backquoted.substring(1, backquoted.length() - 1);
         PipedInputStream in = new PipedInputStream();
-        PipedOutputStream out = new PipedOutputStream(in);        
+        PipedOutputStream out = new PipedOutputStream(in);
         jsh.start(subcommand, out);
 
-        BufferedReader subcommand_result_reader = new BufferedReader(new InputStreamReader(in));
+        out.close();
+
+        BufferedReader subcommand_result_reader = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8));
         String string = null;
-        while ((string = subcommand_result_reader.readLine()) != null)
-        {
-            System.out.println("string == "+ string);
-            result_of_subcommand = result_of_subcommand + " " + string;
-            System.out.println("result == "+result_of_subcommand);
+
+        while ((string = subcommand_result_reader.readLine()) != null) {
+            result.add(string);
         }
-        System.out.println("result of subcommand = "+result_of_subcommand);
-        return result_of_subcommand;
+
+        return result;
+
     }
 
-    public void executeCmd(String appName, ArrayList<String> appArgs, String currentDirectory, InputStream stdin, OutputStream stdout) throws IOException
-    {
-        if (appName.charAt(0) == '_') 
-        {
+    public void executeCmd(String appName, ArrayList<String> appArgs, String currentDirectory, InputStream stdin,
+            OutputStream stdout) throws IOException {
+        if (appName.charAt(0) == '_') {
             appName = appName.substring(1, appName.length());
             AppCase app = new UnsafeCommand(AppFactory.createApp(appName));
             app.runCommand(appArgs, currentDirectory, stdin, stdout);
-        }
-        else 
-        {
+        } else {
             AppCase app = AppFactory.createApp(appName);
             app.runCommand(appArgs, currentDirectory, stdin, stdout);
         }
     }
 
-
-    public void io_redirection(String appName, ArrayList<String> appArgs, String currentDirectory) throws IOException
-    {
+    public void io_redirection(String appName, ArrayList<String> appArgs, String currentDirectory) throws IOException {
         int inputRedirOccurrence = 0;
         int outputRedirOccurrence = 0;
         Integer indexOfInputRedir = null;
         Integer indexOfOutputRedir = null;
 
-        for (String str : appArgs)
-        {
-            if (str.equals("<"))
-            {
+        for (String str : appArgs) {
+            if (str.equals("<")) {
                 indexOfInputRedir = appArgs.indexOf(str);
-                inputRedirOccurrence ++; 
+                inputRedirOccurrence++;
             }
-            if (str.equals(">"))
-            {
+            if (str.equals(">")) {
                 indexOfOutputRedir = appArgs.indexOf(str);
-                outputRedirOccurrence ++; 
+                outputRedirOccurrence++;
             }
         }
-        if (inputRedirOccurrence > 1 || outputRedirOccurrence >1 )  // at most one "<" and one ">" is allowed in single command line
+        if (inputRedirOccurrence > 1 || outputRedirOccurrence > 1) // at most one "<" and one ">" is allowed in single
+                                                                   // command line
         {
             throw new RuntimeException("IO-redirection: too many redirection operand");
-        }
-        else
-        {
+        } else {
             // containing both inputstream and outputstream redirections
             // eg. cat < test.txt > test2.txt
-            if (appArgs.contains("<") && appArgs.contains(">"))  
-            {
-                if (indexOfOutputRedir + 1 >= appArgs.size()){throw new RuntimeException("Outputstream redirection: too many files given as outputstream");}
+            if (appArgs.contains("<") && appArgs.contains(">")) {
+                if (indexOfOutputRedir + 1 >= appArgs.size()) {
+                    throw new RuntimeException("Outputstream redirection: too many files given as outputstream");
+                }
                 String fileName = appArgs.get(indexOfOutputRedir + 1);
                 FileOutputStream fileWriter = new FileOutputStream(currentDirectory + File.separator + fileName);
                 inputStreamRedirection(appName, appArgs, currentDirectory, fileWriter);
-            }
-            else if (appArgs.contains(">")) // outputstream redirection only
+            } else if (appArgs.contains(">")) // outputstream redirection only
             {
-                if (indexOfOutputRedir + 1 > appArgs.size()){throw new RuntimeException("Outputstream redirection: too many files given as outputstream");}
-                if (indexOfOutputRedir + 1 == appArgs.size()){throw new RuntimeException("Outputstream redirection: null file given as outputstream");}
+                if (indexOfOutputRedir + 1 > appArgs.size()) {
+                    throw new RuntimeException("Outputstream redirection: too many files given as outputstream");
+                }
+                if (indexOfOutputRedir + 1 == appArgs.size()) {
+                    throw new RuntimeException("Outputstream redirection: null file given as outputstream");
+                }
                 String fileName = appArgs.get(indexOfOutputRedir + 1);
-                outputstreamRedirection(appName, appArgs, currentDirectory, fileName);            
-            }
-            else if (appArgs.contains("<")) // inputstream redirection only
+                outputstreamRedirection(appName, appArgs, currentDirectory, fileName);
+            } else if (appArgs.contains("<")) // inputstream redirection only
             {
-                if (indexOfInputRedir + 1 == appArgs.size()){throw new RuntimeException("Inputstream redirection: null file given as inputstream");}
+                if (indexOfInputRedir + 1 == appArgs.size()) {
+                    throw new RuntimeException("Inputstream redirection: null file given as inputstream");
+                }
                 inputStreamRedirection(appName, appArgs, currentDirectory, System.out);
             }
         }
     }
 
-    public void outputstreamRedirection(String appName, ArrayList<String> appArgs, String currentDirectory, String fileName) throws IOException
-    {
-        // only one file is permitted to be redirected as outputstream 
-        int outRedirIndex = appArgs.indexOf(">");        
+    public void outputstreamRedirection(String appName, ArrayList<String> appArgs, String currentDirectory,
+            String fileName) throws IOException {
+        // only one file is permitted to be redirected as outputstream
+        int outRedirIndex = appArgs.indexOf(">");
         FileOutputStream fileWriter = new FileOutputStream(currentDirectory + File.separator + fileName);
         ArrayList<String> cmdArgs = new ArrayList<String>(appArgs.subList(0, outRedirIndex));
         executeCmd(appName, cmdArgs, currentDirectory, null, fileWriter);
     }
 
-    public void inputStreamRedirection(String appName, ArrayList<String> appArgs, String currentDirectory, OutputStream stdout) throws IOException
-    {   
+    public void inputStreamRedirection(String appName, ArrayList<String> appArgs, String currentDirectory,
+            OutputStream stdout) throws IOException {
         // multiple files may be used as standard inputstream
         int inRedirIndex = appArgs.indexOf("<");
         ArrayList<String> cmdArgs = new ArrayList<String>(appArgs.subList(0, inRedirIndex));
         ArrayList<String> fileNames = new ArrayList<String>(appArgs.subList(inRedirIndex + 1, appArgs.size()));
 
-        for (int i = 0; i < fileNames.size(); i++)
-        {
+        for (int i = 0; i < fileNames.size(); i++) {
             String fileName = fileNames.get(i);
-            if(fileName.contains("*"))
-            {
+            if (fileName.contains("*")) {
                 Globbing glob = new Globbing();
                 ArrayList<String> expandedFiles = glob.expand(currentDirectory, fileName);
                 fileNames.addAll(i, expandedFiles);
@@ -199,12 +186,10 @@ public class Call implements Command {
                 i += expandedFiles.size();
             }
         }
-        if (fileNames.contains(">"))
-        {
+        if (fileNames.contains(">")) {
             fileNames = new ArrayList<String>(fileNames.subList(0, fileNames.indexOf(">")));
         }
-        for (String fileName : fileNames)
-        {
+        for (String fileName : fileNames) {
             FileInputStream fileReader = new FileInputStream(currentDirectory + File.separator + fileName);
             executeCmd(appName, cmdArgs, currentDirectory, fileReader, stdout);
         }
