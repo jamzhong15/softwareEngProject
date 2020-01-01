@@ -93,8 +93,8 @@ public class Call implements Command {
         jsh.start(subcommand, out);
 
         BufferedReader subcommand_result_reader = new BufferedReader(new InputStreamReader(in));
-        
-        for (String string = subcommand_result_reader.readLine().trim(); string != null; string = subcommand_result_reader.readLine())
+        String string = null;
+        while ((string = subcommand_result_reader.readLine()) != null)
         {
             System.out.println("string == "+ string);
             result_of_subcommand = result_of_subcommand + " " + string;
