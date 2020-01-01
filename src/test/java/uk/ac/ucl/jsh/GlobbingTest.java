@@ -4,12 +4,10 @@ import static org.junit.Assert.assertEquals;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.IOError;
 import java.io.IOException;
 import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
 import java.io.PrintStream;
-import java.rmi.server.ExportException;
 import java.util.Scanner;
 
 import org.hamcrest.CoreMatchers;
@@ -92,6 +90,7 @@ public class GlobbingTest {
         Scanner scn = new Scanner(in);
         assertEquals("globbing2", scn.nextLine());
         assertEquals("globbing1", scn.nextLine());
+        assertEquals("globbing2", scn.nextLine());
         // assertEquals("globbing3", scn.nextLine());
         scn.close();
     }

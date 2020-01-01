@@ -13,17 +13,14 @@ pipe : call BAR call
      | pipe BAR call
      ;
 
-// call : redirection* commandtoken atom*
-//      ;
-
 call : redirection* argument atom*;
 
 atom : redirection
      | argument
      ;
 
-redirection : LT argument
-            | GT argument
+redirection : LT argument*
+            | GT argument*
             ;
 
 

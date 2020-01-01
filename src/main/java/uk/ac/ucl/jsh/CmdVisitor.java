@@ -45,12 +45,6 @@ public class CmdVisitor extends CmdGrammarBaseVisitor<Command>
             }
         }
 
-        // ParseTree argumentTree = ctx.getChild(0);
-        // for (int i = 0; i < argumentTree.getChildCount(); i++) 
-        // {
-        //     tokens.add(argumentTree.getChild(i).getText());
-        // }
-
         Call call = new Call(tokens);
         return call;
     }
