@@ -1,15 +1,9 @@
 package uk.ac.ucl.jsh;
 
-import static org.junit.Assert.assertEquals;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.PipedInputStream;
-import java.io.PipedOutputStream;
 import java.io.PrintStream;
-import java.util.Scanner;
-
 import org.hamcrest.CoreMatchers;
 import org.junit.After;
 import org.junit.Before;
