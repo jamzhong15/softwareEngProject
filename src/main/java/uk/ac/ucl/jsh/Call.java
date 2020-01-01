@@ -1,13 +1,16 @@
 package uk.ac.ucl.jsh;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.io.PipedInputStream;
+import java.io.PipedOutputStream;
 import java.util.ArrayList;
-
 import java.util.List;
 import java.util.Stack;
 
@@ -29,7 +32,20 @@ public class Call implements Command {
         String appName = inputs.get(0);
         ArrayList<String> appArgs = new ArrayList<String>(inputs.subList(1, inputs.size()));
         
-        
+        // checking for backquotes
+        for (int i = 0 ; i <appArgs.size() ; i++)
+        {
+            String arg = appArgs.get(i);
+            if (arg.startsWith("`"))
+            {
+                System.out.println("arg = "+arg);
+                String result_of_subcommand = command_substitution(arg);
+                System.out.println("result = "+ result_of_subcommand);
+                appArgs.set(i, result_of_subcommand);
+            }
+        }
+
+
         /*   IO-redirection -- works only on files
              > open outputstream for output redirection
              < open inputstream for input redirection
@@ -65,6 +81,27 @@ public class Call implements Command {
             executeCmd(appName, appArgs, currentDirectory, stdin.pop(), stdout.pop());
         }
         
+    }
+
+    public String command_substitution(String backquoted) throws IOException
+    {
+        Jsh jsh = new Jsh();
+        String result_of_subcommand = "";
+        String subcommand = backquoted.substring(1, backquoted.length()-1);
+        PipedInputStream in = new PipedInputStream();
+        PipedOutputStream out = new PipedOutputStream(in);        
+        jsh.start(subcommand, out);
+
+        BufferedReader subcommand_result_reader = new BufferedReader(new InputStreamReader(in));
+        
+        for (String string = subcommand_result_reader.readLine().trim(); string != null; string = subcommand_result_reader.readLine())
+        {
+            System.out.println("string == "+ string);
+            result_of_subcommand = result_of_subcommand + " " + string;
+            System.out.println("result == "+result_of_subcommand);
+        }
+        System.out.println("result of subcommand = "+result_of_subcommand);
+        return result_of_subcommand;
     }
 
     public void executeCmd(String appName, ArrayList<String> appArgs, String currentDirectory, InputStream stdin, OutputStream stdout) throws IOException
