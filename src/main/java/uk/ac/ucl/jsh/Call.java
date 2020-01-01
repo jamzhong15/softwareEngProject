@@ -38,7 +38,6 @@ public class Call implements Command {
             if (arg.startsWith("`")) {
                 appArgs.addAll(i, command_substitution(arg));
                 appArgs.remove(arg);
-                System.out.println(appArgs.toString());
 
             }
 
