@@ -70,12 +70,15 @@ class ls implements AppCase {
             listFiles(currDir, output);
         } else if (appArgs.size() == 1) {
             currDir = new File(currentDirectory + "/" + appArgs.get(0));
+            if (!currDir.isDirectory()) { throw new RuntimeException("ls: cannot access '"+appArgs.get(0)+"': No such file or directory");}
             listFiles(currDir, output);
         } else {
             for (String arg : appArgs) {
-                OutputStreamWriter writer = new OutputStreamWriter(output);
                 currDir = new File(currentDirectory + "/" + arg);
-                if (currDir.isDirectory()) {
+                if (!currDir.isDirectory()) {throw new RuntimeException("ls: cannot access '"+arg+"': No such file or directory");}
+                else 
+                {
+                    OutputStreamWriter writer = new OutputStreamWriter(output);
                     writer.write(arg + ":\n");
                     writer.flush();
                     listFiles(currDir, output);
@@ -107,7 +110,6 @@ class ls implements AppCase {
             throw new RuntimeException("ls: not an existing directory");
         }
     }
-
 }
 
 class cat implements AppCase {
@@ -196,14 +198,15 @@ class head implements AppCase {
             throws IOException {
 
         OutputStreamWriter writer = new OutputStreamWriter(output);
-
+        
+        // read first 10 lines in stdin
         if (appArgs.isEmpty()) {
             BufferedWriter stdoutWriter = new BufferedWriter(new OutputStreamWriter(output));
             if (input == null) {
                 throw new RuntimeException("head: missing arguments");
             } else {
                 int headLines = 10;
-                BufferedReader stdinReader = new BufferedReader(new InputStreamReader(input));
+                BufferedReader stdinReader = new BufferedReader(new InputStreamReader(input, StandardCharsets.UTF_8));
                 String stringInStdin = null;
                 for (int i = 0; i < headLines; i++) {
                     if ((stringInStdin = stdinReader.readLine()) != null) {
@@ -214,8 +217,9 @@ class head implements AppCase {
                 }
             }
         }
-
-        else if (appArgs.size() == 2 && appArgs.get(0).equals("-n")) {
+        // read chosen number of lines in stdin
+        else if (appArgs.size() == 2 && appArgs.get(0).equals("-n"))
+        {
             int headLines = 10;
             BufferedWriter stdoutWriter = new BufferedWriter(new OutputStreamWriter(output));
 
@@ -238,21 +242,21 @@ class head implements AppCase {
                 }
             }
         }
-
+        // read from files
         else {
             int headLines = 10;
-            int argIndex = 0;
+            int fileIndex = 0;
             if (appArgs.get(0).equals("-n")) {
                 try {
                     headLines = Integer.parseInt(appArgs.get(1));
                 } catch (Exception e) {
                     throw new RuntimeException("head: wrong argument " + appArgs.get(1));
                 }
-                argIndex = 2;
+                fileIndex = 2;
             }
 
-            for (; argIndex < appArgs.size(); argIndex++) {
-                String headArg = appArgs.get(argIndex);
+            for (; fileIndex < appArgs.size(); fileIndex++) {
+                String headArg = appArgs.get(fileIndex);
                 File headFile = new File(currentDirectory + File.separator + headArg);
                 if (headFile.exists()) {
                     Charset encoding = StandardCharsets.UTF_8;
@@ -279,127 +283,6 @@ class head implements AppCase {
     }
 }
 
-// class tail implements AppCase {
-
-// @Override
-// public void runCommand(ArrayList<String> appArgs, String currentDirectory,
-// InputStream input, OutputStream output)
-// throws IOException {
-// OutputStreamWriter writer = new OutputStreamWriter(output);
-
-// if (appArgs.isEmpty()) {
-// BufferedWriter stdoutWriter = new BufferedWriter(new
-// OutputStreamWriter(output));
-// if (input == null) {
-// throw new RuntimeException("tail: missing arguments");
-// } else {
-// int tailLines = 10;
-// ArrayList<String> storage = new ArrayList<>();
-// BufferedReader stdinReader = new BufferedReader(new
-// InputStreamReader(input));
-// for (int i = 0; i < tailLines; i++) {
-// String stringInStdin = null;
-// while ((stringInStdin = stdinReader.readLine()) != null) {
-// storage.add(stringInStdin);
-// }
-// int index = 0;
-// if (tailLines > storage.size()) {
-// index = 0;
-// } else {
-// index = storage.size() - tailLines;
-// }
-// for (int p = index; p < storage.size(); p++) {
-// stdoutWriter.write(storage.get(p) + System.getProperty("line.separator"));
-// stdoutWriter.flush();
-// }
-// }
-// }
-// } else if (appArgs.size() != 1 && appArgs.size() != 3) {
-// BufferedWriter stdoutWriter = new BufferedWriter(new
-// OutputStreamWriter(output));
-// int tailLines = 10;
-// if (appArgs.size() == 2) {
-// if (input == null) {
-// throw new RuntimeException("tail: wrong arguments");
-// } else {
-// if (!appArgs.get(0).equals("-n")) {
-// throw new RuntimeException("tail: wrong argument " + appArgs.get(0));
-// }
-// try {
-// tailLines = Integer.parseInt(appArgs.get(1));
-// } catch (Exception e) {
-// throw new RuntimeException("tail: wrong argument " + appArgs.get(1));
-// }
-
-// ArrayList<String> storage = new ArrayList<>();
-// BufferedReader stdinReader = new BufferedReader(new
-// InputStreamReader(input));
-// String stringInStdin = null;
-// while ((stringInStdin = stdinReader.readLine()) != null) {
-// storage.add(stringInStdin);
-// }
-// int index = 0;
-// if (tailLines > storage.size()) {
-// index = 0;
-// } else {
-// index = storage.size() - tailLines;
-// }
-// for (int p = index; p < storage.size(); p++) {
-// stdoutWriter.write(storage.get(p) + System.getProperty("line.separator"));
-// stdoutWriter.flush();
-// }
-// }
-// } else {
-// throw new RuntimeException("tail: wrong arguments");
-// }
-// } else {
-// if (appArgs.size() == 3 && !appArgs.get(0).equals("-n")) {
-// throw new RuntimeException("tail: wrong argument " + appArgs.get(0));
-// }
-// int tailLines = 10;
-// String tailArg;
-// if (appArgs.size() == 3) {
-// try {
-// tailLines = Integer.parseInt(appArgs.get(1));
-// } catch (Exception e) {
-// throw new RuntimeException("tail: wrong argument " + appArgs.get(1));
-// }
-// tailArg = appArgs.get(2);
-// } else {
-// tailArg = appArgs.get(0);
-// }
-// File tailFile = new File(currentDirectory + File.separator + tailArg);
-// if (tailFile.exists()) {
-// Charset encoding = StandardCharsets.UTF_8;
-// Path filePath = Paths.get((String) currentDirectory + File.separator +
-// tailArg);
-// ArrayList<String> storage = new ArrayList<>();
-// try (BufferedReader reader = Files.newBufferedReader(filePath, encoding)) {
-// String line = null;
-// while ((line = reader.readLine()) != null) {
-// storage.add(line);
-// }
-// int index = 0;
-// if (tailLines > storage.size()) {
-// index = 0;
-// } else {
-// index = storage.size() - tailLines;
-// }
-// for (int i = index; i < storage.size(); i++) {
-// writer.write(storage.get(i) + System.getProperty("line.separator"));
-// writer.flush();
-// }
-// } catch (IOException e) {
-// throw new RuntimeException("tail: cannot open " + tailArg);
-// }
-// } else {
-// throw new RuntimeException("tail: " + tailArg + " does not exist");
-// }
-// }
-
-// }
-
-// }
 class tail implements AppCase {
 
     @Override
@@ -414,7 +297,7 @@ class tail implements AppCase {
             } else {
                 int tailLines = 10;
                 ArrayList<String> storage = new ArrayList<>();
-                BufferedReader stdinReader = new BufferedReader(new InputStreamReader(input));
+                BufferedReader stdinReader = new BufferedReader(new InputStreamReader(input, StandardCharsets.UTF_8));
                 for (int i = 0; i < tailLines; i++) {
                     String stringInStdin = null;
                     while ((stringInStdin = stdinReader.readLine()) != null) {
@@ -527,7 +410,7 @@ class grep implements AppCase {
         // Reading from stdin
         if (appArgs.size() == 1) {
             Pattern grepPattern = Pattern.compile(appArgs.get(0));
-            try (BufferedReader reader = new BufferedReader(new InputStreamReader(input))) {
+            try (BufferedReader reader = new BufferedReader(new InputStreamReader(input, StandardCharsets.UTF_8))) {
                 String line = null;
                 while ((line = reader.readLine()) != null) {
                     Matcher matcher = grepPattern.matcher(line);
@@ -546,8 +429,8 @@ class grep implements AppCase {
             Path currentDir = Paths.get(currentDirectory);
             for (int i = 0; i < numOfFiles; i++) {
                 filePath = currentDir.resolve(appArgs.get(i + 1));
-                if (Files.notExists(filePath) || !Files.exists(filePath)) // || Files.isDirectory(filePath) ||
-                                                                          // !Files.isReadable(filePath)
+                if (!Files.exists(filePath)) // || Files.isDirectory(filePath) ||
+                                             // !Files.isReadable(filePath)
                 {
                     throw new RuntimeException("grep: wrong file argument");
                 }
@@ -701,10 +584,8 @@ class find implements AppCase {
 
         if (appArgs.size() < 2) {
             throw new RuntimeException("find: missing arguments");
-        } else if (appArgs.size() > 3) {
-            throw new RuntimeException("find: too many arguments");
         }
-
+    
         if (appArgs.size() == 2) {
             if (!appArgs.get(0).equals("-name")) {
                 throw new RuntimeException("find: invalid arguments");
@@ -727,7 +608,12 @@ class find implements AppCase {
             Globbing glob = new Globbing();
             glob.printFiles(baseDir, currDir, pattern, output);
         }
+        else{
+            throw new RuntimeException("find: too many arguments");
+        }
     }
+
+
 
 }
 
@@ -751,7 +637,7 @@ class wc implements AppCase {
             if (!appArgs.isEmpty()) {
                 command = appArgs.get(0);
             }
-            try (BufferedReader reader = new BufferedReader(new InputStreamReader(input))) {
+            try (BufferedReader reader = new BufferedReader(new InputStreamReader(input, StandardCharsets.UTF_8))) {
                 String line = null;
                 while ((line = reader.readLine()) != null) {
                     lineCount++;

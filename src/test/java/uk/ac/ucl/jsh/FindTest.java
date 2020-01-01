@@ -73,6 +73,7 @@ public class FindTest {
     //find 3 args test
     @Test
     public void findThreeArgsTest() throws Exception {
+<<<<<<< HEAD
         
         PipedInputStream in = new PipedInputStream();
         PipedOutputStream out;
@@ -81,6 +82,15 @@ public class FindTest {
         out.close();
         Scanner scn = new Scanner(in);
         assertEquals("/devcontainer/Dockerfile", scn.nextLine());
+=======
+        PipedInputStream in = new PipedInputStream();
+        PipedOutputStream out;
+        out = new PipedOutputStream(in);
+        jsh.start("find main -name *.g4", out);
+        out.close();
+        Scanner scn = new Scanner(in);
+        assertEquals("/main/Hi.g4", scn.nextLine());
+>>>>>>> yingming
         scn.close();
     }
 

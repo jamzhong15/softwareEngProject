@@ -49,27 +49,12 @@ public class TailTest {
         String testedStrings5 = "2 line\n";
         String testedStrings6 = "3 line\n";
         String testedStrings7 = "4 line\n";
-        String testedStrings8 = "5 line\n";
-        String testedStrings9 = "6 line\n";
-        String testedStrings10 = "7 line\n";
-        String testedStrings11 = "8 line\n";
-        String testedStrings12 = "9 line\n";
-        String testedStrings13 = "10 line\n";
-        String testedStrings14 = "11 line\n";
 
         FileOutputStream file_writer1 = new FileOutputStream(tail_test_File1);
         file_writer1.write(testedStrings4.getBytes());
         file_writer1.write(testedStrings5.getBytes());
         file_writer1.write(testedStrings6.getBytes());
         file_writer1.write(testedStrings7.getBytes());
-        file_writer1.write(testedStrings8.getBytes());
-        file_writer1.write(testedStrings9.getBytes());
-        file_writer1.write(testedStrings10.getBytes());
-        file_writer1.write(testedStrings11.getBytes());
-        file_writer1.write(testedStrings12.getBytes());
-        file_writer1.write(testedStrings13.getBytes());
-        file_writer1.write(testedStrings14.getBytes());
-
         file_writer1.close();
     }
 
@@ -78,10 +63,6 @@ public class TailTest {
     {
         jsh.setcurrentDirectory(System.getProperty("user.dir"));
         folder.delete();
-        
-        File file = new File("tail_test1.txt");
-        file.delete();
-
     }
 
     // tail 1 argument test 
@@ -147,9 +128,26 @@ public class TailTest {
         scn.close();
     }
 
-    // tail stdin 2 arguments test
+    // tail stdin 2 arguments test (tailline > storage.size)
     @Test
-    public void TailStdinVersionTwoArgumentsTest() throws Exception
+    public void TailStdinVersionTwoArgumentsTest1() throws Exception
+    {
+        Jsh jsh = new Jsh();
+
+        PipedInputStream in = new PipedInputStream();
+        PipedOutputStream out;
+        out = new PipedOutputStream(in);
+        jsh.start("cat tail_test.txt | tail -n 10", out);
+        Scanner scn = new Scanner(in);
+        assertEquals("first line", scn.nextLine());
+        assertEquals("second line", scn.nextLine());
+        assertEquals("third line", scn.nextLine());
+        scn.close();
+        }
+
+    // tail stdin 2 arguments test (tailline < storage.size)
+    @Test
+    public void TailStdinVersionTwoArgumentsTest2() throws Exception
     {
         Jsh jsh = new Jsh();
 
@@ -163,7 +161,7 @@ public class TailTest {
         scn.close();
     }
 
-    // tail stdin no argument test
+    // tail stdin no argument test (tailline > storage.size)
     @Test
     public void TailStdinVersionNoArgumentsTest() throws Exception {
         Jsh jsh = new Jsh();
@@ -179,16 +177,67 @@ public class TailTest {
         scn.close();
     }
 
-    // tail tailline < storage.size test
+    // tail tailline > storage.size test
     @Test
-    public void TailStdinVersionTaillineLessThanStorageSizeTest() throws Exception {
+    public void TailStdinVersionTailLineLessThanStorageSizeTest() throws Exception {
         Jsh jsh = new Jsh();
 
         PipedInputStream in = new PipedInputStream();
         PipedOutputStream out;
         out = new PipedOutputStream(in);
-        jsh.start("cat tail_test1.txt | tail -n 11", out);
+        jsh.start("cat tail_test1.txt | tail", out);
         Scanner scn = new Scanner(in);
+        assertEquals("1 line", scn.nextLine());
+        assertEquals("2 line", scn.nextLine());
+        assertEquals("3 line", scn.nextLine());
+        assertEquals("4 line", scn.nextLine());
+
+        scn.close();
+    }
+
+    // tail tailline < storage.size test
+    @Test
+    public void TailStdinVersionTailLineMoreThanStorageSizeTest() throws Exception {
+        Jsh jsh = new Jsh();
+
+        PipedInputStream in = new PipedInputStream();
+        PipedOutputStream out;
+        out = new PipedOutputStream(in);
+        jsh.start("cat tail_test1.txt | tail -n 2", out);
+        Scanner scn = new Scanner(in);
+        assertEquals("3 line", scn.nextLine());
+        assertEquals("4 line", scn.nextLine());
+        scn.close();
+    }
+
+    // Multiple Files With Number
+    @Test
+    public void TailMultipleFilesWithNumberTest() throws Exception {
+        Jsh jsh = new Jsh();
+
+        PipedInputStream in = new PipedInputStream();
+        PipedOutputStream out;
+        out = new PipedOutputStream(in);
+        jsh.start("tail -n 1 tail_test.txt tail_test1.txt", out);
+        Scanner scn = new Scanner(in);
+        assertEquals("third line", scn.nextLine());
+        assertEquals("4 line", scn.nextLine());
+        scn.close();
+    }
+
+    // Multiple Files Without Number
+    @Test
+    public void TailMultipleFilesWithoutNumberTest() throws Exception {
+        Jsh jsh = new Jsh();
+
+        PipedInputStream in = new PipedInputStream();
+        PipedOutputStream out;
+        out = new PipedOutputStream(in);
+        jsh.start("tail tail_test.txt tail_test1.txt", out);
+        Scanner scn = new Scanner(in);
+        assertEquals("first line", scn.nextLine());
+        assertEquals("second line", scn.nextLine());
+        assertEquals("third line", scn.nextLine());
         assertEquals("1 line", scn.nextLine());
         assertEquals("2 line", scn.nextLine());
         assertEquals("3 line", scn.nextLine());
@@ -209,6 +258,7 @@ public class TailTest {
         jsh.start("tail", console);
     }
 
+<<<<<<< HEAD
     // tail arguments more than 3
     // @Test
     // public void TailMoreThanThreeArgsThrowsException() throws RuntimeException, IOException {
@@ -219,6 +269,8 @@ public class TailTest {
     //     jsh.start("tail x x x x", console);
     // }
 
+=======
+>>>>>>> yingming
     // tail wrong no. of arguments
     @Test
     public void TailWrongArgumentNumberThrowsException() throws RuntimeException, IOException {
@@ -229,6 +281,7 @@ public class TailTest {
         thrown.expectMessage(CoreMatchers.equalTo("tail: wrong arguments"));
         jsh.start("tail -n tail_test.txt", console);
     }
+<<<<<<< HEAD
     
     // tail 3 argument but first one is not -n
     // @Test
@@ -262,6 +315,19 @@ public class TailTest {
     //     thrown.expectMessage(CoreMatchers.equalTo("tail: wrong argument s"));
     //     jsh.start("tail -n s tail_test.txt", console);
     // }
+=======
+
+    // tail 3 argument but second arg is not number
+    @Test
+    public void HeadStdinVersionWithWrongFirstArgumentThrowsException() throws RuntimeException, IOException {
+        PrintStream console = null;
+        console = System.out;
+        thrown.expect(RuntimeException.class);
+        thrown.expectMessage(CoreMatchers.equalTo("head: wrong argument s"));
+        jsh.start("tail -n s head_test.txt", console);
+    }
+    
+>>>>>>> yingming
 
     // tail obtain from stdin and second arg is not number
     @Test
