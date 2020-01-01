@@ -164,10 +164,6 @@ public class HeadTest {
         jsh.start("head", console);
     }
 
-<<<<<<< HEAD
-
-=======
->>>>>>> yingming
     // Head wrong no. of arguments
     @Test
     public void HeadWrongArgumentNumberThrowsException() throws RuntimeException, IOException {

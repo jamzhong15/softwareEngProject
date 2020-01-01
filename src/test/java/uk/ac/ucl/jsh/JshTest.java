@@ -11,12 +11,12 @@ public class JshTest {
     @Test
     public void runTest() throws Exception
     {
-     //   Reslt result = JUnitCore.runClasses(JshTestSuite.class);
+       Result result = JUnitCore.runClasses(JshTestSuite.class);
 
-    //     for (Failure failure : result.getFailures()) {
-    //         System.out.println(failure.toString());
-    //     }
-    //     System.out.println(result.wasSuccessful());
+        for (Failure failure : result.getFailures()) {
+            System.out.println(failure.toString());
+        }
+        System.out.println(result.wasSuccessful());
     }
 }
 
