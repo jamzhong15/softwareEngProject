@@ -81,18 +81,19 @@ public class GlobbingTest {
         // file2.delete();
     }
 
-    // @Test
-    // public void globbingCatTest() throws Exception {
-    //     PipedInputStream in = new PipedInputStream();
-    //     PipedOutputStream out;
-    //     out = new PipedOutputStream(in);        
-    //     jsh.start("cat *.txt", out);
-    //     Scanner scn = new Scanner(in);
-    //     assertEquals("globbing1", scn.nextLine());
-    //     assertEquals("globbing2", scn.nextLine());
-    //     // assertEquals("globbing3", scn.nextLine());
-    //     scn.close();
-    // }
+    @Test
+    public void globbingCatTest() throws Exception {
+        PipedInputStream in = new PipedInputStream();
+        PipedOutputStream out;
+        out = new PipedOutputStream(in);        
+        jsh.start("cat *.txt", out);
+        Scanner scn = new Scanner(in);
+        assertEquals("globbing2", scn.nextLine());
+        assertEquals("globbing1", scn.nextLine());
+        // assertEquals("globbing2", scn.nextLine());
+        // assertEquals("globbing3", scn.nextLine());
+        scn.close();
+    }
 
     // @Test
     // public void globbingCatTestWithQuote() throws Exception {
