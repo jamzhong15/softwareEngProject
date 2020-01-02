@@ -17,7 +17,7 @@ import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-class sed implements AppCase {
+class Sed implements AppCase {
 
     // sed REPLACEMENT [FILE]
     // REPLACEMENT :: s/regexp/replacementString/

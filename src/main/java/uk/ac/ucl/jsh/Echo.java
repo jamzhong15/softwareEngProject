@@ -6,7 +6,7 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 
 import java.util.ArrayList;
-class echo implements AppCase {
+class Echo implements AppCase {
 
     @Override
     public void runCommand(ArrayList<String> appArgs, String currentDirectory, InputStream input, OutputStream output)

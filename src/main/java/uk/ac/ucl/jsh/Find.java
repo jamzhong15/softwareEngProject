@@ -6,7 +6,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 
-class find implements AppCase {
+class Find implements AppCase {
     @Override
     public void runCommand(ArrayList<String> appArgs, String currentDirectory, InputStream input, OutputStream output)
             throws IOException {
@@ -24,7 +24,7 @@ class find implements AppCase {
             String pattern = appArgs.get(1);
 
             Globbing glob = new Globbing();
-            glob.printFiles(currDir, currDir, pattern, output);
+            glob.searchAllFiles(currDir, currDir, pattern, output);
 
         } else if (appArgs.size() == 3) {
             if (!appArgs.get(1).equals("-name")) {
@@ -35,7 +35,7 @@ class find implements AppCase {
             String pattern = appArgs.get(2);
 
             Globbing glob = new Globbing();
-            glob.printFiles(baseDir, currDir, pattern, output);
+            glob.searchAllFiles(baseDir, currDir, pattern, output);
         }
         else{
             throw new RuntimeException("find: too many arguments");

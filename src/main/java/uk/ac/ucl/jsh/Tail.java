@@ -15,43 +15,28 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 
-class tail implements AppCase {
+class Tail implements AppCase {
 
     @Override
     public void runCommand(ArrayList<String> appArgs, String currentDirectory, InputStream input, OutputStream output)
             throws IOException {
-        OutputStreamWriter writer = new OutputStreamWriter(output);
 
         if (appArgs.isEmpty()) {
-            BufferedWriter stdoutWriter = new BufferedWriter(new OutputStreamWriter(output));
+            
             if (input == null) {
                 throw new RuntimeException("tail: missing arguments");
             } else {
                 int tailLines = 10;
-                ArrayList<String> storage = new ArrayList<>();
+                
+                BufferedWriter stdoutWriter = new BufferedWriter(new OutputStreamWriter(output));
                 BufferedReader stdinReader = new BufferedReader(new InputStreamReader(input, StandardCharsets.UTF_8));
-                for (int i = 0; i < tailLines; i++) {
-                    String stringInStdin = null;
-                    while ((stringInStdin = stdinReader.readLine()) != null) {
-                        storage.add(stringInStdin);
-                    }
-                    int index = 0;
-                    if (tailLines > storage.size()) {
-                        index = 0;
-                    } else {
-                        index = storage.size() - tailLines;
-                    }
-                    for (int p = index; p < storage.size(); p++) {
-                        stdoutWriter.write(storage.get(p) + System.getProperty("line.separator"));
-                        stdoutWriter.flush();
-                    }
-                }
+                writeFromStdOutput(tailLines, stdinReader, stdoutWriter);
+
             }
         }
 
         else if (appArgs.size() == 2 && appArgs.get(0).equals("-n")) {
             int tailLines = 10;
-            BufferedWriter stdoutWriter = new BufferedWriter(new OutputStreamWriter(output));
             if (input == null) {
                 throw new RuntimeException("tail: wrong arguments");
             } else {
@@ -61,26 +46,15 @@ class tail implements AppCase {
                     throw new RuntimeException("tail: wrong argument " + appArgs.get(1));
                 }
 
-                ArrayList<String> storage = new ArrayList<>();
+                BufferedWriter stdoutWriter = new BufferedWriter(new OutputStreamWriter(output));
                 BufferedReader stdinReader = new BufferedReader(new InputStreamReader(input));
-                String stringInStdin = null;
-                while ((stringInStdin = stdinReader.readLine()) != null) {
-                    storage.add(stringInStdin);
-                }
-                int index = 0;
-                if (tailLines > storage.size()) {
-                    index = 0;
-                } else {
-                    index = storage.size() - tailLines;
-                }
-                for (int p = index; p < storage.size(); p++) {
-                    stdoutWriter.write(storage.get(p) + System.getProperty("line.separator"));
-                    stdoutWriter.flush();
-                }
+                writeFromStdOutput(tailLines, stdinReader, stdoutWriter);
+                
             }
         }
 
         else {
+            OutputStreamWriter writer = new OutputStreamWriter(output);
             int tailLines = 10;
             int fileIndex = 0;
             if (appArgs.get(0).equals("-n")) {
@@ -99,7 +73,8 @@ class tail implements AppCase {
                     Charset encoding = StandardCharsets.UTF_8;
                     Path filePath = Paths.get((String) currentDirectory + File.separator + tailArg);
                     ArrayList<String> storage = new ArrayList<>();
-                    try (BufferedReader reader = Files.newBufferedReader(filePath, encoding)) {
+                    BufferedReader reader = Files.newBufferedReader(filePath, encoding);
+                    try {
                         String line = null;
                         while ((line = reader.readLine()) != null) {
                             storage.add(line);
@@ -125,6 +100,25 @@ class tail implements AppCase {
 
         }
 
+    }
+
+    private void writeFromStdOutput(int tailLines, BufferedReader reader, BufferedWriter writer) throws IOException {
+        ArrayList<String> storage = new ArrayList<>();
+
+        String line = null;
+        while ((line = reader.readLine()) != null) {
+            storage.add(line);
+        }
+        int index = 0;
+        if (tailLines > storage.size()) {
+            index = 0;
+        } else {
+            index = storage.size() - tailLines;
+        }
+        for (int i = index; i < storage.size(); i++) {
+            writer.write(storage.get(i) + System.getProperty("line.separator"));
+            writer.flush();
+        }
     }
 
 }

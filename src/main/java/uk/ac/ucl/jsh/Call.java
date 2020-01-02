@@ -96,18 +96,6 @@ public class Call implements Command {
 
     }
 
-    public void executeCmd(String appName, ArrayList<String> appArgs, String currentDirectory, InputStream stdin,
-            OutputStream stdout) throws IOException {
-        if (appName.charAt(0) == '_') {
-            appName = appName.substring(1, appName.length());
-            AppCase app = new UnsafeCommand(AppFactory.createApp(appName));
-            app.runCommand(appArgs, currentDirectory, stdin, stdout);
-        } else {
-            AppCase app = AppFactory.createApp(appName);
-            app.runCommand(appArgs, currentDirectory, stdin, stdout);
-        }
-    }
-
     public void io_redirection(String appName, ArrayList<String> appArgs, String currentDirectory, OutputStream stdout) throws IOException {
         int inputRedirOccurrence = 0;
         int outputRedirOccurrence = 0;
@@ -210,4 +198,17 @@ public class Call implements Command {
             executeCmd(appName, cmdArgs, currentDirectory, fileReader, stdout);
         }
     }
+
+    public void executeCmd(String appName, ArrayList<String> appArgs, String currentDirectory, InputStream stdin,
+            OutputStream stdout) throws IOException {
+        if (appName.charAt(0) == '_') {
+            appName = appName.substring(1, appName.length());
+            AppCase app = new UnsafeCommand(AppFactory.createApp(appName));
+            app.runCommand(appArgs, currentDirectory, stdin, stdout);
+        } else {
+            AppCase app = AppFactory.createApp(appName);
+            app.runCommand(appArgs, currentDirectory, stdin, stdout);
+        }
+    }
+
 }
