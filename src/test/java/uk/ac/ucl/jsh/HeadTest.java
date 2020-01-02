@@ -143,10 +143,11 @@ public class HeadTest {
         PipedInputStream in = new PipedInputStream();
         PipedOutputStream out;
         out = new PipedOutputStream(in);
-        jsh.start("cat head_test.txt | head -n 2", out);
+        jsh.start("cat head_test.txt | head -n 4", out);
         Scanner scn = new Scanner(in);
         assertEquals("first line", scn.nextLine());
         assertEquals("second line", scn.nextLine());
+        assertEquals("third line", scn.nextLine());
         scn.close();
     }
 
