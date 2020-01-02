@@ -10,7 +10,6 @@ import java.io.PipedOutputStream;
 import java.util.ArrayList;
 import java.util.Scanner;
 import org.junit.After;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
