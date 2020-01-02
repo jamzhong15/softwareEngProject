@@ -56,7 +56,8 @@ class ls implements AppCase {
                 writer.write(System.getProperty("line.separator"));
                 writer.flush();
             }
-        } catch (NullPointerException e) {
+        }
+        catch (NullPointerException e) {
             throw new RuntimeException("ls: not an existing directory");
         }
     }

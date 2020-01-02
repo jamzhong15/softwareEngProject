@@ -132,21 +132,34 @@ public class Call implements Command {
         } else {
             // containing both inputstream and outputstream redirections
             // eg. cat < test.txt > test2.txt
-            if (appArgs.contains("<") && appArgs.contains(">")) {
+            if (appArgs.contains("<") && appArgs.contains(">")) 
+            {
                 if (appArgs.size() - indexOfOutputRedir > 2) {
                     throw new RuntimeException("Outputstream redirection: too many files given as outputstream");
                 }
                 if (indexOfOutputRedir + 1 == appArgs.size()) {
                     throw new RuntimeException("Outpustream redirection: parse error near '\\n'");
                 }
-                if (appArgs.get(indexOfInputRedir + 1).equals(">") || indexOfInputRedir + 1 == appArgs.size())
+                if (appArgs.get(indexOfInputRedir + 1).equals(">")) // situation: cat < > file.txt
                 {
                     appArgs.add(indexOfInputRedir+1, null);
+                    inputStreamRedirection(appName, appArgs, currentDirectory, null);
                 }
-                String fileName = appArgs.get(indexOfOutputRedir + 1);
-                FileOutputStream fileWriter = new FileOutputStream(currentDirectory + File.separator + fileName);
-                inputStreamRedirection(appName, appArgs, currentDirectory, fileWriter);
-            } else if (appArgs.contains(">")) // outputstream redirection only
+                else if (indexOfInputRedir + 1 == appArgs.size()) // situation: echo Hello World > main.txt ; cat <
+                {
+                    appArgs.add(indexOfInputRedir+1, null);
+                    String fileName = appArgs.get(indexOfOutputRedir + 1);
+                    FileOutputStream fileWriter = new FileOutputStream(currentDirectory + File.separator + fileName);
+                    inputStreamRedirection(appName, appArgs, currentDirectory, fileWriter);
+                }
+                else
+                {
+                    String fileName = appArgs.get(indexOfOutputRedir + 1);
+                    FileOutputStream fileWriter = new FileOutputStream(currentDirectory + File.separator + fileName);
+                    inputStreamRedirection(appName, appArgs, currentDirectory, fileWriter);
+                }
+            } 
+            else if (appArgs.contains(">")) // outputstream redirection only
             {
                 if (appArgs.size() - indexOfOutputRedir > 2)
                 {
@@ -183,6 +196,9 @@ public class Call implements Command {
         int inRedirIndex = appArgs.indexOf("<");
         ArrayList<String> cmdArgs = new ArrayList<String>(appArgs.subList(0, inRedirIndex));
         ArrayList<String> fileNames = new ArrayList<String>(appArgs.subList(inRedirIndex + 1, appArgs.size()));
+        if (fileNames.contains(">")) {
+            fileNames = new ArrayList<String>(fileNames.subList(0, fileNames.indexOf(">")));
+        }
 
         for (int i = 0; i < fileNames.size(); i++) {
             String fileName = fileNames.get(i);
@@ -195,9 +211,7 @@ public class Call implements Command {
                 i += expandedFiles.size();
             }
         }
-        if (fileNames.contains(">")) {
-            fileNames = new ArrayList<String>(fileNames.subList(0, fileNames.indexOf(">")));
-        }
+        
         for (String fileName : fileNames) {
             FileInputStream fileReader = new FileInputStream(currentDirectory + File.separator + fileName);
             executeCmd(appName, cmdArgs, currentDirectory, fileReader, stdout);
