@@ -145,13 +145,6 @@ public class Call implements Command {
                     appArgs.add(indexOfInputRedir+1, null);
                     inputStreamRedirection(appName, appArgs, currentDirectory, null);
                 }
-                else if (indexOfInputRedir + 1 == appArgs.size()) // situation: echo Hello World > main.txt ; cat <
-                {
-                    appArgs.add(indexOfInputRedir+1, null);
-                    String fileName = appArgs.get(indexOfOutputRedir + 1);
-                    FileOutputStream fileWriter = new FileOutputStream(currentDirectory + File.separator + fileName);
-                    inputStreamRedirection(appName, appArgs, currentDirectory, fileWriter);
-                }
                 else
                 {
                     String fileName = appArgs.get(indexOfOutputRedir + 1);
