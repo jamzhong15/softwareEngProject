@@ -18,7 +18,7 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.rules.TemporaryFolder;
 
-public class GlobbingTest {
+public class CommandSubTest {
     Jsh jsh = new Jsh();
     
     @Rule
@@ -28,23 +28,22 @@ public class GlobbingTest {
     public void buildTestFile() throws Exception {
         jsh.setcurrentDirectory(folder.getRoot().getAbsolutePath());
         File test_folder = folder.newFolder("testFolder");
- 
+
         test_folder.mkdir();
 
         jsh.setcurrentDirectory(folder.getRoot().getAbsolutePath());
-
-        File globbing1 = folder.newFile("globbing1.txt");
-        String testedStrings1 = "globbing1\n";
-        FileOutputStream file_writer1 = new FileOutputStream(globbing1);
+    
+        File test1 = folder.newFile("test1.txt");
+        String testedStrings1 = "abc\n";
+        FileOutputStream file_writer1 = new FileOutputStream(test1);
         file_writer1.write(testedStrings1.getBytes());
         file_writer1.close();
 
-        File globbing2 = folder.newFile("globbing2.txt");
-        String testedStrings2 =  "globbing2\n";
-        FileOutputStream file_writer2 = new FileOutputStream(globbing2);
+        File test2 = folder.newFile("test2.txt");
+        String testedStrings2 =  "def\n";
+        FileOutputStream file_writer2 = new FileOutputStream(test2);
         file_writer2.write(testedStrings2.getBytes());
         file_writer2.close();
-
     }
 
     @After
@@ -52,49 +51,34 @@ public class GlobbingTest {
         jsh.setcurrentDirectory(System.getProperty("user.dir"));
         folder.delete();
 
-        File file = new File("globbing1.txt");
+        File file = new File("test1.txt");
         file.delete();
 
-        File file1 = new File("globbing2.txt");
+        File file1 = new File("test2.txt");
         file1.delete();
 
     }
 
     @Test
-
-    public void globbingCatTest() throws Exception {
+    public void CommandSubSingleOutputTest() throws Exception {
         PipedInputStream in = new PipedInputStream();
         PipedOutputStream out;
         out = new PipedOutputStream(in);        
-        jsh.start("cat *.txt", out);
+        jsh.start("echo `cat test1.txt`", out);
         Scanner scn = new Scanner(in);
-        assertEquals("globbing2", scn.nextLine());
-        assertEquals("globbing1", scn.nextLine());
+        assertEquals("abc", scn.nextLine());
         scn.close();
     }
 
     @Test
-    public void globbingCatTestWithQuote() throws Exception {
+    public void CommandSubMultipleOutTest() throws Exception {
         PipedInputStream in = new PipedInputStream();
         PipedOutputStream out;
         out = new PipedOutputStream(in);        
-        jsh.start("cat 'globbing2.txt'", out);
+        jsh.start("echo `find -name *.txt`", out);
         Scanner scn = new Scanner(in);
-        assertEquals("globbing2", scn.nextLine());
+        assertEquals("/test2.txt /test1.txt", scn.nextLine());
         scn.close();
-    }
-
-    @Rule
-    public ExpectedException thrown = ExpectedException.none();
-
-    @Test
-    public void cannotMatch() throws RuntimeException, IOException {
-        Jsh jsh = new Jsh();
-        PrintStream console = null;
-        console = System.out;
-        thrown.expect(RuntimeException.class);
-        thrown.expectMessage(CoreMatchers.equalTo("cat: file does not exist"));
-        jsh.start("cat *.abc", console);
     }
 
 }
