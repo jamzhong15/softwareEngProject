@@ -6,7 +6,7 @@ import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-    EchoCmdTest.class,
+    EchoTest.class,
     CdTest.class,
     PwdTest.class,
     CatTest.class,
