@@ -1,12 +1,7 @@
 package uk.ac.ucl.jsh;
 
-import static org.junit.Assert.assertEquals;
-
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.PipedInputStream;
-import java.io.PipedOutputStream;
-import java.util.Scanner;
 
 import org.hamcrest.CoreMatchers;
 import org.junit.After;
@@ -14,7 +9,6 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
-import org.junit.rules.TemporaryFolder;
 
 public class IoDirectionTest {
     Jsh jsh = new Jsh();
