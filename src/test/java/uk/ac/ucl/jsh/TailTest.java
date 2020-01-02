@@ -177,39 +177,6 @@ public class TailTest {
         scn.close();
     }
 
-    // tail tailline > storage.size test
-    @Test
-    public void TailStdinVersionTailLineLessThanStorageSizeTest() throws Exception {
-        Jsh jsh = new Jsh();
-
-        PipedInputStream in = new PipedInputStream();
-        PipedOutputStream out;
-        out = new PipedOutputStream(in);
-        jsh.start("cat tail_test1.txt | tail", out);
-        Scanner scn = new Scanner(in);
-        assertEquals("1 line", scn.nextLine());
-        assertEquals("2 line", scn.nextLine());
-        assertEquals("3 line", scn.nextLine());
-        assertEquals("4 line", scn.nextLine());
-
-        scn.close();
-    }
-
-    // tail tailline < storage.size test
-    @Test
-    public void TailStdinVersionTailLineMoreThanStorageSizeTest() throws Exception {
-        Jsh jsh = new Jsh();
-
-        PipedInputStream in = new PipedInputStream();
-        PipedOutputStream out;
-        out = new PipedOutputStream(in);
-        jsh.start("cat tail_test1.txt | tail -n 2", out);
-        Scanner scn = new Scanner(in);
-        assertEquals("3 line", scn.nextLine());
-        assertEquals("4 line", scn.nextLine());
-        scn.close();
-    }
-
     // Multiple Files With Number
     @Test
     public void TailMultipleFilesWithNumberTest() throws Exception {
