@@ -27,8 +27,6 @@ public class GlobbingTest {
         test_folder.mkdir();
         // sub_folder1.mkdir();
         // sub_folder2.mkdir();
-
-        jsh.setcurrentDirectory(folder.getRoot().getAbsolutePath());
         // File globbing1 = folder.newFile("globbing1.txt");
         // globbing1.createNewFile();
 
@@ -64,12 +62,6 @@ public class GlobbingTest {
     public void deleteTestFile() throws Exception {
         jsh.setcurrentDirectory(System.getProperty("user.dir"));
         folder.delete();
-
-        File file = new File("globbing1.txt");
-        file.delete();
-
-        File file1 = new File("globbing2.txt");
-        file1.delete();
 
         // File file2 = new File("globbing3.txt");
         // file2.delete();

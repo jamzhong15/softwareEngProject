@@ -32,14 +32,15 @@ public class Call implements Command {
         String appName = inputs.get(0);
         ArrayList<String> appArgs = new ArrayList<String>(inputs.subList(1, inputs.size()));
 
-        // checking for backquotes
+        /* checking for backquotes
+         * command substitution  
+         */
         for (int i = 0; i < appArgs.size(); i++) {
             String arg = appArgs.get(i);
             if (arg.startsWith("`")) {
                 appArgs.addAll(i, command_substitution(arg));
                 appArgs.remove(arg);
             }
-
         }
 
         /*
@@ -47,7 +48,7 @@ public class Call implements Command {
          * redirection < open inputstream for input redirection
          */
         if (appArgs.contains("<") || appArgs.contains(">")) {
-            io_redirection(appName, appArgs, currentDirectory);
+            io_redirection(appName, appArgs, currentDirectory, stdout.pop());
         } else
         // normal execution of commands without IO-redirection
         {
@@ -107,11 +108,12 @@ public class Call implements Command {
         }
     }
 
-    public void io_redirection(String appName, ArrayList<String> appArgs, String currentDirectory) throws IOException {
+    public void io_redirection(String appName, ArrayList<String> appArgs, String currentDirectory, OutputStream stdout) throws IOException {
         int inputRedirOccurrence = 0;
         int outputRedirOccurrence = 0;
         Integer indexOfInputRedir = null;
         Integer indexOfOutputRedir = null;
+
 
         for (String str : appArgs) {
             if (str.equals("<")) {
@@ -131,28 +133,37 @@ public class Call implements Command {
             // containing both inputstream and outputstream redirections
             // eg. cat < test.txt > test2.txt
             if (appArgs.contains("<") && appArgs.contains(">")) {
-                if (indexOfOutputRedir + 1 >= appArgs.size()) {
+                if (appArgs.size() - indexOfOutputRedir > 2) {
                     throw new RuntimeException("Outputstream redirection: too many files given as outputstream");
+                }
+                if (indexOfOutputRedir + 1 == appArgs.size()) {
+                    throw new RuntimeException("Outpustream redirection: parse error near '\\n'");
+                }
+                if (appArgs.get(indexOfInputRedir + 1).equals(">") || indexOfInputRedir + 1 == appArgs.size())
+                {
+                    appArgs.add(indexOfInputRedir+1, null);
                 }
                 String fileName = appArgs.get(indexOfOutputRedir + 1);
                 FileOutputStream fileWriter = new FileOutputStream(currentDirectory + File.separator + fileName);
                 inputStreamRedirection(appName, appArgs, currentDirectory, fileWriter);
             } else if (appArgs.contains(">")) // outputstream redirection only
             {
-                if (indexOfOutputRedir + 1 > appArgs.size()) {
+                if (appArgs.size() - indexOfOutputRedir > 2)
+                {
                     throw new RuntimeException("Outputstream redirection: too many files given as outputstream");
                 }
-                if (indexOfOutputRedir + 1 == appArgs.size()) {
-                    throw new RuntimeException("Outputstream redirection: null file given as outputstream");
+                if (indexOfOutputRedir + 1 == appArgs.size())  // no files are given
+                {
+                    throw new RuntimeException("Outpustream redirection: parse error near '\\n'");
                 }
                 String fileName = appArgs.get(indexOfOutputRedir + 1);
                 outputstreamRedirection(appName, appArgs, currentDirectory, fileName);
             } else if (appArgs.contains("<")) // inputstream redirection only
             {
                 if (indexOfInputRedir + 1 == appArgs.size()) {
-                    throw new RuntimeException("Inputstream redirection: null file given as inputstream");
+                    appArgs.add(null);
                 }
-                inputStreamRedirection(appName, appArgs, currentDirectory, System.out);
+                inputStreamRedirection(appName, appArgs, currentDirectory, stdout);
             }
         }
     }
