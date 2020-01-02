@@ -1,6 +1,7 @@
 package uk.ac.ucl.jsh;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -8,6 +9,7 @@ import java.io.IOException;
 import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
 import java.io.PrintStream;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 import org.hamcrest.CoreMatchers;
@@ -62,15 +64,25 @@ public class GlobbingTest {
 
     @Test
 
-    public void globbingCatTest() throws Exception {
+    public void globbingCatTest() throws Exception 
+    {
+        ArrayList<String> expected_contents = new ArrayList<>();
+        expected_contents.add("globbing1");
+        expected_contents.add("globbing2");
+
         PipedInputStream in = new PipedInputStream();
-        PipedOutputStream out;
-        out = new PipedOutputStream(in);        
+        PipedOutputStream out = new PipedOutputStream(in);        
         jsh.start("cat *.txt", out);
         Scanner scn = new Scanner(in);
-        assertEquals("globbing2", scn.nextLine());
-        assertEquals("globbing1", scn.nextLine());
+        
+        ArrayList<String> actual_contents = new ArrayList<>();
+        actual_contents.add(scn.nextLine());
+        actual_contents.add(scn.nextLine());
         scn.close();
+        for (String actual : actual_contents)
+        {
+            assertTrue("wrong file contents", expected_contents.contains(actual));
+        }
     }
 
     @Test
