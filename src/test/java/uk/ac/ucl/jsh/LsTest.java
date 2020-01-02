@@ -135,4 +135,12 @@ public class LsTest {
         thrown.expectMessage(CoreMatchers.equalTo("ls: cannot access 'xxx': No such file or directory"));
         jsh.start("ls xxx", System.out);
     }
+
+    @Test
+    public void lsInvalidMultipleArgumentThrowsException() throws RuntimeException, IOException
+    {
+        thrown.expect(RuntimeException.class);
+        thrown.expectMessage(CoreMatchers.equalTo("ls: cannot access 'xxx': No such file or directory"));
+        jsh.start("ls src xxx", System.out);
+    }
 }
