@@ -1,6 +1,7 @@
 package uk.ac.ucl.jsh;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -8,6 +9,7 @@ import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 import org.hamcrest.CoreMatchers;
@@ -39,6 +41,13 @@ public class IoRedirectionTest {
         FileOutputStream file_writer2 = new FileOutputStream(io_test_file2);
         file_writer2.write(testedStrings2.getBytes());
         file_writer2.close();
+
+        File io_test_file3 = folder.newFile("io_test3.txt");
+        String testedStrings3 = "from(test3.txt)";
+        FileOutputStream file_writer3 = new FileOutputStream(io_test_file3);
+        file_writer3.write(testedStrings3.getBytes());
+        file_writer3.close();
+
     }
     
     @After
@@ -48,9 +57,33 @@ public class IoRedirectionTest {
         folder.delete();
     }
 
+    @Test
+    public void doubleQuotedArgumentsWithEmbeddedBackquotesTest() throws Exception
+    {
+        PipedInputStream in = new PipedInputStream();
+        PipedOutputStream out = new PipedOutputStream(in);
+        jsh.start("echo Hello \"`echo \"World\"`\"", out);
+        out.close();
+        Scanner scn = new Scanner(in);
+        assertEquals("Hello World", scn.nextLine());
+        scn.close();
+    }
+
+    @Test
+    public void singleQuotedArgumentsIgnoringEmbeddedBackquotesTest() throws Exception
+    {
+        PipedInputStream in = new PipedInputStream();
+        PipedOutputStream out = new PipedOutputStream(in);
+        jsh.start("echo Hello '`echo \"World\"`'", out);
+        out.close();
+        Scanner scn = new Scanner(in);
+        assertEquals("Hello `echo \"World\"`", scn.nextLine());
+        scn.close();
+    }
+
     // < normal test
     @Test
-    public void inputStreamRedirectionTest() throws Exception {
+    public void inputStreamRedirectionTestOne() throws Exception {
         PipedInputStream in = new PipedInputStream();
         PipedOutputStream out;
         out = new PipedOutputStream(in);
@@ -61,7 +94,41 @@ public class IoRedirectionTest {
         scn.close();
     }
 
-    // > normal test
+    // < normal test with multiple filenames
+    @Test
+    public void inputStreamRedirectionTestTwo() throws Exception {
+        PipedInputStream in = new PipedInputStream();
+        PipedOutputStream out;
+        out = new PipedOutputStream(in);
+        jsh.start("cat < io_test.txt io_test3.txt", out);
+        out.close();
+        Scanner scn = new Scanner(in);
+        assertEquals("from(test3.txt)", scn.nextLine());
+        scn.close();
+    }
+
+    // > normal test with multiple filenames
+    @Test
+    public void outputStreamRedirectionMultipleArgsTestOne() throws Exception
+    {
+        jsh.start("echo string one > io_test.txt io_test2.txt", System.out);
+        String path = folder.getRoot().getAbsolutePath() + File.separator + "io_test.txt";
+        BufferedReader testFileReader = new BufferedReader(new FileReader(path));
+        assertEquals("string one io_test2.txt", testFileReader.readLine());
+        testFileReader.close();
+    }
+
+    @Test
+    public void outputStreamRedirectionMultipleArgsTestTwo() throws Exception
+    {
+        jsh.start("cat io_test.txt > two_args.txt io_test2.txt", System.out);
+        String path = folder.getRoot().getAbsolutePath() + File.separator + "two_args.txt";
+        BufferedReader testFileReader = new BufferedReader(new FileReader(path));
+        assertEquals("first line", testFileReader.readLine());
+        assertEquals("first line", testFileReader.readLine());
+        testFileReader.close();
+    }    
+
     @Test
     public void outputStreamRedirectionTest() throws Exception
     {
@@ -107,13 +174,18 @@ public class IoRedirectionTest {
     @Test
     public void globbedArgForInputstreamRedirectionTest() throws Exception
     {
+        ArrayList<String> expected = new ArrayList<>();
+        expected.add("first line");
+        expected.add("from(test3.txt)");
+
         PipedInputStream in = new PipedInputStream();
         PipedOutputStream out = new PipedOutputStream(in);
         jsh.start("cat < io*", out);
         out.close();
         Scanner scn = new Scanner(in);
-        assertEquals("first line", scn.nextLine());
-        assertEquals("first line", scn.nextLine());
+        assertTrue("wrong contents", expected.contains(scn.nextLine()));
+        assertTrue("wrong contents", expected.contains(scn.nextLine()));
+        assertTrue("wrong contents", expected.contains(scn.nextLine()));
         scn.close();
     }
 
