@@ -4,5 +4,5 @@ import java.io.IOException;
 
 public interface Command
 {
-    public void eval() throws IOException;
+    void eval() throws IOException;
 }

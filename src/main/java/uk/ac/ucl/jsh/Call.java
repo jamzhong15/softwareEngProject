@@ -98,7 +98,7 @@ public class Call implements Command {
                     for (int index = 1 ; index < backquoted_contents.length; index +=2)
                     {
                         String backquoted_element = "`" + backquoted_contents[index] + "`";
-                        backquoted_element.trim();
+                        backquoted_element = backquoted_element.trim();
                         Array.set(backquoted_contents, index, backquoted_element);
                     }
                     appArgs.remove(i);

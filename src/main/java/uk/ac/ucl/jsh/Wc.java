@@ -22,8 +22,8 @@ class Wc implements AppCase {
 
         // Check if it should using standard input
 
-        if (appArgs.isEmpty() || (appArgs.size() == 1
-                && (appArgs.get(0).equals("-m") || appArgs.get(0).equals("-w") || appArgs.get(0).equals("-l")))) {
+        if (appArgs.isEmpty() || appArgs.size() == 1
+                && (appArgs.get(0).equals("-m") || appArgs.get(0).equals("-w") || appArgs.get(0).equals("-l"))) {
             OutputStreamWriter writer = new OutputStreamWriter(output);
             String command = "";
 
