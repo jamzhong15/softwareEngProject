@@ -63,17 +63,18 @@ public class Globbing
             for (File file : subDir) {
                 searchAllFiles(baseDirectory, file, pattern, output);
             }
-        } else if (matcher.matches(currDirectory.toPath().getFileName())) {
+        } else if (matcher.matches(currDirectory.toPath().getFileName())) 
+        {
             // Write the relative pathname of the file if it matches the pattern
             
-                OutputStreamWriter writer = new OutputStreamWriter(output);
+            OutputStreamWriter writer = new OutputStreamWriter(output);
 
-                String base = baseDirectory.getCanonicalPath();
-                String current = currDirectory.getCanonicalPath();
-                String relative = current.substring(base.length());
+            String base = baseDirectory.getCanonicalPath();
+            String current = currDirectory.getCanonicalPath();
+            String relative = current.substring(base.length());
 
-                writer.write(relative + "\n");
-                writer.flush();
+            writer.write(relative + "\n");
+            writer.flush();
         }
     }
 }
