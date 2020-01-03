@@ -18,7 +18,7 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.rules.TemporaryFolder;
 
-public class IoDirectionTest {
+public class IoRedirectionTest {
     Jsh jsh = new Jsh();
 
     @Rule
@@ -74,7 +74,7 @@ public class IoDirectionTest {
 
     // combined use of < and > test
     @Test
-    public void combinedInputIoAndOutputIOTest() throws Exception
+    public void combinedInputIoAndOutputIOTestOne() throws Exception
     {
         jsh.start("cat < io_test.txt > combined_test.txt", System.out);
         String path = folder.getRoot().getAbsolutePath() + File.separator + "combined_test.txt";
@@ -82,6 +82,27 @@ public class IoDirectionTest {
         assertEquals("first line", testFileReader.readLine());
         testFileReader.close();
     }
+
+    @Test
+    public void combinedInputIoAndOutputIOTestTwo() throws Exception
+    {
+        jsh.start("cat < io_test.txt io_test2.txt > combined_test.txt", System.out);
+        String path = folder.getRoot().getAbsolutePath() + File.separator + "combined_test.txt";
+        BufferedReader testFileReader = new BufferedReader(new FileReader(path));
+        assertEquals("first line", testFileReader.readLine());
+        testFileReader.close();
+    }
+
+    @Test
+    public void combinedInputIoAndOutputIOTestThree() throws Exception
+    {
+        jsh.start("cat < io_test.txt > combined_test.txt io_test2.txt", System.out);
+        String path = folder.getRoot().getAbsolutePath() + File.separator + "combined_test.txt";
+        BufferedReader testFileReader = new BufferedReader(new FileReader(path));
+        assertEquals("first line", testFileReader.readLine());
+        testFileReader.close();
+    }
+
 
     @Test
     public void globbedArgForInputstreamRedirectionTest() throws Exception
@@ -94,6 +115,22 @@ public class IoDirectionTest {
         assertEquals("first line", scn.nextLine());
         assertEquals("first line", scn.nextLine());
         scn.close();
+    }
+
+    @Test
+    public void globbedArgForOutputstreamRedirectionTest() throws Exception
+    {
+        jsh.start("echo testing > io*", System.out);
+
+        String path1 = folder.getRoot().getAbsolutePath() + File.separator + "io_test.txt";
+        BufferedReader testFileReader1 = new BufferedReader(new FileReader(path1));
+        assertEquals("testing", testFileReader1.readLine());
+        testFileReader1.close();
+
+        String path2 = folder.getRoot().getAbsolutePath() + File.separator + "io_test2.txt";
+        BufferedReader testFileReader2 = new BufferedReader(new FileReader(path2));
+        assertEquals("testing", testFileReader2.readLine());
+        testFileReader2.close();
     }
 
     @Rule
@@ -124,6 +161,13 @@ public class IoDirectionTest {
         jsh.start("cat < io_test.txt >", System.out);
     }
 
+    @Test
+    public void InputNullFileGivenTestCombinedIOcaseOne() throws Exception {
+        thrown.expect(RuntimeException.class);
+        thrown.expectMessage(CoreMatchers.equalTo(null));
+        jsh.start("cat < > io_test.txt", System.out);
+    }
+
     // contains >
     @Test
     public void OutputNullFileGivenTest() throws Exception {
@@ -133,32 +177,10 @@ public class IoDirectionTest {
     }
 
     @Test
-    public void OutputTooManyFileGivenTest() throws Exception {
-        thrown.expect(RuntimeException.class);
-        thrown.expectMessage(CoreMatchers.equalTo("Outputstream redirection: too many files given as outputstream"));
-        jsh.start("cat io_test.txt > io_test.txt io_test.txt", System.out);
-    }
-
-    @Test
-    public void combinedIOButOutputTooManyFileGivenTest() throws Exception
-    {
-        thrown.expect(RuntimeException.class);
-        thrown.expectMessage(CoreMatchers.equalTo("Outputstream redirection: too many files given as outputstream"));
-        jsh.start("cat < io_test.txt > io_test.txt io_test.txt", System.out);
-    }
-
-    @Test
     public void InputNullFileGivenTest() throws Exception {
         thrown.expect(RuntimeException.class);
         thrown.expectMessage(CoreMatchers.equalTo(null));
         jsh.start("cat <", System.out);
-    }
-
-    @Test
-    public void InputNullFileGivenTestCombinedIOcaseOne() throws Exception {
-        thrown.expect(RuntimeException.class);
-        thrown.expectMessage(CoreMatchers.equalTo(null));
-        jsh.start("cat < > io_test.txt", System.out);
     }
 
     @Test
