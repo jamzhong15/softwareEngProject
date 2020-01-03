@@ -1,11 +1,13 @@
 package uk.ac.ucl.jsh;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
+import java.util.ArrayList;
 import java.util.Scanner;
 import org.junit.After;
 import org.junit.Before;
@@ -25,8 +27,6 @@ public class CommandSubTest {
         File test_folder = folder.newFolder("testFolder");
 
         test_folder.mkdir();
-
-        jsh.setcurrentDirectory(folder.getRoot().getAbsolutePath());
     
         File test1 = folder.newFile("test1.txt");
         String testedStrings1 = "abc\n";
@@ -45,13 +45,6 @@ public class CommandSubTest {
     public void deleteTestFile() throws Exception {
         jsh.setcurrentDirectory(System.getProperty("user.dir"));
         folder.delete();
-
-        File file = new File("test1.txt");
-        file.delete();
-
-        File file1 = new File("test2.txt");
-        file1.delete();
-
     }
 
     @Test
@@ -67,12 +60,17 @@ public class CommandSubTest {
 
     @Test
     public void CommandSubMultipleOutTest() throws Exception {
+        ArrayList<String> expected_contents = new ArrayList<>();
+        expected_contents.add("/test1.txt /test2.txt");
+        expected_contents.add("/test2.txt /test1.txt");
+
         PipedInputStream in = new PipedInputStream();
-        PipedOutputStream out;
-        out = new PipedOutputStream(in);        
+        PipedOutputStream out = new PipedOutputStream(in);        
         jsh.start("echo `find -name *.txt`", out);
         Scanner scn = new Scanner(in);
-        assertEquals("/test2.txt /test1.txt", scn.nextLine());
+        String output = scn.nextLine();
+        System.out.println(output);
+        assertTrue("wrong files found", expected_contents.contains(output));
         scn.close();
     }
 
