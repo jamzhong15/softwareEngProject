@@ -24,7 +24,7 @@ public class SeqTest {
 
     @Rule
     public ExpectedException thrown = ExpectedException.none();
-    // 要不要测试这个呢 回答：感觉不需要吧，这个test比较general,可以另外分一类test class来写
+
     @Test
     public void HeadMissingArgumentThrowsException() throws RuntimeException, IOException {
     PrintStream console = null;

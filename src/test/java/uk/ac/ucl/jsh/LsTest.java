@@ -31,11 +31,13 @@ public class LsTest {
         File src_folder = folder.newFolder("src");
         File test_folder = folder.newFolder("src", "test");
         File main_folder = folder.newFolder("src", "main");
+        File dot_folder = folder.newFolder("src", ".hi");
         File target_folder = folder.newFolder("target");
         File hello_folder = folder.newFolder("target", "hello");
         src_folder.mkdirs();
         test_folder.mkdirs();
         main_folder.mkdirs();
+        dot_folder.mkdirs();
         target_folder.mkdirs();
         hello_folder.mkdirs();
     }
@@ -93,7 +95,7 @@ public class LsTest {
 
     //multiple arguments test
     @Test
-    public void lsMultipleArgument() throws Exception {
+    public void lsMultipleArgumentTest() throws Exception {
         Jsh jsh = new Jsh();
         ArrayList<String> folders = new ArrayList<>();
         folders.add("main");

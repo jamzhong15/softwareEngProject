@@ -53,7 +53,7 @@ public class Globbing
     }
 
     // Used for find command
-    public void printFiles(File baseDirectory, File currDirectory, String pattern, OutputStream output) throws IOException{
+    public void searchAllFiles(File baseDirectory, File currDirectory, String pattern, OutputStream output) throws IOException{
         // Create a matcher for glob patterns
         PathMatcher matcher = FileSystems.getDefault().getPathMatcher("glob:" + pattern);
         if (currDirectory.isDirectory()) {
@@ -61,19 +61,20 @@ public class Globbing
 
             // Recursively search through the subdirectories
             for (File file : subDir) {
-                printFiles(baseDirectory, file, pattern, output);
+                searchAllFiles(baseDirectory, file, pattern, output);
             }
-        } else if (matcher.matches(currDirectory.toPath().getFileName())) {
+        } else if (matcher.matches(currDirectory.toPath().getFileName())) 
+        {
             // Write the relative pathname of the file if it matches the pattern
             
-                OutputStreamWriter writer = new OutputStreamWriter(output);
+            OutputStreamWriter writer = new OutputStreamWriter(output);
 
-                String base = baseDirectory.getCanonicalPath();
-                String current = currDirectory.getCanonicalPath();
-                String relative = current.substring(base.length());
+            String base = baseDirectory.getCanonicalPath();
+            String current = currDirectory.getCanonicalPath();
+            String relative = current.substring(base.length());
 
-                writer.write(relative + "\n");
-                writer.flush();
+            writer.write(relative + "\n");
+            writer.flush();
         }
     }
 }

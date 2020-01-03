@@ -17,7 +17,7 @@ public class Seq implements Command {
     public void eval() throws IOException {
 
         Jsh jsh = new Jsh();
-        
+
         Stack <InputStream> stdin = jsh.getStackInputStream();
         Stack <OutputStream> stdout = jsh.getStackOutputStream();
 

@@ -6,27 +6,27 @@ class AppFactory {
         switch (appName) 
         {
         case "cd":
-            return new cd();
+            return new Cd();
         case "pwd":
-            return new pwd();
+            return new Pwd();
         case "ls":
-            return new ls();
+            return new Ls();
         case "cat":
-            return new cat();
+            return new Cat();
         case "echo":
-            return new echo();
+            return new Echo();
         case "head":
-            return new head();
+            return new Head();
         case "tail":
-            return new tail();
+            return new Tail();
         case "grep":
-            return new grep();
+            return new Grep();
         case "sed":
-            return new sed();
+            return new Sed();
         case "find":
-            return new find();
+            return new Find();
         case "wc":
-            return new wc();
+            return new Wc();
         default:
             throw new RuntimeException(appName + ": unknown application");
         }

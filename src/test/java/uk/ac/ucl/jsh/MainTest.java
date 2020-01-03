@@ -49,14 +49,4 @@ public class MainTest {
         assertEquals("jsh: x: unexpected argument\n\n", outContent.toString());
     }
 
-    // unexpected args
-    // @Test
-    // public void MainNormalTest() throws Exception {
-    //     ByteArrayOutputStream outContent = new ByteArrayOutputStream();
-    //     System.setOut(new PrintStream(outContent));
-    //     String[] testString = {};
-    //     Jsh.main(testString);
-    //     assertEquals("Welcome to JSH!\n", outContent.toString());
-    // }
 }
-

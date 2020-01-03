@@ -34,12 +34,16 @@ public class WcTest
         File wc_test_file = folder.newFile("wcTest.txt");
         String testedStrings1 = "first line\n";
         String testedStrings2 = "second line\n";
-        String testedStrings3 = "third line\n";
+        String testedStrings3 = "\n";
+        String testedStrings4 = "third line\n";
+        
+
 
         FileOutputStream file_writer = new FileOutputStream(wc_test_file);
         file_writer.write(testedStrings1.getBytes());
         file_writer.write(testedStrings2.getBytes());
         file_writer.write(testedStrings3.getBytes());
+        file_writer.write(testedStrings4.getBytes());
         file_writer.close();
         
     }
@@ -58,7 +62,7 @@ public class WcTest
         PipedOutputStream out = new PipedOutputStream(in);
         jsh.start("wc -m wcTest.txt", out);
         Scanner scn = new Scanner(in);
-        assertEquals("34\twcTest.txt", scn.nextLine());
+        assertEquals("35\twcTest.txt", scn.nextLine());
         scn.close();
     }
 
@@ -80,7 +84,7 @@ public class WcTest
         PipedOutputStream out = new PipedOutputStream(in);
         jsh.start("wc -l wcTest.txt", out);
         Scanner scn = new Scanner(in);
-        assertEquals("3\twcTest.txt", scn.nextLine());
+        assertEquals("4\twcTest.txt", scn.nextLine());
         scn.close();
     }
 
@@ -91,7 +95,7 @@ public class WcTest
         PipedOutputStream out = new PipedOutputStream(in);
         jsh.start("wc wcTest.txt", out);
         Scanner scn = new Scanner(in);
-        assertEquals("3\t6\t34\twcTest.txt", scn.nextLine());
+        assertEquals("4\t6\t35\twcTest.txt", scn.nextLine());
         scn.close();
     }
 
@@ -102,7 +106,7 @@ public class WcTest
         PipedOutputStream out = new PipedOutputStream(in);
         jsh.start("cat wcTest.txt | wc -m", out);
         Scanner scn = new Scanner(in);
-        assertEquals("34\t", scn.nextLine());
+        assertEquals("35\t", scn.nextLine());
         scn.close();
     }
 
@@ -124,7 +128,7 @@ public class WcTest
         PipedOutputStream out = new PipedOutputStream(in);
         jsh.start("cat wcTest.txt | wc -l", out);
         Scanner scn = new Scanner(in);
-        assertEquals("3\t", scn.nextLine());
+        assertEquals("4\t", scn.nextLine());
         scn.close();
     }
 
@@ -135,7 +139,7 @@ public class WcTest
         PipedOutputStream out = new PipedOutputStream(in);
         jsh.start("cat wcTest.txt | wc", out);
         Scanner scn = new Scanner(in);
-        assertEquals("3\t6\t34\t", scn.nextLine());
+        assertEquals("4\t6\t35\t", scn.nextLine());
         scn.close();
     }
 

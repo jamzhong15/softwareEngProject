@@ -54,7 +54,7 @@ public class GrepTest {
         jsh.setcurrentDirectory(System.getProperty("user.dir"));
     }
 
-    // grep with 2 arguments
+    //grep with 2 arguments
     @Test
     public void GrepWIthTwoArgumentsTest() throws Exception {
         Jsh jsh = new Jsh();

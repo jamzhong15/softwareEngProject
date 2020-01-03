@@ -18,7 +18,11 @@ import org.junit.runners.Suite.SuiteClasses;
     SedTest.class,
     SeqTest.class,
     FindTest.class,
-    WcTest.class
+    WcTest.class,
+    IoRedirectionTest.class,
+    CommandSubTest.class,
+    GlobbingTest.class,
+    MainTest.class
 })
 public class JshTestSuite {
     
