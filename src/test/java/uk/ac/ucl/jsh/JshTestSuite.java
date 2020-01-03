@@ -21,8 +21,8 @@ import org.junit.runners.Suite.SuiteClasses;
     WcTest.class,
     IoRedirectionTest.class,
     CommandSubTest.class,
-    GlobbingTest.class
-
+    GlobbingTest.class,
+    MainTest.class
 })
 public class JshTestSuite {
     

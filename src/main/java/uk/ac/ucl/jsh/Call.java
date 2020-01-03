@@ -301,10 +301,11 @@ public class Call implements Command {
 
     public void inputStreamRedirection(String appName, ArrayList<String> appArgs, String currentDirectory,
             OutputStream stdout) throws IOException {
-        // multiple files may be used as standard inputstream
+        // globbed filename is allowed
         int inRedirIndex = appArgs.indexOf("<");
         ArrayList<String> cmdArgs = new ArrayList<String>(appArgs.subList(0, inRedirIndex));
         ArrayList<String> fileNames = new ArrayList<String>(appArgs.subList(inRedirIndex + 1, appArgs.size()));
+        
         if (fileNames.contains(">")) {
             fileNames = new ArrayList<String>(fileNames.subList(0, fileNames.indexOf(">")));
         }
@@ -320,8 +321,9 @@ public class Call implements Command {
                 i += expandedFiles.size();
             }
         }
-        
-        for (String fileName : fileNames) {
+
+        for (String fileName : fileNames) 
+        {
             FileInputStream fileReader = new FileInputStream(currentDirectory + File.separator + fileName);
             executeCmd(appName, cmdArgs, currentDirectory, fileReader, stdout);
         }
