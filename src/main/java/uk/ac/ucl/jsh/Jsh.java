@@ -39,8 +39,6 @@ public class Jsh
 
     public void start(String cmdline, OutputStream output) throws IOException 
     {
-        // BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(output));
-
         CharStream charstream = CharStreams.fromString(cmdline);
         CmdGrammarLexer lexer = new CmdGrammarLexer(charstream);
         CommonTokenStream commonTokenStream = new CommonTokenStream(lexer);
@@ -53,6 +51,7 @@ public class Jsh
         CmdVisitor visitor = new CmdVisitor();
         Command c = visitor.visit(tree);
         c.eval();
+        
     }
 
 
@@ -89,7 +88,10 @@ public class Jsh
                     {
                         Jsh jsh = new Jsh();
                         String cmdline = input.nextLine();
-                        jsh.start(cmdline, System.out);
+                        if(!cmdline.equals(""))
+                        {
+                            jsh.start(cmdline, System.out);
+                        }
                     } 
                     catch (Exception e) 
                     {
