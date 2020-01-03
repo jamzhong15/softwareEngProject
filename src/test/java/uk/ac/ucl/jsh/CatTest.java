@@ -98,7 +98,6 @@ public class CatTest {
     }
 
     // cat file not exist test
-    @Test
     public void CatFileNotExistThrowsException() throws RuntimeException, IOException {
         PrintStream console = null;
         console = System.out;
