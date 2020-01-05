@@ -41,6 +41,7 @@ class Head implements AppCase {
                 }
             }
         }
+        
         // read chosen number of lines in stdin
         else if (appArgs.size() == 2 && appArgs.get(0).equals("-n"))
         {
@@ -66,7 +67,8 @@ class Head implements AppCase {
                 }
             }
         }
-        // read from files
+        
+        // read from arguments
         else {
             int headLines = 10;
             int fileIndex = 0;

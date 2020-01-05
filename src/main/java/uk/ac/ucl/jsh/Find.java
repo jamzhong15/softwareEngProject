@@ -15,18 +15,23 @@ class Find implements AppCase {
             throw new RuntimeException("find: missing arguments");
         }
     
+        // Without pathname
         if (appArgs.size() == 2) {
             if (!appArgs.get(0).equals("-name")) {
                 throw new RuntimeException("find: invalid arguments");
             }
 
+
             File currDir = new File(currentDirectory);
             String pattern = appArgs.get(1);
-
+            
             Globbing glob = new Globbing();
             glob.searchAllFiles(currDir, currDir, pattern, output);
 
-        } else if (appArgs.size() == 3) {
+        } 
+        
+        // With specified pathname
+        else if (appArgs.size() == 3) {
             if (!appArgs.get(1).equals("-name")) {
                 throw new RuntimeException("find: invalid arguments");
             }
@@ -37,6 +42,8 @@ class Find implements AppCase {
             Globbing glob = new Globbing();
             glob.searchAllFiles(baseDir, currDir, pattern, output);
         }
+        
+        
         else{
             throw new RuntimeException("find: too many arguments");
         }

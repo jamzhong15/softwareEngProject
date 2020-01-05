@@ -20,20 +20,21 @@ class Wc implements AppCase {
     public void runCommand(ArrayList<String> appArgs, String currentDirectory, InputStream input, OutputStream output)
             throws IOException {
 
-        // Check if it should using standard input
+        OutputStreamWriter writer = new OutputStreamWriter(output);
+        int charCount = 0;
+        int wordCount = 0;
+        int lineCount = 0;
 
+        // Check if it should using standard input
         if (appArgs.isEmpty() || appArgs.size() == 1
                 && (appArgs.get(0).equals("-m") || appArgs.get(0).equals("-w") || appArgs.get(0).equals("-l"))) {
-            OutputStreamWriter writer = new OutputStreamWriter(output);
-            String command = "";
 
-            int charCount = 0;
-            int wordCount = 0;
-            int lineCount = 0;
+            String command = "";
 
             if (!appArgs.isEmpty()) {
                 command = appArgs.get(0);
             }
+            // get argument from stdin
             try (BufferedReader reader = new BufferedReader(new InputStreamReader(input, StandardCharsets.UTF_8))) {
                 String line = null;
                 while ((line = reader.readLine()) != null) {
@@ -54,16 +55,11 @@ class Wc implements AppCase {
         } else {
 
             // Otherwise use the arguments
-            OutputStreamWriter writer = new OutputStreamWriter(output);
-
             String command = appArgs.get(0);
             if (command.equals("-m") || command.equals("-w") || command.equals("-l")) {
                 // Remove the command type from the list so that only file-names are left
                 appArgs.remove(0);
             }
-            int charCount = 0;
-            int wordCount = 0;
-            int lineCount = 0;
 
             for (String arg : appArgs) {
                 Charset encoding = StandardCharsets.UTF_8;
@@ -93,6 +89,7 @@ class Wc implements AppCase {
         }
     }
 
+    // used to output the result
     private void writeCount(String command, int charCount, int wordCount, int lineCount, OutputStreamWriter writer,
             String fileName) throws IOException {
         switch (command) {

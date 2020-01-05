@@ -7,6 +7,9 @@ import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
 import java.util.Stack;
 
+/**
+ * pipe | will be analysed if there is no seq in the command line
+ */
 
 public class Pipe implements Command 
 {
@@ -17,6 +20,17 @@ public class Pipe implements Command
         this.r = r;
     }
 
+/**
+ * left part of the command: 
+ * get input from commandline input, 
+ * if no commandline input, get input from stdin.
+ * push  output to the input stack
+ * call eval to the left part of the command
+ * 
+ * right part of the command: 
+ * get input from inputStack and 
+ * call eval to the right part of the command
+ */
     @Override
     public void eval() throws IOException 
     {

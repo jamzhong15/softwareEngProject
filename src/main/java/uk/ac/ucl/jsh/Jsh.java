@@ -37,6 +37,15 @@ public class Jsh
         return stdout;
     }
 
+    /**
+     * used to start the analysation of command line
+     * push null to input stack
+     * push output to outpput stack
+     * call eval on command line 
+     * @param cmdline
+     * @param output
+     * @throws IOException
+     */
     public void start(String cmdline, OutputStream output) throws IOException 
     {
         CharStream charstream = CharStreams.fromString(cmdline);
@@ -54,7 +63,10 @@ public class Jsh
         
     }
 
-
+/**
+ * start the program
+ * @param args
+ */
     public static void main(String[] args) 
     {
         if (args.length > 0) 

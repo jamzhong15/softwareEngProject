@@ -5,11 +5,11 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 
-public abstract class UnsafeDecorator implements AppCase {
+public abstract class AppDecorator implements AppCase {
 
     private AppCase appCase;
 
-    public UnsafeDecorator(AppCase appCase) {
+    public AppDecorator(AppCase appCase) {
         this.appCase = appCase;
     }
 
