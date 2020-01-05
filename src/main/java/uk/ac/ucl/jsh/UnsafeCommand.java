@@ -4,7 +4,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 
-class UnsafeCommand extends UnsafeDecorator {
+class UnsafeCommand extends AppDecorator {
 
     public UnsafeCommand(AppCase appCase) {
         super(appCase);
