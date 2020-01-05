@@ -12,7 +12,6 @@ import org.antlr.v4.runtime.tree.ParseTree;
 
 public class Jsh 
 {
-    //get current directory
     private static String currentDirectory = System.getProperty("user.dir");
     private static Stack<InputStream> stdin = new Stack<>();
     private static Stack<OutputStream> stdout = new Stack<>();

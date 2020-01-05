@@ -15,7 +15,7 @@ class Find implements AppCase {
             throw new RuntimeException("find: missing arguments");
         }
     
-        
+        // Without pathname
         if (appArgs.size() == 2) {
             if (!appArgs.get(0).equals("-name")) {
                 throw new RuntimeException("find: invalid arguments");
@@ -30,7 +30,7 @@ class Find implements AppCase {
 
         } 
         
-        // Including pathname
+        // With specified pathname
         else if (appArgs.size() == 3) {
             if (!appArgs.get(1).equals("-name")) {
                 throw new RuntimeException("find: invalid arguments");

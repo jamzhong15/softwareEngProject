@@ -21,6 +21,8 @@ public class Pipe implements Command
     public void eval() throws IOException 
     {
         Jsh jsh = new Jsh();
+
+        // Connect streams and add to the stack
         
         PipedInputStream piped_input = new PipedInputStream(100000);
         PipedOutputStream piped_output = new PipedOutputStream(piped_input);

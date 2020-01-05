@@ -8,7 +8,27 @@ import org.antlr.v4.runtime.tree.ParseTree;
 public class CmdVisitor extends CmdGrammarBaseVisitor<Command> 
 {
 
+    /** 
+     * example tokens tree from Call branch:
+     * 
+     *                               ____ [unquoted] ____ {token}
+     *                               |
+     *            ____ [argument] ___|
+     *            |                  |____ [quoted] ____ {token}
+     *   call ____|
+     *            |                             
+     *            |                                  |--- {token}
+     *            |____ [atom] ____ [redirection] ___|                 
+     *                                               |___ [argument] ____ [unquoted] ____ {token}
+     *  
+     *  starting from call branch, its child trees (in square brackets) are extracted recursively,
+     *  until when the child trees containing only text tokens. For example [unquoted], [quoted] have 
+     *  no more children trees follwing, but only tokens.
+     * 
+     *  These tokens become arguments that will be executed in a the call class. 
+     */
     
+
     @Override
     public Command visitCall(final CmdGrammarParser.CallContext ctx)
     {
@@ -18,37 +38,28 @@ public class CmdVisitor extends CmdGrammarBaseVisitor<Command>
 
         for (ParseTree argument_atom_tree : allChildrenTree)
         {
-            for (int i = 0 ; i < argument_atom_tree.getChildCount(); i++)
-            {
-                ParseTree unquoted_redirection_tree = argument_atom_tree.getChild(i);
-                if (unquoted_redirection_tree.getChildCount() > 1)
-                {
-                    for (int n = 0 ; n < unquoted_redirection_tree.getChildCount() ; n++)
-                    {
-                        ParseTree redirection_argument_tree = unquoted_redirection_tree.getChild(n);
-                        if (redirection_argument_tree.getChildCount() > 1)
-                        {
-                            for (int q = 0 ; q < redirection_argument_tree.getChildCount() ; q++)
-                            {
-                                ParseTree quoted_unquoted_argument_tree = redirection_argument_tree.getChild(q);
-                                tokens.add(quoted_unquoted_argument_tree.getText());
-                            }
-                        }
-                        else
-                        {
-                            tokens.add(redirection_argument_tree.getText());
-                        }
-                    }
-                }
-                else
-                {
-                    tokens.add(unquoted_redirection_tree.getText());
-                }
-            }
+            extractTokensFromChildTree(argument_atom_tree, tokens);
         }
 
         Call call = new Call(tokens);
         return call;
+    }
+
+    public void extractTokensFromChildTree(ParseTree childTree, ArrayList<String> tokens)
+    {
+        if (childTree.getChildCount() == 0)
+        {
+            // System.out.println("childcount == 0, and getText == "+childTree.getText());
+            tokens.add(childTree.getText());
+        }
+        else
+        {
+            for (int i = 0 ; i < childTree.getChildCount(); i++)
+            {
+                ParseTree subTrees = childTree.getChild(i);
+                extractTokensFromChildTree(subTrees, tokens);
+            }
+        }
     }
 
     @Override

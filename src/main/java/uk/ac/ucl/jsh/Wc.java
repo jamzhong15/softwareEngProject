@@ -20,16 +20,17 @@ class Wc implements AppCase {
     public void runCommand(ArrayList<String> appArgs, String currentDirectory, InputStream input, OutputStream output)
             throws IOException {
 
+        OutputStreamWriter writer = new OutputStreamWriter(output);
+        int charCount = 0;
+        int wordCount = 0;
+        int lineCount = 0;
+
         // Check if it should using standard input
 
         if (appArgs.isEmpty() || appArgs.size() == 1
                 && (appArgs.get(0).equals("-m") || appArgs.get(0).equals("-w") || appArgs.get(0).equals("-l"))) {
-            OutputStreamWriter writer = new OutputStreamWriter(output);
-            String command = "";
 
-            int charCount = 0;
-            int wordCount = 0;
-            int lineCount = 0;
+            String command = "";
 
             if (!appArgs.isEmpty()) {
                 command = appArgs.get(0);
@@ -54,16 +55,12 @@ class Wc implements AppCase {
         } else {
 
             // Otherwise use the arguments
-            OutputStreamWriter writer = new OutputStreamWriter(output);
 
             String command = appArgs.get(0);
             if (command.equals("-m") || command.equals("-w") || command.equals("-l")) {
                 // Remove the command type from the list so that only file-names are left
                 appArgs.remove(0);
             }
-            int charCount = 0;
-            int wordCount = 0;
-            int lineCount = 0;
 
             for (String arg : appArgs) {
                 Charset encoding = StandardCharsets.UTF_8;
