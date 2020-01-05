@@ -8,7 +8,10 @@ import org.antlr.v4.runtime.tree.ParseTree;
 public class CmdVisitor extends CmdGrammarBaseVisitor<Command> 
 {
 
-    
+    /**
+     * visit the call node in antlr concrete syntax tree
+     * return call
+     */
     @Override
     public Command visitCall(final CmdGrammarParser.CallContext ctx)
     {
@@ -51,6 +54,10 @@ public class CmdVisitor extends CmdGrammarBaseVisitor<Command>
         return call;
     }
 
+    /**
+     * visit seq of the concrete syntax tree
+     * return left command and right command
+     */
     @Override
     public Command visitCommand(final CmdGrammarParser.CommandContext ctx)
     {
@@ -69,6 +76,10 @@ public class CmdVisitor extends CmdGrammarBaseVisitor<Command>
         }
     }
 
+    /**
+     * visit the pipe of concrete syntax tree
+     * return left command and right command
+     */
     @Override
     public Command visitPipe(final CmdGrammarParser.PipeContext ctx)
     {

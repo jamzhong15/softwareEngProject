@@ -14,6 +14,12 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 
+/**
+ * prints the no. of bytes, words and line in given file
+ * e.g. wc -m fileName, print the no. of character in fileName
+ *      wc -w fileName, print the no. of words in fileName
+ *      wc -l fileName, print the no. of newLine in fileName
+ */
 class Wc implements AppCase {
 
     @Override
