@@ -14,6 +14,12 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 
+/**
+ * prints the no. of bytes, words and line in given file
+ * e.g. wc -m fileName, print the no. of character in fileName
+ *      wc -w fileName, print the no. of words in fileName
+ *      wc -l fileName, print the no. of newLine in fileName
+ */
 class Wc implements AppCase {
 
     @Override
@@ -26,7 +32,6 @@ class Wc implements AppCase {
         int lineCount = 0;
 
         // Check if it should using standard input
-
         if (appArgs.isEmpty() || appArgs.size() == 1
                 && (appArgs.get(0).equals("-m") || appArgs.get(0).equals("-w") || appArgs.get(0).equals("-l"))) {
 
@@ -35,6 +40,7 @@ class Wc implements AppCase {
             if (!appArgs.isEmpty()) {
                 command = appArgs.get(0);
             }
+            // get argument from stdin
             try (BufferedReader reader = new BufferedReader(new InputStreamReader(input, StandardCharsets.UTF_8))) {
                 String line = null;
                 while ((line = reader.readLine()) != null) {
@@ -55,7 +61,6 @@ class Wc implements AppCase {
         } else {
 
             // Otherwise use the arguments
-
             String command = appArgs.get(0);
             if (command.equals("-m") || command.equals("-w") || command.equals("-l")) {
                 // Remove the command type from the list so that only file-names are left
@@ -90,6 +95,7 @@ class Wc implements AppCase {
         }
     }
 
+    // used to output the result
     private void writeCount(String command, int charCount, int wordCount, int lineCount, OutputStreamWriter writer,
             String fileName) throws IOException {
         switch (command) {

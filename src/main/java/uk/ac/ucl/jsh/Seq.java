@@ -5,6 +5,10 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Stack;
 
+/**
+ * seq ";", will be recognised firstly while analysing the antlr concrete syntax tree
+ */
+
 public class Seq implements Command {
     private final Command l, r;
 
@@ -12,6 +16,13 @@ public class Seq implements Command {
         this.l = l;
         this.r = r;
     }
+
+    /**
+     * push null to stdin stack
+     * push system.out to stdout stack
+     * call eval to the left part of seq
+     * call eval to the right part of seq
+     */
 
     @Override
     public void eval() throws IOException {

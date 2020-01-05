@@ -80,6 +80,10 @@ public class CmdVisitor extends CmdGrammarBaseVisitor<Command>
         }
     }
 
+    /**
+     * visit the pipe of concrete syntax tree
+     * return left command and right command
+     */
     @Override
     public Command visitPipe(final CmdGrammarParser.PipeContext ctx)
     {

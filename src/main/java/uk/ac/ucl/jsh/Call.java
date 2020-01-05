@@ -17,6 +17,10 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Stack;
 
+/**
+ * used to analyse single appCase
+ */
+
 public class Call implements Command {
     private final List<String> inputs;
 
