@@ -34,7 +34,7 @@ public class FindTest {
         dockerfile_file.createNewFile();
 
         File src_folder = folder.newFolder("main");
-        File CmdGrammar_file = new File(src_folder.getAbsolutePath()+"/Hi.g4");
+        File CmdGrammar_file = new File(src_folder, "Hi.g4");
         CmdGrammar_file.createNewFile();
 
         File dot_devcontainer_folder = folder.newFolder("devcontainer");
@@ -54,8 +54,8 @@ public class FindTest {
     @Test
     public void findTwoArgsTest() throws Exception {
         ArrayList<String> paths = new ArrayList<>();
-        paths.add("/Dockerfile");
-        paths.add("/devcontainer/Dockerfile");
+        paths.add("./Dockerfile");
+        paths.add("./devcontainer/Dockerfile");
 
         PipedInputStream in = new PipedInputStream();
         PipedOutputStream out = new PipedOutputStream(in);

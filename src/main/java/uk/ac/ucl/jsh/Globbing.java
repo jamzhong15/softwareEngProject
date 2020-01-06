@@ -1,6 +1,7 @@
 package uk.ac.ucl.jsh;
 
 import java.io.File;
+import java.io.FileFilter;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
@@ -42,7 +43,13 @@ public class Globbing
 
         if (dir.isDirectory()) {
             //Don't include hidden files
-            File[] files = dir.listFiles();
+            File[] files = dir.listFiles(new FileFilter() {
+                @Override
+                public boolean accept(File file)
+                {
+                    return !file.isHidden();
+                }
+            });
 
             // Recursively search through the subdirectories
             for (File file : files) {
@@ -68,10 +75,16 @@ public class Globbing
             // Write the relative pathname of the file if it matches the pattern
             
             OutputStreamWriter writer = new OutputStreamWriter(output);
-
-            String base = baseDirectory.getCanonicalPath();
+            Jsh jsh = new Jsh();
+            String base = jsh.getcurrentDirectory();
             String current = currDirectory.getCanonicalPath();
             String relative = current.substring(base.length());
+            
+            // Add a dot if it starts searching from the current directory
+            if(baseDirectory.getPath().equals(base))
+            {
+                relative = "." + relative;
+            }
 
             writer.write(relative + "\n");
             writer.flush();

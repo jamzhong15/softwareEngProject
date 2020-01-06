@@ -38,13 +38,14 @@ class Find implements AppCase {
             if (!appArgs.get(1).equals("-name")) {
                 throw new RuntimeException("find: invalid arguments");
             }
-            File baseDir = new File(currentDirectory);
             File currDir = new File(currentDirectory + "/" + appArgs.get(0));
             String pattern = appArgs.get(2);
 
             Globbing glob = new Globbing();
-            glob.writeMatchedFiles(baseDir, currDir, pattern, output);
+            glob.writeMatchedFiles(currDir, currDir, pattern, output);
         }
+
+        
         
         
         else{

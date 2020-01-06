@@ -61,8 +61,8 @@ public class CommandSubTest {
     @Test
     public void CommandSubMultipleOutTest() throws Exception {
         ArrayList<String> expected_contents = new ArrayList<>();
-        expected_contents.add("/test1.txt /test2.txt");
-        expected_contents.add("/test2.txt /test1.txt");
+        expected_contents.add("./test1.txt ./test2.txt");
+        expected_contents.add("./test2.txt ./test1.txt");
 
         PipedInputStream in = new PipedInputStream();
         PipedOutputStream out = new PipedOutputStream(in);        
