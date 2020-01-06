@@ -46,10 +46,17 @@ public class Call implements Command {
          * COMMAND SUBSTITUTION
          * checking for backquotes
          */
+
+        if(appName.startsWith("`"))
+        {
+            appName = command_substitution(appName).get(0);
+        }
         for (int i = 0; i < appArgs.size(); i++) {
             String arg = appArgs.get(i);
             if (arg.startsWith("`")) {
+                System.out.println(appArgs);
                 appArgs.addAll(i, command_substitution(arg));
+                System.out.println(appArgs);
                 appArgs.remove(arg);
             }
         }
@@ -124,6 +131,7 @@ public class Call implements Command {
         PipedOutputStream out = new PipedOutputStream(in);
         jsh.start(subcommand, out);
         out.close();
+        System.out.println("hello");
 
         BufferedReader subcommand_result_reader = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8));
         String string = null;

@@ -53,7 +53,7 @@ class Wc implements AppCase {
                     }
                 }
 
-                writeCount(command, charCount, wordCount, lineCount, writer, "");
+                writeCount(command, charCount, wordCount, lineCount, writer);
 
             } catch (NullPointerException e) {
                 throw new RuntimeException("wc: missing arguments");
@@ -90,31 +90,33 @@ class Wc implements AppCase {
                 } else {
                     throw new RuntimeException("wc: " + arg + " does not exist");
                 }
-                writeCount(command, charCount, wordCount, lineCount, writer, arg);
+               
             }
+            writeCount(command, charCount, wordCount, lineCount, writer);
+            
         }
+        
     }
 
     // used to output the result
-    private void writeCount(String command, int charCount, int wordCount, int lineCount, OutputStreamWriter writer,
-            String fileName) throws IOException {
+    private void writeCount(String command, int charCount, int wordCount, int lineCount, OutputStreamWriter writer) throws IOException {
         switch (command) {
         case "-m":
-            writer.write(Integer.toString(charCount) + "\t" + fileName);
+            writer.write(Integer.toString(charCount));
             break;
 
         case "-w":
-            writer.write(Integer.toString(wordCount) + "\t" + fileName);
+            writer.write(Integer.toString(wordCount));
             break;
 
         case "-l":
-            writer.write(Integer.toString(lineCount) + "\t" + fileName);
+            writer.write(Integer.toString(lineCount));
             break;
 
         default:
             writer.write(Integer.toString(lineCount) + "\t");
             writer.write(Integer.toString(wordCount) + "\t");
-            writer.write(Integer.toString(charCount) + "\t" + fileName);
+            writer.write(Integer.toString(charCount));
             break;
         }
         writer.write(System.getProperty("line.separator"));

@@ -29,7 +29,7 @@ class Find implements AppCase {
             String pattern = appArgs.get(1);
             
             Globbing glob = new Globbing();
-            glob.searchAllFiles(currDir, currDir, pattern, output);
+            glob.writeMatchedFiles(currDir, currDir, pattern, output);
 
         } 
         
@@ -43,7 +43,7 @@ class Find implements AppCase {
             String pattern = appArgs.get(2);
 
             Globbing glob = new Globbing();
-            glob.searchAllFiles(baseDir, currDir, pattern, output);
+            glob.writeMatchedFiles(baseDir, currDir, pattern, output);
         }
         
         
