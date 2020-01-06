@@ -65,7 +65,7 @@ public class IoRedirectionTest {
         jsh.start("echo Hello \"`echo \"World\"`\"", out);
         out.close();
         Scanner scn = new Scanner(in);
-        assertEquals("Hello World", scn.nextLine());
+        assertEquals("Hello  World", scn.nextLine());
         scn.close();
     }
 
