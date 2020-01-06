@@ -84,16 +84,19 @@ class Wc implements AppCase {
                                 wordCount += words.length;
                             }
                         }
-                    } catch (IOException e) {
+                    } catch (IOException e) 
+                    {
+                        writer.close();
                         throw new RuntimeException("wc: cannot open " + arg);
                     }
-                } else {
+                } else 
+                {
+                    writer.close();
                     throw new RuntimeException("wc: " + arg + " does not exist");
                 }
                
             }
             writeCount(command, charCount, wordCount, lineCount, writer);
-            
         }
         
     }

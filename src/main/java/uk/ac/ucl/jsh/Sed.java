@@ -36,6 +36,14 @@ class Sed implements AppCase {
         // replacement
         String replacement = appArgs.get(0);
         String delimiter = Character.toString(replacement.charAt(1));
+        if(delimiter.equals("\\"))
+        {
+            delimiter = "\\\\";
+        }
+        else if (delimiter.equals("|"))
+        {
+            delimiter = "\\|";
+        }
         String[] replacementArgs = replacement.split(delimiter, 0);
         Pattern regexPattern = Pattern.compile(replacementArgs[1]);
         String regexp = replacementArgs[1];

@@ -114,7 +114,9 @@ public class Call implements Command {
                     }
                     appArgs.remove(i);
                     ArrayList<String> newlist = new ArrayList<>(Arrays.asList(backquoted_contents));
-                    newlist.remove(0); // by split method, first "`" in arg will be transformed into unwanted " " element.
+                    // newlist.remove(0); // by split method, first "`" in arg will be transformed into unwanted " " element.
+                    // appArgs.add(backquoted_contents[0].trim());
+
                     appArgs.addAll(i, newlist);
                     i += backquoted_contents.length;
                 }
@@ -131,7 +133,6 @@ public class Call implements Command {
         PipedOutputStream out = new PipedOutputStream(in);
         jsh.start(subcommand, out);
         out.close();
-        System.out.println("hello");
 
         BufferedReader subcommand_result_reader = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8));
         String string = null;
@@ -148,15 +149,20 @@ public class Call implements Command {
         Integer indexOfInputRedir = null;
         Integer indexOfOutputRedir = null;
 
-
-        for (String str : appArgs) {
-            if (str.equals("<")) {
-                indexOfInputRedir = appArgs.indexOf(str);
+        for (int i = 0; i < appArgs.size(); i++) 
+        {
+            String arg = appArgs.get(i);
+            if (arg.equals("<")) {
+                indexOfInputRedir = appArgs.indexOf(arg);
                 inputRedirOccurrence++;
             }
-            if (str.equals(">")) {
-                indexOfOutputRedir = appArgs.indexOf(str);
+            else if (arg.equals(">")) {
+                indexOfOutputRedir = appArgs.indexOf(arg);
                 outputRedirOccurrence++;
+            }
+            else if(arg.startsWith("\'")) // ignore any backquotes o
+            {
+                appArgs.set(i, arg.substring(1, arg.length() - 1));
             }
         }
 
@@ -270,7 +276,6 @@ public class Call implements Command {
                  * note: [file1.txt] can be globbed file name, but is removed regardlessly
                  */
                 else if (appArgs.size() - indexOfInputRedir > 2)
-                
                 {
                     appArgs.remove(indexOfInputRedir+1);
                     appArgs.remove((int)indexOfInputRedir);

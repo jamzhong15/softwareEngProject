@@ -106,7 +106,8 @@ public class Jsh
                     } 
                     catch (Exception e) 
                     {
-                        System.out.println("jsh: " + e.getMessage());
+                        // System.out.println("jsh: " + e.getMessage()); 
+                        e.printStackTrace();
                     }
                 }
             } 
